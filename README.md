@@ -1,2 +1,71 @@
+<div align="center">
+  <img alt="jetson" height="200px" src="https://avatars.githubusercontent.com/u/688117?s=200&v=4">
+</div>
+
 # jetson-examples
-run ai examples on jetson
+
+[![Discord](https://dcbadge.vercel.app/api/server/5BQCkty7vN?style=flat&compact=true)](https://discord.gg/5BQCkty7vN)
+
+- run ai examples on jetson.
+- all you need is `reComputer`.
+
+## Install
+
+- use the way you like to install
+
+### Github (recommend)
+
+```sh
+git clone https://github.com/luoluoter/jetson-examples
+cd jetson-examples
+pip install .
+```
+
+### PyPI (TODO)
+
+```sh
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/
+pip install jetson-examples
+```
+
+### Linux (TODO)
+
+```sh
+# TODO: maybe use github's file link?
+curl -fsSL https://seeed.com/jetson-examples/install.sh | sh
+```
+
+## Quickstart
+
+To run and chat with [LLaVA](https://www.jetson-ai-lab.com/tutorial_llava.html):
+
+```sh
+reComputer run llava
+```
+
+## Example list
+
+reComputer supports a list of examples from [jetson-ai-lab](https://www.jetson-ai-lab.com/)
+
+Here are some examples that can be run:
+
+| Example                | Type                     | Model/Data Size | Image Size | Command                                 |
+| ---------------------- | ------------------------ | --------------- | ---------- | --------------------------------------- |
+| text-generation-webui  | Text (LLM)               | 3.9GB           | 14.8GB     | `reComputer run text-generation-webui`  |
+| LLaVA                  | Text + Vision (VLM)      | 13GB            | 14.4GB     | `reComputer run llava`                  |
+| stable-diffusion-webui | Image Generation         | 3.97G           | 7.3GB      | `reComputer run stable-diffusion-webui` |
+| nanoowl                | Vision Transformers(ViT) | 613MB           | 15.1GB     | `reComputer run nanoowl`                |
+| nanodb                 | Vector Database          | 334.55M+        | 7.0GB      | `reComputer run nanodb`                 |
+| whisper                | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
+
+> Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally
+
+More Examples can be found [examples.md](./docs/examples.md)
+
+## TODO List
+
+- [ ] detect host environment and install what we need
+- [ ] support jetson-containers update
+- [ ] all type jetson support checking list
+- [ ] better table to show example's difference
+- [ ] try jetpack 6.0
