@@ -55,7 +55,7 @@ Here are some examples that can be run:
 | LLaVA                  | Text + Vision (VLM)      | 13GB            | 14.4GB     | `reComputer run llava`                  |
 | stable-diffusion-webui | Image Generation         | 3.97G           | 7.3GB      | `reComputer run stable-diffusion-webui` |
 | nanoowl                | Vision Transformers(ViT) | 613MB           | 15.1GB     | `reComputer run nanoowl`                |
-| nanodb                 | Vector Database          | 334.55M+        | 7.0GB      | `reComputer run nanodb`                 |
+| nanodb                 | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
 | whisper                | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
 
 > Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally
