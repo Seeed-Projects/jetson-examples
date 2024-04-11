@@ -13,7 +13,13 @@
 
 - use the way you like to install
 
-### Github (recommend)
+### Linux (recommend)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/luoluoter/jetson-examples/main/install.sh | sh
+```
+
+### Github (for Developer)
 
 ```sh
 git clone https://github.com/luoluoter/jetson-examples
@@ -26,13 +32,6 @@ pip install .
 ```sh
 # https://packaging.python.org/en/latest/tutorials/packaging-projects/
 pip install jetson-examples
-```
-
-### Linux (TODO)
-
-```sh
-# TODO: maybe use github's file link?
-curl -fsSL https://seeed.com/jetson-examples/install.sh | sh
 ```
 
 ## Quickstart
