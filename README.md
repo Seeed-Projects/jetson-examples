@@ -65,6 +65,7 @@ More Examples can be found [examples.md](./docs/examples.md)
 ## TODO List
 
 - [ ] check disk space enough or not before run
+- [ ] allow to setting some configs, such as `BASE_PATH`
 - [ ] detect host environment and install what we need
 - [ ] support jetson-containers update
 - [ ] all type jetson support checking list

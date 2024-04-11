@@ -26,7 +26,7 @@ check_disk_space() {
 }
 
 echo "run example：$1"
-BASE_PATH=/tmp/reComputer
+BASE_PATH=/home/$USER/reComputer
 echo "----example init----"
 mkdir -p $BASE_PATH/
 JETSON_REPO_PATH="$BASE_PATH/jetson-containers"
