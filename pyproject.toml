@@ -1,5 +1,5 @@
 [project]
-name = "jetson-examples"
+name = "reComputer"
 version = "0.0.1"
 authors = [{ name = "luozhixin", email = "zhixin.luo@seeed.cc" }]
 description = "run AI on Jetson, all you need is reComputer"
