@@ -19,7 +19,7 @@ python3 -m twine upload --repository testpypi dist/*
 ### WARNING: do not share you API token !!
 
 # 3 test
-pip install -i https://test.pypi.org/simple/ jetson-examples==0.0.1
+pip install -i https://test.pypi.org/simple/ jetson-examples
 ### make sure version number right
 ```
 
@@ -34,6 +34,6 @@ python3 -m twine upload --repository pypi dist/*
 ### WARNING: do not share you API token !!
 
 # 3 test
-pip install jetson-examples==0.0.1
+pip install jetson-examples --upgrade
 ### make sure version number right
 ```

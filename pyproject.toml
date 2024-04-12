@@ -1,5 +1,5 @@
 [project]
-name = "reComputer"
+name = "jetson-examples"
 version = "0.0.1"
 authors = [{ name = "luozhixin", email = "zhixin.luo@seeed.cc" }]
 description = "run AI on Jetson, all you need is reComputer"
@@ -10,6 +10,9 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
+
+[project.scripts]
+reComputer = "reComputer.main:run_script"
 
 [project.urls]
 Homepage = "https://github.com/Seeed-Projects/jetson-examples"
