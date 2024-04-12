@@ -4,5 +4,4 @@ cd /tmp && \
 git clone https://github.com/Seeed-Projects/jetson-examples && \
 cd jetson-examples && \
 pip install . && \
-rm -rf /tmp/jetson-examples && \
 echo "reComputer installed. try 'reComputer run whisper' to enjoy!"
