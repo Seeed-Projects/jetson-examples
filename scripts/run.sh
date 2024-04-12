@@ -1,5 +1,24 @@
 #!/bin/bash
 
+check_is_jetson_or_not() {
+    model_file="/proc/device-tree/model"
+
+    if [ -f "$model_file" ]; then
+        first_line=$(head -n 1 "$model_file")
+
+        if [[ "$first_line" == NVIDIA* ]]; then
+            echo "INFO: jetson machine confirmed..."
+        else
+            echo "WARNING: your machine maybe not support..."
+            exit 1
+        fi
+    else
+        echo "ERROR: only jetson support this..."
+        exit 1
+    fi
+}
+check_is_jetson_or_not
+
 check_disk_space() {
     directory="$1"  # a directory
     required_space_gb="$2"  # how many GB we need
