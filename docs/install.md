@@ -5,7 +5,7 @@
 ## PyPI(recommend)
 
 ```sh
-pip install reComputer
+pip install jetson-examples
 ```
 
 ## Linux (github trick)

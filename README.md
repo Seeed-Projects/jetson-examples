@@ -12,7 +12,7 @@
 ## Install
 
 ```sh
-pip install reComputer
+pip install jetson-examples
 ```
 
 - [more installation methods](./docs/install.md)
