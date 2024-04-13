@@ -12,7 +12,7 @@
 ## Install
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/luoluoter/jetson-examples/main/install.sh | sh
+pip install jetson-examples
 ```
 
 - [more installation methods](./docs/install.md)

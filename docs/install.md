@@ -2,23 +2,22 @@
 
 - use the way you like to install
 
-## Linux (recommend)
+## PyPI(recommend)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/luoluoter/jetson-examples/main/install.sh | sh
+pip install jetson-examples
+```
+
+## Linux (github trick)
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Seeed-Projects/jetson-examples/main/install.sh | sh
 ```
 
 ## Github (for Developer)
 
 ```sh
-git clone https://github.com/luoluoter/jetson-examples
+git clone https://github.com/Seeed-Projects/jetson-examples
 cd jetson-examples
 pip install .
-```
-
-## PyPI (TODO)
-
-```sh
-# https://packaging.python.org/en/latest/tutorials/packaging-projects/
-pip install jetson-examples
 ```
