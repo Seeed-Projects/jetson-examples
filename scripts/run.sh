@@ -165,6 +165,11 @@ case "$1" in
         --path /data/nanodb/coco/2017 \
         --server --port=7860
     ;;
+    "live-llava")
+        script_dir="$(dirname "$(realpath "$0")")"
+        echo "Script is located in: $script_dir"
+        echo $script_dir"/live_llava.sh"
+    ;;
     *)
         echo "Unknown example"
         # handle unknown
