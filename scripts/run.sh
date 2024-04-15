@@ -168,7 +168,7 @@ case "$1" in
     "live-llava")
         script_dir="$(dirname "$(realpath "$0")")"
         echo "Script is located in: $script_dir"
-        echo $script_dir"/live_llava.sh"
+        bash $script_dir"/live_llava.sh"
     ;;
     *)
         echo "Unknown example"
