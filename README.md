@@ -6,8 +6,10 @@
 
 [![Discord](https://dcbadge.vercel.app/api/server/5BQCkty7vN?style=flat&compact=true)](https://discord.gg/5BQCkty7vN)
 
-- run ai examples on jetson.
-- all you need is `reComputer`.
+This repository provides examples for running AI models and applications on NVIDIA Jetson devices.  For generative AI, it supports a variety of examples including text generation, image generation, vision transformers, vector databases, and audio models.
+To run the examples, you need to install the jetson-examples package and use the Seeed Studio [reComputer](https://www.seeedstudio.com/reComputer-J4012-p-5586.html), the edge AI device powered by Jetson Orin.  The repo aims to make it easy to deploy state-of-the-art AI models, with just one line of command, on Jetson devices for tasks like language understanding, computer vision, and multimodal processing.
+
+This repo builds upon the work of the [Jetson Containers](https://github.com/dusty-nv/jetson-containers), which provides a modular container build system for various AI/ML packages on NVIDIA Jetson devices. It also leverages resources and tutorials from the [Jetson Generative AI Lab](https://www.jetson-ai-lab.com/index.html), which showcases bringing generative AI to the edge, powered by Jetson hardware.
 
 ## Install
 
