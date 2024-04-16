@@ -45,73 +45,29 @@ check_disk_space() {
 
 echo "run example：$1"
 BASE_PATH=/home/$USER/reComputer
+
 echo "----example init----"
 mkdir -p $BASE_PATH/
 JETSON_REPO_PATH="$BASE_PATH/jetson-containers"
+BASE_JETSON_LAB_GIT="https://github.com/dusty-nv/jetson-containers/tree/d1573a3e8d7ba3fef36ebb23a7391e60eaf64db7"
 if [ -d $JETSON_REPO_PATH ]; then
     echo "jetson-ai-lab existed."
 else
     echo "jetson-ai-lab does not installed. start init..."
     cd $BASE_PATH/
-    git clone --depth=1 https://github.com/dusty-nv/jetson-containers
+    git clone --depth=1 $BASE_JETSON_LAB_GIT
     cd $JETSON_REPO_PATH
     sudo apt update; sudo apt install -y python3-pip
     pip3 install -r requirements.txt
 fi
+
 echo "----example start----"
 cd $JETSON_REPO_PATH
-case "$1" in
-    "llava")
-        ./run.sh $(./autotag llava) \
-        python3 -m llava.serve.cli \
-        --model-path liuhaotian/llava-v1.5-7b \
-        --image-file /data/images/hoover.jpg
-    ;;
-    "llava-v1.5-7b")
-        ./run.sh $(./autotag llava) \
-        python3 -m llava.serve.cli \
-        --model-path liuhaotian/llava-v1.5-7b \
-        --image-file /data/images/hoover.jpg
-    ;;
-    "llava-v1.6-vicuna-7b")
-        ./run.sh $(./autotag local_llm) \
-        python3 -m local_llm --api=mlc \
-        --model liuhaotian/llava-v1.6-vicuna-7b \
-        --max-context-len 768 \
-        --max-new-tokens 128
-    ;;
-    "Sheared-LLaMA-2.7B-ShareGPT")
-        ./run.sh $(./autotag local_llm) \
-        python3 -m local_llm.chat --api=mlc \
-        --model princeton-nlp/Sheared-LLaMA-2.7B-ShareGPT
-    ;;
-    "text-generation-webui")
-        # download llm model
-        ./run.sh --workdir=/opt/text-generation-webui $(./autotag text-generation-webui) /bin/bash -c \
-        'python3 download-model.py --output=/data/models/text-generation-webui TheBloke/Llama-2-7b-Chat-GPTQ'
-        # run text-generation-webui
-        ./run.sh $(./autotag text-generation-webui)
-    ;;
-    "stable-diffusion-webui")
-        ./run.sh $(./autotag stable-diffusion-webui)
-    ;;
-    "nanoowl")
-        ./run.sh $(./autotag nanoowl) bash -c "ls /dev/video* && cd examples/tree_demo && python3 tree_demo.py ../../data/owl_image_encoder_patch32.engine"
-    ;;
-    "whisper")
-        ./run.sh $(./autotag whisper)
-    ;;
-    "nanodb")
-        script_dir=$(dirname "$0")
-        bash $script_dir/nanodb.sh
-    ;;
-    "live-llava")
-        script_dir=$(dirname "$0")
-        bash $script_dir/live-llava.sh
-    ;;
-    *)
-        echo "Unknown example"
-        # handle unknown
-    ;;
-esac
+script_dir=$(dirname "$0")
+start_script=$script_dir/$1/run.sh
+if [ -f $start_script ]; then
+    bash $start_script
+else
+    echo "ERROR: Example[$1] Not Found."
+fi
 echo "----example done----"

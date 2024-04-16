@@ -39,4 +39,4 @@ namespaces = true
 where = ["."]
 
 [tool.setuptools.package-data]
-"reComputer.scripts" = ["*.sh"]
+"reComputer.scripts" = ["**/*"]
