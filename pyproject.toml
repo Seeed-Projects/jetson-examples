@@ -1,14 +1,28 @@
+[build-system]
+requires = ["setuptools>=57.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "jetson-examples"
 version = "0.0.3"
 authors = [{ name = "luozhixin", email = "zhixin.luo@seeed.cc" }]
-description = "run AI on Jetson, all you need is reComputer"
+description = "Running Gen AI models and applications on NVIDIA Jetson devices with one-line command"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
+]
+keywords = [
+  "llama",
+  "llava",
+  "gpt",
+  "llm",
+  "nvidia",
+  "jetson",
+  "multimodal",
+  "jetson orin",
 ]
 
 [project.scripts]
@@ -17,3 +31,12 @@ reComputer = "reComputer.main:run_script"
 [project.urls]
 Homepage = "https://github.com/Seeed-Projects/jetson-examples"
 Issues = "https://github.com/Seeed-Projects/jetson-examples/issues"
+
+# Tools settings -------------------------------------------------------------------------------------------------------
+
+[tool.setuptools.packages.find]
+namespaces = true
+where = ["."]
+
+[tool.setuptools.package-data]
+"reComputer.scripts" = ["*.sh"]
