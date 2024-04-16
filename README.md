@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="jetson" height="200px" src="https://avatars.githubusercontent.com/u/688117?s=200&v=4">
+  <img alt="jetson" width="1200px" src="https://files.seeedstudio.com/wiki/reComputer-Jetson/jetson-examples/Jetson1200x300.png">
 </div>
 
 # jetson-examples

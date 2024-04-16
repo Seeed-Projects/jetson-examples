@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+# Device Self Test
 check_is_jetson_or_not() {
     model_file="/proc/device-tree/model"
 
@@ -438,7 +440,7 @@ EOF
 
     echo "The script has been modified."
 
-    # gnome-terminal -- /bin/bash -c chromium-browser --disable-features=WebRtcHideLocalIpsWithMdns https://localhost:8554/"; exec /bin/bash"
+    gnome-terminal -- /bin/bash -c "chromium-browser --disable-features=WebRtcHideLocalIpsWithMdns https://localhost:8554/; exec /bin/bash"
 
     cd $JETSON_REPO_PATH
     sudo docker run --runtime nvidia -it --rm --network host --volume /tmp/argus_socket:/tmp/argus_socket --volume /etc/enctune.conf:/etc/enctune.conf --volume /etc/nv_tegra_release:/etc/nv_tegra_release --volume /proc/device-tree/model:/tmp/nv_jetson_model --volume /var/run/dbus:/var/run/dbus --volume /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket --volume /var/run/docker.sock:/var/run/docker.sock --volume $JETSON_REPO_PATH/data:/data --device /dev/snd --device /dev/bus/usb -e DISPLAY=:0 -v /tmp/.X11-unix/:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth -e XAUTHORITY=/tmp/.docker.xauth --device /dev/video0 --device /dev/video1 -v $JETSON_REPO_PATH/packages/llm/local_llm:/opt/local_llm/local_llm -e SSL_KEY=/data/key.pem -e SSL_CERT=/data/cert.pem dustynv/local_llm:r35.3.1 python3 -m local_llm.agents.video_query --api=mlc --verbose --model liuhaotian/llava-v1.5-7b --max-new-tokens 32 --video-input /dev/video0 --video-output webrtc://@:8554/output
