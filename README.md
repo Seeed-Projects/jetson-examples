@@ -46,6 +46,8 @@ Here are some examples that can be run:
 
 More Examples can be found [examples.md](./docs/examples.md)
 
+Want to add a Example by yourself? Check this [develop.md](./docs/develop.md)
+
 ## TODO List
 
 - [ ] check disk space enough or not before run
