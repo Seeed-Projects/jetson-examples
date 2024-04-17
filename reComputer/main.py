@@ -29,7 +29,9 @@ def run_script():
     elif len(sys.argv) == 2:
         if sys.argv[1] == "check":
             subprocess.run(["bash", script("check.sh")])
-        if sys.argv[1] == "list":
+        elif sys.argv[1] == "update":
+            subprocess.run(["bash", script("update.sh")])
+        elif sys.argv[1] == "list":
             example_folder = os.path.join(os.path.dirname(__file__), "scripts")
             directories = list_all_examples(example_folder)
             print("example list:")
@@ -39,9 +41,15 @@ def run_script():
                 index += 1
             print("-end-")
         else:
-            print("Only Support `check` for now. try `reComputer check` .")
+            print("reComputer help:")
+            print("---")
+            print("`reComputer check`   | check system.")
+            print("`reComputer update`  | update jetson-ai-lab.")
+            print("`reComputer list`    | list all examples.")
+            print("`reComputer run xxx` | run an example.")
+            print("---")
     else:
-        print("Error Usage! try `reComputer run xxx` .")
+        print("Error Usage! try `reComputer help`.")
 
 
 if __name__ == "__main__":
