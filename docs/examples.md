@@ -7,6 +7,8 @@ All examples that can be run:
 | Example                                          | Type                     | Model Size | Image Size | Command                                      | Device   |
 | ------------------------------------------------ | ------------------------ | ---------- | ---------- | -------------------------------------------- | -------- |
 | text-generation-webui                            | Text (LLM)               | 3.9GB      | 14.8GB     | `reComputer run text-generation-webui`       |          |
+| llama3                                           | Text (LLM)               | 4.9GB      | 10.5GB     | `reComputer run llama3`                      |          |
+| [ollama](https://github.com/ollama/ollama)       | Inference Server         | *          | 10.5GB     | `reComputer run ollama`                      |          |
 | LLaMA                                            | Text (LLM)               | 1.5GB      | 10.5GB     | `reComputer run Sheared-LLaMA-2.7B-ShareGPT` |          |
 | llava-v1.5                                       | Text + Vision (VLM)      | 13GB       | 14.4GB     | `reComputer run llava-v1.5-7b`               |          |
 | llava-v1.6                                       | Text + Vision (VLM)      | 13GB       | 20.3GB     | `reComputer run llava-v1.6-vicuna-7b`        |          |
