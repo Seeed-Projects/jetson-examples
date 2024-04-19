@@ -18,31 +18,6 @@ check_is_jetson_or_not() {
 }
 check_is_jetson_or_not
 
-check_disk_space() {
-    directory="$1"  # a directory
-    required_space_gb="$2"  # how many GB we need
-    
-    # get disk of directory
-    device=$(df -P "$directory" | awk 'NR==2 {print $1}')
-    echo $device
-    
-    # get free space in KB
-    free_space=$(df -P "$device" | awk 'NR==2 {print $4}')
-    echo $free_space
-    
-    # change unit to GB
-    free_space_gb=$(echo "scale=2; $free_space / 1024 / 1024" | bc)
-    echo $free_space_gb
-    
-    # check and fast-fail
-    if (( $(echo "$free_space_gb >= $required_space_gb" | bc -l) )); then
-        echo "disk space ($1) enough, keep going."
-    else
-        echo "disk space ($1) not enough!! we need $2 GB!!"
-        exit 1
-    fi
-}
-
 echo "run example：$1"
 BASE_PATH=/home/$USER/reComputer
 
