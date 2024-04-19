@@ -33,14 +33,16 @@ reComputer supports a list of examples from [jetson-ai-lab](https://www.jetson-a
 
 Here are some examples that can be run:
 
-| Example                | Type                     | Model/Data Size | Image Size | Command                                 |
-| ---------------------- | ------------------------ | --------------- | ---------- | --------------------------------------- |
-| text-generation-webui  | Text (LLM)               | 3.9GB           | 14.8GB     | `reComputer run text-generation-webui`  |
-| LLaVA                  | Text + Vision (VLM)      | 13GB            | 14.4GB     | `reComputer run llava`                  |
-| stable-diffusion-webui | Image Generation         | 3.97G           | 7.3GB      | `reComputer run stable-diffusion-webui` |
-| nanoowl                | Vision Transformers(ViT) | 613MB           | 15.1GB     | `reComputer run nanoowl`                |
-| nanodb                 | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
-| whisper                | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
+| Example                                          | Type                     | Model/Data Size | Image Size | Command                                 |
+| ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- |
+| 🆕 llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 |
+| 🆕 [ollama](https://github.com/ollama/ollama)     | Inference Server         | *               | 10.5GB     | `reComputer run ollama`                 |
+| LLaVA                                            | Text + Vision (VLM)      | 13GB            | 14.4GB     | `reComputer run llava`                  |
+| Live LLaVA                                       | Text + Vision (VLM)      | 13GB            | 20.3GB     | `reComputer run live-llava`             |
+| stable-diffusion-webui                           | Image Generation         | 3.97G           | 7.3GB      | `reComputer run stable-diffusion-webui` |
+| nanoowl                                          | Vision Transformers(ViT) | 613MB           | 15.1GB     | `reComputer run nanoowl`                |
+| [nanodb](../reComputer/scripts/nanodb/readme.md) | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
+| whisper                                          | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
 
 > Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally
 
