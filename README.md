@@ -18,6 +18,7 @@ pip install jetson-examples
 ```
 
 - [more installation methods](./docs/install.md)
+- If you have already installed, you can use `pip install jetson-examples --upgrade` to update.
 
 ## Quickstart
 
