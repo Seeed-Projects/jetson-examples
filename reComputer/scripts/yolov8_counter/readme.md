@@ -1,0 +1,1 @@
+This script facilitates YOLOv8 in counting retail products, enabling real-time detection of items removed from the shelf by users. The project includes a test video located in the /video directory within a Docker container, with the test results saved in /result and subsequently transmitted to the local Home directory via Docker.
