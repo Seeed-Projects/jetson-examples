@@ -26,10 +26,10 @@ pip install .
 
 ## Quickstart
 ```sh
-reComputer run yolov8_counter
+reComputer run yolov8-counter
 ```
 ## TODO List
-- [ ] Add a host-side visual terminal interface for yolov8_counter.
+- [ ] Add a host-side visual terminal interface for yolov8-counter.
 
 ## FAQs
 1. The project has been tested on the Jetson Orin platform, and its execution entails the use of Docker; therefore, it is essential to ensure that all necessary Docker components are fully installed and functional.
