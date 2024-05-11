@@ -16,10 +16,10 @@ else
     -v /home:/home \
     -e DISPLAY=:0 \
     --privileged \
-    --name counter \
+    --name yolov8_counter \
     --device=/dev/*:/dev/*  \
     yaohui1998/yolov8_counter
-    docker exec counter python3 yolo_counting.py
-    docker cp -r counter:/usr/src/ultralytics/result/ ~/
+    docker exec yolov8_counter python3 yolo_counting.py
+    docker cp -r yolov8_counter:/usr/src/ultralytics/result/ ~/
 
 fi
