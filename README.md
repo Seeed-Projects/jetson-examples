@@ -44,7 +44,7 @@ Here are some examples that can be run:
 | nanoowl                                          | Vision Transformers(ViT) | 613MB           | 15.1GB     | `reComputer run nanoowl`                |
 | [nanodb](../reComputer/scripts/nanodb/readme.md) | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
 | whisper                                          | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
-| [yolov8-counter](/reComputer/scripts/yolov8-counter/readme.md) |Computer Vision | 6M | 13.8GB  | `reComputer run yolov8_counter`  |
+| [yolov8-counter](/reComputer/scripts/yolov8-counter/readme.md) |Computer Vision | 6M | 13.8GB  | `reComputer run yolov8-counter`  |
 > Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally
 
 More Examples can be found [examples.md](./docs/examples.md)
