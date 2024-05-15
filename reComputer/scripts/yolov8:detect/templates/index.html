@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ultralytics YOLOv8</title>
+    <style>
+        .container{
+            width: 60%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container img {
+            width: 100%;
+            height: auto;
+        }
+    </style>    
+</head>
+
+<body>
+<div class="container">
+    <img src="{{url_for('video_feed')}}" alt="YOLOv8 Output">
+</div>
+</body>
+
+</html>
