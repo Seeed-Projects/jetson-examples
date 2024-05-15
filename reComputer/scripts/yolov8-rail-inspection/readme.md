@@ -27,6 +27,8 @@ pip install .
 ```sh
 reComputer run yolov8-rail-inspection
 ```
+## Note
+The display feature of the WebUI is experimental. Opening the WebUI visualization requires waiting for loading time of less than one minute. Optimization for this issue will be addressed in future updates.
 
 ## FAQs
 1. The project has been tested on the Jetson Orin platform, and its execution entails the use of Docker; therefore, it is essential to ensure that all necessary Docker components are fully installed and functional.
