@@ -21,4 +21,4 @@ else
     yaohui1998/bolt_inspection:1.0
     docker exec yolov8_rain_inspection python3 bolt_inspection.py
     docker cp yolov8_rain_inspection:/usr/src/ultralytics/Jetson-example/result/ ~/
-fi
+fi 
