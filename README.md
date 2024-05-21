@@ -1,40 +1,49 @@
+# jetson-examples
+
 <div align="center">
   <img alt="jetson" width="1200px" src="https://files.seeedstudio.com/wiki/reComputer-Jetson/jetson-examples/Jetson1200x300.png">
 </div>
 
-# jetson-examples
-
 [![Discord](https://dcbadge.vercel.app/api/server/5BQCkty7vN?style=flat&compact=true)](https://discord.gg/5BQCkty7vN)
 
-This repository provides examples for running AI models and applications on NVIDIA Jetson devices.  For generative AI, it supports a variety of examples including text generation, image generation, vision transformers, vector databases, and audio models.
-To run the examples, you need to install the jetson-examples package and use the Seeed Studio [reComputer](https://www.seeedstudio.com/reComputer-J4012-p-5586.html), the edge AI device powered by Jetson Orin.  The repo aims to make it easy to deploy state-of-the-art AI models, with just one line of command, on Jetson devices for tasks like language understanding, computer vision, and multimodal processing.
+This repository provides examples for running AI models and applications on [NVIDIA Jetson devices](https://www.seeedstudio.com/reComputer-J4012-p-5586.html) with a single command.
 
-This repo builds upon the work of the [Jetson Containers](https://github.com/dusty-nv/jetson-containers), which provides a modular container build system for various AI/ML packages on NVIDIA Jetson devices. It also leverages resources and tutorials from the [Jetson Generative AI Lab](https://www.jetson-ai-lab.com/index.html), which showcases bringing generative AI to the edge, powered by Jetson hardware.
+This repo builds upon the work of the [jetson-containers](https://github.com/dusty-nv/jetson-containers), which provides a modular container build system for various AI/ML packages on NVIDIA Jetson devices. 
+
+## Features
+- 🚀 **Easy Deployment:** Deploy state-of-the-art AI models on Jetson devices in one line.
+- 🔄 **Versatile Examples:** Supports text generation, image generation, vision transformers, computer vision and so on.
+- ⚡ **Optimized for Jetson:** Leverages Nvidia Jetson hardware for efficient performance.
+
 
 ## Install
+To install the package, run:
 
 ```sh
-pip install jetson-examples
+pip3 install jetson-examples
 ```
 
-- [more installation methods](./docs/install.md)
-- If you have already installed, you can use `pip install jetson-examples --upgrade` to update.
+> Notes: 
+> - Check [here](./docs/install.md) for more installation methods 
+> - To upgrade to the latest version, use:  `pip3 install jetson-examples --upgrade`.
+
+
 
 ## Quickstart
-
-To run and chat with [LLaVA](https://www.jetson-ai-lab.com/tutorial_llava.html):
+To run and chat with [LLaVA](https://www.jetson-ai-lab.com/tutorial_llava.html), execute:
 
 ```sh
 reComputer run llava
 ```
+<div align="center">
+  <img alt="jetson" width="1200px" src="./docs/assets/llava.png">
+</div>
 
 ## Example list
 
-reComputer supports a list of examples from [jetson-ai-lab](https://www.jetson-ai-lab.com/)
-
 Here are some examples that can be run:
 
-| Example                                          | Type                     | Model/Data Size | Image Size | Command                                 |
+| Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 |
 | ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- |
 | 🆕 llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 |
 | 🆕 [ollama](https://github.com/ollama/ollama)     | Inference Server         | *               | 10.5GB     | `reComputer run ollama`                 |
@@ -44,13 +53,16 @@ Here are some examples that can be run:
 | nanoowl                                          | Vision Transformers(ViT) | 613MB           | 15.1GB     | `reComputer run nanoowl`                |
 | [nanodb](../reComputer/scripts/nanodb/readme.md) | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
 | whisper                                          | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
-| [yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) |Computer Vision | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |
+| [🆕 yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) |Computer Vision | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |
 
 > Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally
 
 More Examples can be found [examples.md](./docs/examples.md)
 
-Want to add a Example by yourself? Check this [develop.md](./docs/develop.md)
+## Development
+Want to add your own example? Check out the [development guide](./docs/develop.md).
+
+We welcome contributions to improve jetson-examples! If you have an example you'd like to share, please submit a pull request. Thank you to all of our contributors! 🙏
 
 ## TODO List
 
@@ -61,3 +73,13 @@ Want to add a Example by yourself? Check this [develop.md](./docs/develop.md)
 - [ ] all type jetson support checking list
 - [ ] better table to show example's difference
 - [ ] try jetpack 6.0
+
+
+## License
+This project is licensed under the MIT License. 
+
+## Resources
+- https://github.com/dusty-nv/jetson-containers
+- https://www.jetson-ai-lab.com/
+- https://www.ultralytics.com/
+
