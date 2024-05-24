@@ -18,26 +18,16 @@ check_is_jetson_or_not() {
 }
 check_is_jetson_or_not
 
-echo "run example：$1"
+echo "clean example：$1"
 BASE_PATH=/home/$USER/reComputer
-
-
+# TODO: 要一个二次确认
+echo "----clean example start----"
 cd $JETSON_REPO_PATH
 script_dir=$(dirname "$0")
-
-init_script=$script_dir/$1/init.sh
-if [ -f $init_script ]; then
-    echo "----example init----"
-    bash $init_script
-else
-    echo "WARN: Example[$1] init.sh Not Found."
-fi
-
-start_script=$script_dir/$1/run.sh
+start_script=$script_dir/$1/clean.sh
 if [ -f $start_script ]; then
-    echo "----example start----"
     bash $start_script
 else
-    echo "ERROR: Example[$1] run.sh Not Found."
+    echo "ERROR: Example[$1]/clean.sh Not Found."
 fi
-echo "----example done----"
+echo "----clean example done----"

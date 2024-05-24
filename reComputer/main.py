@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 
-def script(name):
+def path_of_script(name):
     script_path = os.path.join(os.path.dirname(__file__), "scripts", name)
     return script_path
 
@@ -23,14 +23,17 @@ def run_script():
         if sys.argv[1] == "run":
             example_name = sys.argv[2]
             # TODO: maybe use python instead of shell is better
-            subprocess.run(["bash", script("run.sh"), example_name])
+            subprocess.run(["bash", path_of_script("run.sh"), example_name])
+        if sys.argv[1] == "clean":
+            example_name = sys.argv[2]
+            subprocess.run(["bash", path_of_script("clean.sh"), example_name])
         else:
-            print("Only Support `run` for now. try `reComputer run llava` .")
+            print("Only Support `run` or `clean` for now. try `reComputer run llava` .")
     elif len(sys.argv) == 2:
         if sys.argv[1] == "check":
-            subprocess.run(["bash", script("check.sh")])
+            subprocess.run(["bash", path_of_script("check.sh")])
         elif sys.argv[1] == "update":
-            subprocess.run(["bash", script("update.sh")])
+            subprocess.run(["bash", path_of_script("update.sh")])
         elif sys.argv[1] == "list":
             example_folder = os.path.join(os.path.dirname(__file__), "scripts")
             directories = list_all_examples(example_folder)
@@ -47,6 +50,7 @@ def run_script():
             print("`reComputer update`  | update jetson-ai-lab.")
             print("`reComputer list`    | list all examples.")
             print("`reComputer run xxx` | run an example.")
+            print("`reComputer clean xxx` | clean an example's data.")
             print("---")
     else:
         print("Error Usage! try `reComputer help`.")
