@@ -24,8 +24,11 @@ def run_script():
             example_name = sys.argv[2]
             # TODO: maybe use python instead of shell is better
             subprocess.run(["bash", script("run.sh"), example_name])
+        if sys.argv[1] == "clean":
+            example_name = sys.argv[2]
+            subprocess.run(["bash", script("clean.sh"), example_name])
         else:
-            print("Only Support `run` for now. try `reComputer run llava` .")
+            print("Only Support `run` or `clean` for now. try `reComputer run llava` .")
     elif len(sys.argv) == 2:
         if sys.argv[1] == "check":
             subprocess.run(["bash", script("check.sh")])
@@ -47,6 +50,7 @@ def run_script():
             print("`reComputer update`  | update jetson-ai-lab.")
             print("`reComputer list`    | list all examples.")
             print("`reComputer run xxx` | run an example.")
+            print("`reComputer clean xxx` | clean an example's data.")
             print("---")
     else:
         print("Error Usage! try `reComputer help`.")
