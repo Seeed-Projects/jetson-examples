@@ -36,6 +36,7 @@ The project is structured as follows:
   - `main.py`: This file contains the main logic code for the Python module.
   - `scripts/`: This directory is used to store examples.
     - `xxxxx/`: This is an example directory. Everything inside this directory will be installed into the system. You can save files of any type, such as images, Python scripts, executable files, etc.
+      - `init.sh`: **(optional)** This is the example init script. To initialize the project's initial data and environment.
       - `run.sh`: **(MOST IMPORTANT)** This is the example startup script. It is the only entry point for your project.
       - `readme.md`: **(optional)** This file provides an introduction to the example.
     - `check.sh`: This is the checking script **(Not Finished yet)**.
@@ -44,6 +45,8 @@ The project is structured as follows:
 - `pyproject.toml`: This file contains information on how to build and install `jetson-examples`.
 
 ## 2. Create Your Project
+
+<img src="assets/lifetime.png" width="500px">
 
 Follow these steps to create an `example` in this project:
 
@@ -54,11 +57,17 @@ my_project=hello-world
 # 2 Create a directory for your project
 mkdir -p reComputer/scripts/$my_project
 
-# 3 Create the run.sh file
+# 3 [required] Create the run.sh file
 echo "echo 'hello world'" > reComputer/scripts/$my_project/run.sh
 
-# 4 Create the readme.md file
+# 4 [option] Create the readme.md file
 echo -e "# hello-world\n\n- Print \`hello-world\` to show how to add your project to this package" > reComputer/scripts/$my_project/readme.md
+
+# 5 [option] Create the init.sh file
+echo "echo 'init env'" > reComputer/scripts/$my_project/init.sh
+
+# 6 [option] Create the clean.sh file
+echo "echo 'clean data'" > reComputer/scripts/$my_project/clean.sh
 ```
 
 After completing these steps, you should see the file changes as shown in the image below:
