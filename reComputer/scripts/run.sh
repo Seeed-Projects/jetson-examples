@@ -29,7 +29,6 @@ init_script=$script_dir/$1/init.sh
 if [ -f $init_script ]; then
     echo "----example init----"
     bash $init_script
-fi
 else
     echo "WARN: Example[$1] init.sh Not Found."
 fi
