@@ -1,11 +1,6 @@
 # Abstract
 This project harnesses YOLOv8 technology, specifically tailored for precise identification and counting of bolts at fixed distances along a designated track, as well as for estimating odometer readings and vehicle speed calculations. It incorporates a test video stored within the ```/video``` directory of a Docker container, with the outcomes of these tests saved in the ```/result``` directory, subsequently relayed to the host machine's home directory via Docker mechanisms. Furthermore, the system offers real-time visualization of these processes through a WebUI accessible at ```http://127.0.0.1:5000``` within the local network.
 
-<div align="center">
-  <img src="/reComputer/scripts/yolov8-rail-inspection/assets/bolt.gif">
-</div>
-
-
 ## Install
 
 
