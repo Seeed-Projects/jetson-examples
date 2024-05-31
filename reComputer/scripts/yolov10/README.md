@@ -26,7 +26,7 @@
     ```sh
     sudo restart
     ```
-- run audiocraft on jetson in one line:
+- run yolov10 on jetson in one line:
     ```sh
     reComputer run yolov10
     ```
