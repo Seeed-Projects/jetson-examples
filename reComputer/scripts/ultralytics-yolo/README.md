@@ -1,6 +1,6 @@
 # Jetson Examples for Ultralytics Yolo
 Experience all task models of Ultralytics YOLO with a single command
-![alt text](image.png)
+
 ##
 ## Introduction
 This project allows you to experience all task models of Ultralytics YOLO with a single command. By accessing http://127.0.0.1:5000 on your local machine or within the same LAN, you can use the WebUI to select from various YOLO tasks such as object detection, image segmentation, action recognition, object classification, and oriented bounding box (OBB). Additionally, you can upload your own trained models for testing with images, videos, or real-time camera feeds.
