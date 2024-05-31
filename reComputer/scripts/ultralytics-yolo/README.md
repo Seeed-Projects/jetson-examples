@@ -5,6 +5,9 @@ Experience all task models of Ultralytics YOLO with a single command.
 ## Introduction 📘
 This project enables you to deploy and experience all task models of Ultralytics YOLO on NVIDIA Jetson Orin devices with a single command. By accessing [http://127.0.0.1:5000](http://127.0.0.1:5000) on your local machine or within the same LAN, you can quickly start using Ultralytics YOLO. You can also upload your own trained models and test them with images, videos, or real-time camera feeds.
 
+[![My Project Logo](images/tasks.png)](https://github.com/ultralytics/ultralytics?tab=readme-ov-file#models)
+All models implemented in this project are from the official [Ultralytics Yolo](https://github.com/ultralytics/ultralytics?tab=readme-ov-file#models).
+
 ### Get a Jetson Orin Device 🛒
 | Device Model | Description | Link |
 |--------------|-------------|------|
