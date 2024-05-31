@@ -39,7 +39,7 @@ This example will automatically download the YOLOv10s model at startup. If you w
 > **Note:** You can also download the model via a browser and copy the model to `/home/$USER/reComputer/yolov10/weights`.
 
 | Model | Download Command |
-|:-----:|:----:|
+| :------------: | :----------------------: |
 | [YOLOv10-N](https://github.com/THU-MIG/yolov10/releases/download/v1.1/yolov10n.pt) |   `sudo wget -P /home/$USER/reComputer/yolov10/weights https://github.com/THU-MIG/yolov10/releases/download/v1.1/yolov10n.pt`  |
 | [YOLOv10-S](https://github.com/THU-MIG/yolov10/releases/download/v1.1/yolov10s.pt) |   `sudo wget -P /home/$USER/reComputer/yolov10/weights https://github.com/THU-MIG/yolov10/releases/download/v1.1/yolov10s.pt`  |
 | [YOLOv10-M](https://github.com/THU-MIG/yolov10/releases/download/v1.1/yolov10m.pt) |   `sudo wget -P /home/$USER/reComputer/yolov10/weights https://github.com/THU-MIG/yolov10/releases/download/v1.1/yolov10m.pt`  |
@@ -55,7 +55,7 @@ Our provided container is built based on the `jetson-container`. This example pr
 sudo docker build -t yolov10-jetson .
 ```
 
-> **Note:**  Additionally, you can train models, test models, and export models within the Docker container environment. For detailed information, please refer to here.
+> **Note:**  Additionally, you can train models, test models, and export models within the Docker container environment. For detailed information, please refer to `THU-MIG/yolov10`.
 
 ## Reference
 - https://github.com/THU-MIG/yolov10
