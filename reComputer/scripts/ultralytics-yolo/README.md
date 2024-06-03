@@ -2,7 +2,7 @@
 
 ## Experience all task models of Ultralytics YOLO with a single command.
 <p align="center">
-  <img src="https://github.com/ZhuYaoHui1998/jetson-examples/blob/main/reComputer/scripts/ultralytics-yolo/images/Ultralytics-yolo.mp4" alt="Ultralytics YOLO">
+  <img src="images/Ultralytics-yolo.gif" alt="Ultralytics YOLO">
 </p>
 
 ## Introduction 📘
