@@ -16,6 +16,13 @@
   <img alt="yolov10" width="1200px" src="./assets/webui.png">
 </div>
 
+## Get a Jetson Orin Device 🛒
+| Device Model | Description | Link |
+|--------------|-------------|------|
+| Jetson Orin Nano Dev Kit, Orin Nano 8GB, 40TOPS | Developer kit for NVIDIA Jetson Orin Nano | [Buy Here](https://www.seeedstudio.com/NVIDIAr-Jetson-Orintm-Nano-Developer-Kit-p-5617.html) |
+| reComputer J4012, powered by Orin NX 16GB, 100 TOPS | Embedded computer powered by Orin NX | [Buy Here](https://www.seeedstudio.com/reComputer-J4012-p-5586.html) |
+
+
 ## Getting Started
 
 - install **jetson-examples** by pip:
