@@ -1,7 +1,7 @@
 # Jetson-Example: Run Ultralytics YOLO on NVIDIA Jetson Orin 🚀
 
 Experience all task models of Ultralytics YOLO with a single command.
-[![My Project Logo](images/Ultralytics-yolo.gif)]
+[My Project Logo](images/Ultralytics-yolo.gif)
 
 ## Introduction 📘
 This project enables you to deploy and experience all task models of Ultralytics YOLO on NVIDIA Jetson Orin devices with a single command. By accessing [http://127.0.0.1:5000](http://127.0.0.1:5000) on your local machine or within the same LAN, you can quickly start using Ultralytics YOLO. You can also upload your own trained models and test them with images, videos, or real-time camera feeds.
