@@ -22,7 +22,7 @@ All models and inference engine implemented in this project are from the officia
     - **Start Estimation**: Begin depth estimation using the selected model and input source.
     - **Stop Estimation**: Stop the ongoing depth estimation process.
     <p align="center">
-      <img src="images/Opr.png" alt="Depthanything" width="280" height="300">
+      <img src="images/Opr.png" alt="Depthanything" width="320" height="360">
     </p>
 
 ## Getting Started
