@@ -45,3 +45,6 @@ All models implemented in this project are from the official [Ultralytics Yolo](
 - [TensorRT Acceleration](https://wiki.seeedstudio.com/YOLOv8-DeepStream-TRT-Jetson/)
 - [Multistreams using Deepstream](https://wiki.seeedstudio.com/YOLOv8-DeepStream-TRT-Jetson/#multistream-model-benchmarks) Tutorials.
 
+## License
+
+This project is licensed under the MIT License.

@@ -6,14 +6,14 @@ This project provides an one-click deployment of the Depth Anything monocular de
 
 All models and inference engine implemented in this project are from the official [Depth Anything](https://depth-anything.github.io/).
 
-## Features
+## 🔥Features
 
 - One-click deployment for Depth Anything models.
 - WebUI for model conversion and depth estimation.
 - Support for uploading videos/images or using the local camera 
 - Supports S, B, L models of Depth Anything with input sizes of 308, 384, 406, and 518.
 
-    ### WebUI Features
+    ### 🗝️WebUI Features
     - **Choose model**: Select from depth_anything_vits14 models. (S, B, L)
     - **Choose input size**: Select the desired input size.(308, 384, 406, 518)
     - **Grayscale option**: Option to use grayscale. 
@@ -25,18 +25,18 @@ All models and inference engine implemented in this project are from the officia
       <img src="images/Opr.png" alt="Depthanything" width="320" height="360">
     </p>
 
-## Getting Started
-### Prerequisites
+## 🥳Getting Started
+### 📜Prerequisites
 - reComputer J401 [(🛒Buy Here)](https://www.seeedstudio.com/NVIDIAr-Jetson-Orintm-Nano-Developer-Kit-p-5617.html)
 - Docker installed on reComputer
 - USB Camera (optional)
-### Installation
+### 🚀Installation
 
 
 PyPI(recommend)
-```sh
-pip install jetson-examples
-```
+  ```sh
+  pip install jetson-examples
+  ```
 Linux (github trick)
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Seeed-Projects/jetson-examples/main/install.sh | sh
@@ -48,7 +48,7 @@ cd jetson-examples
 pip install .
 ```
 
-### Usage
+### 📋Usage
 1. Run code:
     ```sh
     reComputer run depth-anything
@@ -61,7 +61,7 @@ pip install .
 
 5. View the real-time depth estimation results on the WebUI.
 
-## Applications
+## ⛏️Applications
 
 - **Security**: Enhance surveillance systems with depth perception.
   <p align="center">
@@ -88,15 +88,15 @@ pip install .
 - [Depth Anything Android](https://github.com/FeiGeChuanShu/ncnn-android-depth_anything)
 
 
-## Contributing
+## 🙏🏻Contributing
 
 We welcome contributions from the community. Please fork the repository and create a pull request with your changes.
 
-## License
+## ✅License
 
 This project is licensed under the MIT License.
 
-## Acknowledgements
+## 🏷️Acknowledgements
 
 - Depth Anything [project](https://depth-anything.github.io/) by Hong Kong University and ByteDance.
 - Seeed Studio team for their [support and resources](https://github.com/Seeed-Projects/jetson-examples).
