@@ -1,7 +1,7 @@
 # Jetson-Example: Run Depth Anything on NVIDIA Jetson Orin 🚀
 This project provides an one-click deployment of the Depth Anything monocular depth estimation model developed by Hong Kong University and ByteDance.  The deployment is visualized on [reComputer](https://www.seeedstudio.com/reComputer-J4012-p-5586.html) (Nvidia Jetson Orin) and includes a WebUI for model conversion to TensorRT and real-time depth estimation.
 <p align="center">
-  <img src="images/WebUI.png" alt="Ultralytics YOLO">
+  <img src="images/WebUI.png" alt="WebUI">
 </p>
 
 All models and inference engine implemented in this project are from the official [Depth Anything](https://depth-anything.github.io/).
@@ -21,6 +21,9 @@ All models and inference engine implemented in this project are from the officia
     - **Export Model**: Automatically download and convert the model from PyTorch (.pth) to TensorRT format.
     - **Start Estimation**: Begin depth estimation using the selected model and input source.
     - **Stop Estimation**: Stop the ongoing depth estimation process.
+    <p align="center">
+      <img src="images/Opr.png" alt="Depthanything" width="280" height="300">
+    </p>
 
 ## Getting Started
 ### Prerequisites
@@ -61,14 +64,29 @@ pip install .
 ## Applications
 
 - **Security**: Enhance surveillance systems with depth perception.
+  <p align="center">
+    <img src="images/Security.png" alt="Security" width="500" height="150">
+  </p>
 - **Autonomous Driving**: Improve environmental sensing for autonomous vehicles.
+  <p align="center">
+    <img src="images/Autonomous Driving.png" alt="Autonomous Driving" width="500" height="150">
+  </p>
 - **Underwater Scenes**: Apply depth estimation in underwater exploration.
+  <p align="center">
+      <img src="images/Underwater Scenes.png" alt="Underwater Scenes" width="500" height="150">
+    </p>
 - **Indoor Scenes**: Use depth estimation for indoor navigation and analysis.
+  <p align="center">
+      <img src="images/Indoor Scenes.png" alt="Indoor Scenes" width="500" height="150">
+    </p>
 
 ## Further Development 🔧
-- [Training a YOLOv8 Model](https://wiki.seeedstudio.com/How_to_Train_and_Deploy_YOLOv8_on_reComputer/)
-- [TensorRT Acceleration](https://wiki.seeedstudio.com/YOLOv8-DeepStream-TRT-Jetson/)
-- [Multistreams using Deepstream](https://wiki.seeedstudio.com/YOLOv8-DeepStream-TRT-Jetson/#multistream-model-benchmarks)
+- [Depth Anything Official](https://depth-anything.github.io/)
+- [Depth Anything TensorRT](https://github.com/spacewalk01/depth-anything-tensorrt)
+- [Depth Anything ONNX](https://github.com/fabio-sim/Depth-Anything-ONNX)
+- [Depth Anything ROS](https://github.com/scepter914/DepthAnything-ROS)
+- [Depth Anything Android](https://github.com/FeiGeChuanShu/ncnn-android-depth_anything)
+
 
 ## Contributing
 
@@ -80,5 +98,5 @@ This project is licensed under the MIT License.
 
 ## Acknowledgements
 
-- Depth Anything model by Hong Kong University and ByteDance.
-- Seeed Studio team for their support and resources.
+- Depth Anything [project](https://depth-anything.github.io/) by Hong Kong University and ByteDance.
+- Seeed Studio team for their [support and resources](https://github.com/Seeed-Projects/jetson-examples).
