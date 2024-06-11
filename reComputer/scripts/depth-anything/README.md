@@ -1,5 +1,5 @@
 # Jetson-Example: Run Depth Anything on NVIDIA Jetson Orin 🚀
-This project provides an one-click deployment of the Depth Anything monocular depth estimation model developed by Hong Kong University and ByteDance.  The deployment is visualized on [reComputer](https://www.seeedstudio.com/reComputer-J4012-p-5586.html) (Nvidia Jetson Orin) and includes a WebUI for model conversion to TensorRT and real-time depth estimation.
+This project provides an one-click deployment of the Depth Anything monocular depth estimation model developed by Hong Kong University and ByteDance.  The deployment is visualized on [reComputer J4012](https://www.seeedstudio.com/reComputer-J4012-p-5586.html) (Jetson Orin NX 16GB, 100 TOPS) and includes a WebUI for model conversion to TensorRT and real-time depth estimation.
 <p align="center">
   <img src="images/WebUI.png" alt="WebUI">
 </p>
@@ -27,7 +27,7 @@ All models and inference engine implemented in this project are from the officia
 
 ## 🥳Getting Started
 ### 📜Prerequisites
-- reComputer J401 [(🛒Buy Here)](https://www.seeedstudio.com/NVIDIAr-Jetson-Orintm-Nano-Developer-Kit-p-5617.html)
+- reComputer J4012 [(🛒Buy Here)](https://www.seeedstudio.com/reComputer-J4012-p-5586.html)
 - Docker installed on reComputer
 - USB Camera (optional)
 ### 🚀Installation
