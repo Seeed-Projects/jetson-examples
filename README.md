@@ -8,11 +8,11 @@
 
 This repository provides examples for running AI models and applications on [NVIDIA Jetson devices](https://www.seeedstudio.com/reComputer-J4012-p-5586.html) with a single command.
 
-This repo builds upon the work of the [jetson-containers](https://github.com/dusty-nv/jetson-containers), which provides a modular container build system for various AI/ML packages on NVIDIA Jetson devices. 
+This repo builds upon the work of the [jetson-containers](https://github.com/dusty-nv/jetson-containers), [ultralytics](https://github.com/ultralytics/ultralytics) and other excellent projects. 
 
 ## Features
 - 🚀 **Easy Deployment:** Deploy state-of-the-art AI models on Jetson devices in one line.
-- 🔄 **Versatile Examples:** Supports text generation, image generation, vision transformers, computer vision and so on.
+- 🔄 **Versatile Examples:** Supports text generation, image generation, computer vision and so on.
 - ⚡ **Optimized for Jetson:** Leverages Nvidia Jetson hardware for efficient performance.
 
 
@@ -45,9 +45,10 @@ Here are some examples that can be run:
 
 | Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 |
 | ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- |
+| 🆕 [depth-anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision |  | 12.9GB  | `reComputer run  depth-anything`  |
 | 🆕 [yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 |
-| 🆕 llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 |
-| 🆕 [ollama](https://github.com/ollama/ollama)     | Inference Server         | *               | 10.5GB     | `reComputer run ollama`                 |
+| llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 |
+| [ollama](https://github.com/ollama/ollama)     | Inference Server         | *               | 10.5GB     | `reComputer run ollama`                 |
 | LLaVA                                            | Text + Vision (VLM)      | 13GB            | 14.4GB     | `reComputer run llava`                  |
 | Live LLaVA                                       | Text + Vision (VLM)      | 13GB            | 20.3GB     | `reComputer run live-llava`             |
 | stable-diffusion-webui                           | Image Generation         | 3.97G           | 7.3GB      | `reComputer run stable-diffusion-webui` |
@@ -56,7 +57,7 @@ Here are some examples that can be run:
 | whisper                                          | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
 | [yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) |Computer Vision | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |
 | [ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) |Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  |
-| [depth-anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision |  | 12.9GB  | `reComputer run  depth-anything`  |
+
 
 > Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally
 
@@ -69,13 +70,14 @@ We welcome contributions to improve jetson-examples! If you have an example you'
 
 ## TODO List
 
+- [x] detect host environment and install what we need
+- [x] all type jetson support checking list
+- [x] try jetpack 6.0
 - [ ] check disk space enough or not before run
 - [ ] allow to setting some configs, such as `BASE_PATH`
-- [ ] detect host environment and install what we need
 - [ ] support jetson-containers update
-- [ ] all type jetson support checking list
 - [ ] better table to show example's difference
-- [ ] try jetpack 6.0
+
 
 
 ## License
