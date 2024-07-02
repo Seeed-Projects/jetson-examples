@@ -45,8 +45,9 @@ Here are some examples that can be run:
 
 | Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 |
 | ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- |
+| 🆕 llama-factory | Finetune LLM |  | 13.5GB  | `reComputer run  llama-factory`  |
 | 🆕 [depth-anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision |  | 12.9GB  | `reComputer run  depth-anything`  |
-| 🆕 [yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 |
+| [yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 |
 | llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 |
 | [ollama](https://github.com/ollama/ollama)     | Inference Server         | *               | 10.5GB     | `reComputer run ollama`                 |
 | LLaVA                                            | Text + Vision (VLM)      | 13GB            | 14.4GB     | `reComputer run llava`                  |
