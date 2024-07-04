@@ -2,6 +2,7 @@
 
 
 ## Hello
+Now you can tailor a custom private local LLM to meet your requirements.
 
 💡 Here's an example of quickly deploying [Llama-Factory](https://github.com/hiyouga/LLaMA-Factory) on Jetson device.
 
@@ -12,15 +13,15 @@
 
 🛠️ Follow the tutorial below to quickly experience the performance of Llama-Factory on edge computing devices.
 
-<!-- <div align="center">
-  <img alt="yolov10" width="1200px" src="./assets/llama-factory-Jetson.png">
-</div> -->
+<div align="center">
+  <img alt="training" width="1200px" src="./assets/training.gif">
+</div>
 
 ## Get a Jetson Orin Device 🛒
 | Device Model | Description | Link |
 |--------------|-------------|------|
 | reComputer J4012, powered by Orin NX 16GB, 100 TOPS | Embedded computer powered by Orin NX | [Buy Here](https://www.seeedstudio.com/reComputer-J4012-p-5586.html) |
-| NVIDIA® Jetson AGX Orin™ 64GB Developer Kit | smallest and most powerful AI edge computer | [Buy Here](https://www.seeedstudio.com/NVIDIArJetson-AGX-Orintm-64GB-Developer-Kit-p-5641.html) |
+| NVIDIA® Jetson AGX Orin™ 64GB Developer Kit | Smallest and most powerful AI edge computer | [Buy Here](https://www.seeedstudio.com/NVIDIArJetson-AGX-Orintm-64GB-Developer-Kit-p-5641.html) |
 
 ## Getting Started
 
