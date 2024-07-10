@@ -25,6 +25,6 @@ pip install jetson-examples
 ## Usage
 1. Type the following command in a terminal
 ```bash
-reComputer run movenet-lightning
+reComputer run MoveNet-Lightning
 ```
 2. Start moving in front of the camera

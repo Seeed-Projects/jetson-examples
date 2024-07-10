@@ -25,7 +25,7 @@ pip install jetson-examples
 ## Usage
 1. Type the following command in a terminal
 ```bash
-reComputer run movenet-thunder
+reComputer run MoveNet-Thunder
 ```
 2. Start moving in front of the camera
 

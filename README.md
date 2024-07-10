@@ -58,6 +58,7 @@ Here are some examples that can be run:
 | whisper                                          | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
 | [yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) |Computer Vision | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |
 | [ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) |Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  |
+| [TensorFlow MoveNet Thunder](/reComputer/scripts/MoveNet-Thunder/readme.md) |Computer Vision |  | 7.7GB  | `reComputer run  MoveNet-Thunder`  |
 
 
 > Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally

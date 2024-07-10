@@ -20,5 +20,7 @@ LLaMA                                            | Text (LLM)               | 1.
 | nanoowl                                          | Vision Transformers(ViT) | 613MB      | 15.1GB     | `reComputer run nanoowl`                     | USB-CAM* |
 | [nanodb](../reComputer/scripts/nanodb/readme.md) | Vector Database          | 76GB       | 7.0GB      | `reComputer run nanodb`                      |          |
 | [ollama](https://github.com/ollama/ollama)       | Inference Server         | *          | 10.5GB     | `reComputer run ollama`                      |          |
-
+| [TensorFlow MoveNet Thunder](/reComputer/scripts/MoveNet-Thunder/readme.md) |Computer Vision |  | 7.7GB  | `reComputer run  MoveNet-Thunder`  |
+| [TensorFlow MoveNet Lightning](/reComputer/scripts/MoveNet-Lightning/readme.md) |Computer Vision |  | 7.48GB  | `reComputer run  MoveNet-Lightning`  |
+| [TensorFlow MoveNet JS](/reComputer/scripts/MoveNetJS/readme.md) |Computer Vision |  | 56.21MB  | `reComputer run  MoveNetJS`  |
 
