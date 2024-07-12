@@ -28,7 +28,7 @@ pip install jetson-examples
 ##### If you're running inside your reComputer
 1. Type the following command in a terminal
 ```bash
-reComputer run movenetjs
+reComputer run MoveNetJS
 ```
 2. Open a web browser and go to [http://localhost:5000](http://localhost:5000)
 3. Give permission to access webcam and wait a few seconds:
