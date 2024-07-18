@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# pull docker image
+# get L4T version
+# it exports a variable IMAGE_TAG
+source ./getVersion.sh
 
-docker pull feiticeir0/movenet-thunder:tf2-r36.2.0
+# pull docker image
+docker pull feiticeir0/movenet-thunder:tf2-${IMAGE_TAG}
 
 docker run \
 	-e DISPLAY=$DISPLAY \
@@ -10,6 +13,6 @@ docker run \
 	--rm \
 	--device /dev/video0 \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \
-	feiticeir0/movenet-thunder:tf2-r36.2.0
+	feiticeir0/movenet-thunder:tf2-${IMAGE_TAG}
 
 
