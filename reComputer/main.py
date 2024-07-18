@@ -24,7 +24,7 @@ def run_script():
             example_name = sys.argv[2]
             # TODO: maybe use python instead of shell is better
             subprocess.run(["bash", path_of_script("run.sh"), example_name])
-        if sys.argv[1] == "clean":
+        elif sys.argv[1] == "clean":
             example_name = sys.argv[2]
             subprocess.run(["bash", path_of_script("clean.sh"), example_name])
         else:
