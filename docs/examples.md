@@ -23,4 +23,5 @@ LLaMA                                            | Text (LLM)               | 1.
 | [TensorFlow MoveNet Thunder](/reComputer/scripts/MoveNet-Thunder/readme.md) |Computer Vision |  | 7.7GB  | `reComputer run  MoveNet-Thunder`  | USB-CAM*
 | [TensorFlow MoveNet Lightning](/reComputer/scripts/MoveNet-Lightning/readme.md) |Computer Vision |  | 7.48GB  | `reComputer run  MoveNet-Lightning`  | USB-CAM*
 | [TensorFlow MoveNet JS](/reComputer/scripts/MoveNetJS/readme.md) |Computer Vision |  | 56.21MB  | `reComputer run  MoveNetJS`  | USB-CAM*
+| [Parler-TTS mini: expresso](/reComputer/scripts/parler-tts/readme.md) |Audio |  | 6.9GB  | `reComputer run  parler-tts`  |
 
