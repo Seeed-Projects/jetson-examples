@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker pull yaohui1998/bolt_inspection:1.0
+docker pull yaohui1998/ultralytics-yolo:latest
 
 docker run --rm -it \
     --privileged \
