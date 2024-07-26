@@ -19,6 +19,36 @@ All models implemented in this project are from the official [Ultralytics Yolo](
 
 ## Quickstart ⚡
 
+### Modify Docker Daemon Configuration (Optional)
+To enhance the experience of quickly loading models in Docker, you need to add the following content to the `/etc/docker/daemon.json` file:
+
+```json
+{
+  "default-runtime": "nvidia",
+  "runtimes": {
+    "nvidia": {
+      "path": "nvidia-container-runtime",
+      "runtimeArgs": []
+    }
+  },
+  "storage-driver": "overlay2",
+  "data-root": "/var/lib/docker",
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m",
+    "max-file": "3"
+  },
+  "no-new-privileges": true,
+  "experimental": false
+}
+```
+
+After modifying the `daemon.json` file, you need to restart the Docker service to apply the configuration:
+
+```sh
+sudo systemctl restart docker
+```
+
 ### Installation via PyPI (Recommended) 🐍
 1. Install the package:
     ```sh
@@ -36,9 +66,8 @@ All models implemented in this project are from the official [Ultralytics Yolo](
     ```
 
 ## Notes 📝
-- The first time you start the code for detection, there will be a wait of at least 30 seconds for loading; this is normal.
 - To stop detection at any time, press the Stop button.
-- When accessing the WebUI from other devices within the same LAN, use the URL: `http://{Jetson_IP}:5001`.
+- When accessing the WebUI from other devices within the same LAN, use the URL: `http://{Jetson_IP}:5000`.
 
 ## Further Development 🔧
 - [Training a YOLOv8 Model](https://wiki.seeedstudio.com/How_to_Train_and_Deploy_YOLOv8_on_reComputer/)
