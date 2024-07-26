@@ -66,9 +66,8 @@ sudo systemctl restart docker
     ```
 
 ## Notes 📝
-- The first time you start the code for detection, there will be a wait of at least 30 seconds for loading; this is normal.
 - To stop detection at any time, press the Stop button.
-- When accessing the WebUI from other devices within the same LAN, use the URL: `http://{Jetson_IP}:5001`.
+- When accessing the WebUI from other devices within the same LAN, use the URL: `http://{Jetson_IP}:5000`.
 
 ## Further Development 🔧
 - [Training a YOLOv8 Model](https://wiki.seeedstudio.com/How_to_Train_and_Deploy_YOLOv8_on_reComputer/)
