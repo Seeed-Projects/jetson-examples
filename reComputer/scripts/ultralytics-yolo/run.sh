@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker pull yaohui1998/ultralytics-yolo:latest
+docker pull yaohui1998/ultralytics-yolo:v2
 
 docker run --rm -it \
     --privileged \
@@ -9,4 +9,4 @@ docker run --rm -it \
     -v /dev/*:/dev/* \
     -v /etc/localtime:/etc/localtime:ro \
     --runtime nvidia \
-    yaohui1998/ultralytics-yolo:latest
+    yaohui1998/ultralytics-yolo:v2
