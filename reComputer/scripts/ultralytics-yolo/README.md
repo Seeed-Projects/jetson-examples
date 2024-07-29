@@ -1,6 +1,6 @@
 # Jetson-Example: Run Ultralytics YOLO Platform Service on NVIDIA Jetson Orin 🚀
 
-## One-Click Quick Deployment of Ultralytics YOLOv8 for All Task Models with Web UI and HTTP API Interface
+## "One-Click Quick Deployment of Plug-and-Play Ultralytics YOLOv8 for All Task Models with Web UI and HTTP API Interface"
 <p align="center">
   <img src="images/Ultralytics-yolo.gif" alt="Ultralytics YOLO">
 </p>
@@ -10,7 +10,7 @@ In this project, you can quickly deploy all YOLOv8 task models on Nvidia Jetson 
 
 ## **Key Features**:
 
-1. **One-Click Deployment**: Quickly deploy all YOLOv8 task models on Nvidia Jetson Orin devices.
+1. **One-Click Deployment and Plug-and-Play**: Quickly deploy all YOLOv8 task models on Nvidia Jetson Orin devices.
 2. **Comprehensive Task Support**: Enables object detection, segmentation, human pose estimation, and classification.
 3. **Versatile Input Options**: Supports uploading local videos, images, and using a webcam.
 4. **TensorRT Model Conversion**: Allows one-click conversion of models to TensorRT.

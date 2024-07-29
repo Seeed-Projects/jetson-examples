@@ -2,7 +2,7 @@
 
 docker pull yaohui1998/ultralytics-yolo:latest
 
-docker run --rm -it \
+docker run -it \
     --privileged \
     --network host \
     -v /tmp/.X11-unix:/tmp/.X11-unix[@] \
