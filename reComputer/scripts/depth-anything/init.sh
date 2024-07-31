@@ -8,13 +8,14 @@ MAGENTA=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 RESET=$(tput sgr0)
 
-echo "${CYAN}This script will install the necessary packages and configurations for running ultralytics-yolo on a Jetson Nano.${RESET}"
+echo "${CYAN}This script will install the necessary packages and configurations for running depth-anything on a Jetson Nano.${RESET}"
 
 # Install yq for parsing YAML files
 sudo apt-get update
 sudo apt-get install -y jq
+
 # Read configuration
-CURRENT_DIR="ultralytics-yolo"
+CURRENT_DIR="depth-anything"
 CONFIG_FILE="./jetson-examples/reComputer/scripts/${CURRENT_DIR}/config.yaml"
 ALLOWED_L4T_VERSIONS=$(yq -r '.allowed_l4t_versions[]' $CONFIG_FILE)
 ALLOWED_L4T_VERSIONS_ARRAY=($ALLOWED_L4T_VERSIONS)
