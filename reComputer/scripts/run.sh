@@ -1,4 +1,9 @@
 #!/bin/bash
+handle_error() {
+    echo "An error occurred. Exiting..."
+    exit 1
+}
+trap 'handle_error' ERR
 
 check_is_jetson_or_not() {
     model_file="/proc/device-tree/model"
