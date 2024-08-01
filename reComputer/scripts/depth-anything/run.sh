@@ -10,7 +10,7 @@ if [ $(docker ps -a -q -f name=^/${CONTAINER_NAME}$) ]; then
     docker start $CONTAINER_NAME
 else
     echo "Container $CONTAINER_NAME does not exist. Creating and starting..."
-    docker run --rm -it \
+    docker run -it \
         --name $CONTAINER_NAME \
         --privileged \
         --network host \
