@@ -55,7 +55,7 @@ Here are some examples that can be run:
 | Live LLaVA                                       | Text + Vision (VLM)      | 13GB            | 20.3GB     | `reComputer run live-llava`             |
 | Stable-diffusion-webui                           | Image Generation         | 3.97G           | 7.3GB      | `reComputer run stable-diffusion-webui` |
 | Nanoowl                                          | Vision Transformers(ViT) | 613MB           | 15.1GB     | `reComputer run nanoowl`                |
-| [nanodb](../reComputer/scripts/nanodb/readme.md) | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
+| [Nanodb](../reComputer/scripts/nanodb/readme.md) | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
 | Whisper                                          | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
 | [Yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) | Computer Vision | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |
 |🆕  [Ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) | Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  |
