@@ -1,8 +1,8 @@
 # jetson-examples
 
-<div align="center">
+<div align="">
   <img alt="jetson" width="1200px" src="https://files.seeedstudio.com/wiki/reComputer-Jetson/jetson-examples/Jetson1200x300.png">
-</div>
+</dev>
 
 [![Discord](https://dcbadge.vercel.app/api/server/5BQCkty7vN?style=flat&compact=true)](https://discord.gg/5BQCkty7vN)
 
@@ -67,10 +67,25 @@ Here are some examples that can be run:
 
 More Examples can be found [examples.md](./docs/examples.md)
 
-## Development
+## Calling Contributors Join Us!
+
+### How to work with us? 
+
 Want to add your own example? Check out the [development guide](./docs/develop.md).
 
-We welcome contributions to improve jetson-examples! If you have an example you'd like to share, please submit a pull request. Thank you to all of our contributors! 🙏
+We welcome contributions to improve jetson-examples! If you have an example you'd like to share, please submit a pull request. Thank you to all of our contributors! 🙏 
+
+This open call is part of our [Contributor Project](https://github.com/orgs/Seeed-Studio/projects/6/views/1?pane=issue&itemId=30957479). If this is your first time joining us, click and read to learn how the project works.
+
+- Assignments: We offer a variety of assignments to enhance wiki content, each with a detailed description.
+- Submission: Contributors can submit their content via a Pull Request after completing the assignments.
+- Review: Maintainers will merge the submission and record the contributions.
+
+**Contributors receive a $250 cash bonus as a token of appreciation.**
+
+For any questions or further information, feel free to reach out via the GitHub issues page or contact edgeai@seeed.cc 
+
+
 
 ## TODO List
 
