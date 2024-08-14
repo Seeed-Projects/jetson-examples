@@ -75,7 +75,8 @@ Want to add your own example? Check out the [development guide](./docs/develop.m
 
 We welcome contributions to improve jetson-examples! If you have an example you'd like to share, please submit a pull request. Thank you to all of our contributors! 🙏 
 
-This open call is part of our [Contributor Project](https://github.com/orgs/Seeed-Studio/projects/6/views/1?pane=issue&itemId=30957479). If this is your first time joining us, click and read to learn how the project works.
+This open call is listed in our [Contributor Project](https://github.com/orgs/Seeed-Studio/projects/6/views/1?filterQuery=jetson&pane=issue&itemId=64891723). If this is your first time joining us, [click here](https://github.com/orgs/Seeed-Studio/projects/6/views/1?pane=issue&itemId=30957479) to learn how the project works. We follow the steps with: 
+
 
 - Assignments: We offer a variety of assignments to enhance wiki content, each with a detailed description.
 - Submission: Contributors can submit their content via a Pull Request after completing the assignments.
