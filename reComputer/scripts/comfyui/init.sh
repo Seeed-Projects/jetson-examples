@@ -8,7 +8,7 @@ MAGENTA=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 RESET=$(tput sgr0)
 
-echo "${CYAN}This script will install the necessary packages and configurations for running ultralytics-yolo on a Jetson Nano.${RESET}"
+echo "${CYAN}This script will install the necessary packages and configurations for running comfyui on a Jetson.${RESET}"
 
 # Install yq for parsing YAML files
 sudo apt-get update
