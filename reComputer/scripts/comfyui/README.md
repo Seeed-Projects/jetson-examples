@@ -20,61 +20,10 @@ In this project, you can quickly deploy ComfyUI on Nvidia Jetson Orin devices wi
 - Asynchronous Queue system
 - Many optimizations: Only re-executes the parts of the workflow that changes between executions.
 - Smart memory management: can automatically run models on GPUs with as low as 1GB vram.
-- Works even if you don't have a GPU with: ```--cpu``` (slow)
-- Can load ckpt, safetensors and diffusers models/checkpoints. Standalone VAEs and CLIP models.
-- Embeddings/Textual inversion
-- [Loras (regular, locon and loha)](https://comfyanonymous.github.io/ComfyUI_examples/lora/)
-- [Hypernetworks](https://comfyanonymous.github.io/ComfyUI_examples/hypernetworks/)
-- Loading full workflows (with seeds) from generated PNG, WebP and FLAC files.
-- Saving/Loading workflows as Json files.
-- Nodes interface can be used to create complex workflows like one for [Hires fix](https://comfyanonymous.github.io/ComfyUI_examples/2_pass_txt2img/) or much more advanced ones.
-- [Area Composition](https://comfyanonymous.github.io/ComfyUI_examples/area_composition/)
-- [Inpainting](https://comfyanonymous.github.io/ComfyUI_examples/inpaint/) with both regular and inpainting models.
-- [ControlNet and T2I-Adapter](https://comfyanonymous.github.io/ComfyUI_examples/controlnet/)
-- [Upscale Models (ESRGAN, ESRGAN variants, SwinIR, Swin2SR, etc...)](https://comfyanonymous.github.io/ComfyUI_examples/upscale_models/)
-- [unCLIP Models](https://comfyanonymous.github.io/ComfyUI_examples/unclip/)
-- [GLIGEN](https://comfyanonymous.github.io/ComfyUI_examples/gligen/)
-- [Model Merging](https://comfyanonymous.github.io/ComfyUI_examples/model_merging/)
-- [LCM models and Loras](https://comfyanonymous.github.io/ComfyUI_examples/lcm/)
-- [SDXL Turbo](https://comfyanonymous.github.io/ComfyUI_examples/sdturbo/)
-- [AuraFlow](https://comfyanonymous.github.io/ComfyUI_examples/aura_flow/)
-- [HunyuanDiT](https://comfyanonymous.github.io/ComfyUI_examples/hunyuan_dit/)
-- Latent previews with [TAESD](#how-to-show-high-quality-previews)
-- Starts up very fast.
-- Works fully offline: will never download anything.
-- [Config file](extra_model_paths.yaml.example) to set the search paths for models.
 
-Workflow examples can be found on the [Examples page](https://comfyanonymous.github.io/ComfyUI_examples/)
+  For other features, please refer to the original project [ComfyUI](https://github.com/comfyanonymous/ComfyUI).
 
-
-## **Shortcuts**
-
-| Keybind                            | Explanation                                                                                                        |
-|------------------------------------|--------------------------------------------------------------------------------------------------------------------|
-| Ctrl + Enter                       | Queue up current graph for generation                                                                              |
-| Ctrl + Shift + Enter               | Queue up current graph as first for generation                                                                     |
-| Ctrl + Z/Ctrl + Y                  | Undo/Redo                                                                                                          |
-| Ctrl + S                           | Save workflow                                                                                                      |
-| Ctrl + O                           | Load workflow                                                                                                      |
-| Ctrl + A                           | Select all nodes                                                                                                   |
-| Alt + C                            | Collapse/uncollapse selected nodes                                                                                 |
-| Ctrl + M                           | Mute/unmute selected nodes                                                                                         |
-| Ctrl + B                           | Bypass selected nodes (acts like the node was removed from the graph and the wires reconnected through)            |
-| Delete/Backspace                   | Delete selected nodes                                                                                              |
-| Ctrl + Backspace                   | Delete the current graph                                                                                           |
-| Space                              | Move the canvas around when held and moving the cursor                                                             |
-| Ctrl/Shift + Click                 | Add clicked node to selection                                                                                      |
-| Ctrl + C/Ctrl + V                  | Copy and paste selected nodes (without maintaining connections to outputs of unselected nodes)                     |
-| Ctrl + C/Ctrl + Shift + V          | Copy and paste selected nodes (maintaining connections from outputs of unselected nodes to inputs of pasted nodes) |
-| Shift + Drag                       | Move multiple selected nodes at the same time                                                                      |
-| Ctrl + D                           | Load default graph                                                                                                 |
-| Alt + `+`                          | Canvas Zoom in                                                                                                     |
-| Alt + `-`                          | Canvas Zoom out                                                                                                    |
-| Ctrl + Shift + LMB + Vertical drag | Canvas Zoom in/out                                                                                                 |
-| Q                                  | Toggle visibility of the queue                                                                                     |
-| H                                  | Toggle visibility of history                                                                                       |
-| R                                  | Refresh graph                                                                                                      |
-| Double-Click LMB                   | Open node quick search palette                |
+  Workflow examples can be found on the [Examples page](https://comfyanonymous.github.io/ComfyUI_examples/)
 
 
 ### Get a Jetson Orin Device 🛒
@@ -141,6 +90,37 @@ sudo systemctl restart docker
 - [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
 - [ComfyUI Examples](https://comfyanonymous.github.io/ComfyUI_examples/)
 - [Comfy Org](https://www.comfy.org/)
+
+
+## **Shortcuts**
+
+| Keybind                            | Explanation                                                                                                        |
+|------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| Ctrl + Enter                       | Queue up current graph for generation                                                                              |
+| Ctrl + Shift + Enter               | Queue up current graph as first for generation                                                                     |
+| Ctrl + Z/Ctrl + Y                  | Undo/Redo                                                                                                          |
+| Ctrl + S                           | Save workflow                                                                                                      |
+| Ctrl + O                           | Load workflow                                                                                                      |
+| Ctrl + A                           | Select all nodes                                                                                                   |
+| Alt + C                            | Collapse/uncollapse selected nodes                                                                                 |
+| Ctrl + M                           | Mute/unmute selected nodes                                                                                         |
+| Ctrl + B                           | Bypass selected nodes (acts like the node was removed from the graph and the wires reconnected through)            |
+| Delete/Backspace                   | Delete selected nodes                                                                                              |
+| Ctrl + Backspace                   | Delete the current graph                                                                                           |
+| Space                              | Move the canvas around when held and moving the cursor                                                             |
+| Ctrl/Shift + Click                 | Add clicked node to selection                                                                                      |
+| Ctrl + C/Ctrl + V                  | Copy and paste selected nodes (without maintaining connections to outputs of unselected nodes)                     |
+| Ctrl + C/Ctrl + Shift + V          | Copy and paste selected nodes (maintaining connections from outputs of unselected nodes to inputs of pasted nodes) |
+| Shift + Drag                       | Move multiple selected nodes at the same time                                                                      |
+| Ctrl + D                           | Load default graph                                                                                                 |
+| Alt + `+`                          | Canvas Zoom in                                                                                                     |
+| Alt + `-`                          | Canvas Zoom out                                                                                                    |
+| Ctrl + Shift + LMB + Vertical drag | Canvas Zoom in/out                                                                                                 |
+| Q                                  | Toggle visibility of the queue                                                                                     |
+| H                                  | Toggle visibility of history                                                                                       |
+| R                                  | Refresh graph                                                                                                      |
+| Double-Click LMB                   | Open node quick search palette                |
+
 
 ## License
 
