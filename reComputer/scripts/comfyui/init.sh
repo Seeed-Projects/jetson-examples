@@ -14,7 +14,7 @@ echo "${CYAN}This script will install the necessary packages and configurations 
 sudo apt-get update
 sudo apt-get install -y jq
 # Read configuration
-CURRENT_DIR="ultralytics-yolo"
+CURRENT_DIR="comfyui"
 CONFIG_FILE="./jetson-examples/reComputer/scripts/${CURRENT_DIR}/config.yaml"
 ALLOWED_L4T_VERSIONS=$(yq -r '.allowed_l4t_versions[]' $CONFIG_FILE)
 ALLOWED_L4T_VERSIONS_ARRAY=($ALLOWED_L4T_VERSIONS)
