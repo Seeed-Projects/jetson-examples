@@ -1,25 +1,81 @@
-# Jetson-Example: Run Ultralytics YOLO Platform Service on NVIDIA Jetson Orin 🚀
+# Jetson-Example: Run ComfyUI (Stable Diffusion GUI) on NVIDIA Jetson Orin 🚀
 
-## "One-Click Quick Deployment of Plug-and-Play Ultralytics YOLOv8 for All Task Models with Web UI and HTTP API Interface"
+## One-Click Quick Deployment of Plug-and-Play Stable Diffusion GUI
 <p align="center">
-  <img src="images/Ultralytics-yolo.gif" alt="Ultralytics YOLO">
+  <img src="images/comfyui.png" alt="comfyui">
 </p>
 
-## Introduction 📘
-In this project, you can quickly deploy all YOLOv8 task models on Nvidia Jetson Orin devices with one click. This setup enables object detection, segmentation, human pose estimation, and classification. It supports uploading local videos, images, and using a webcam, and also allows one-click TensorRT model conversion. By accessing [http://127.0.0.1:5001](http://127.0.0.1:5001) on your local machine or within the same LAN, you can quickly start using Ultralytics YOLO. Additionally, an HTTP API method has been added at [http://127.0.0.1:5001/results](http://127.0.0.1:5001/results) to display detection data results for any task, and an additional Python script is provided to read YOLOv8 detection data within Docker.
+## **Introduction** 📘
+[ComfyUI](https://github.com/comfyanonymous/ComfyUI) will let you design and execute advanced stable diffusion pipelines using a graph/nodes/flowchart based interface. 
+In this project, you can quickly deploy ComfyUI on Nvidia Jetson Orin devices with one click. 
+
+
 
 ## **Key Features**:
+- **One-click installation and configuration support for Nvidia Jetson Orin devices.**
+- **GPU acceleration to optimize the performance of stable diffusion pipelines.**
+- Nodes/graph/flowchart interface to experiment and create complex Stable Diffusion workflows without needing to code anything.
+- Fully supports SD1.x, SD2.x, [SDXL](https://comfyanonymous.github.io/ComfyUI_examples/sdxl/), [Stable Video Diffusion](https://comfyanonymous.github.io/ComfyUI_examples/video/), [Stable Cascade](https://comfyanonymous.github.io/ComfyUI_examples/stable_cascade/), [SD3](https://comfyanonymous.github.io/ComfyUI_examples/sd3/) and [Stable Audio](https://comfyanonymous.github.io/ComfyUI_examples/audio/)
+- [Flux](https://comfyanonymous.github.io/ComfyUI_examples/flux/)
+- Asynchronous Queue system
+- Many optimizations: Only re-executes the parts of the workflow that changes between executions.
+- Smart memory management: can automatically run models on GPUs with as low as 1GB vram.
+- Works even if you don't have a GPU with: ```--cpu``` (slow)
+- Can load ckpt, safetensors and diffusers models/checkpoints. Standalone VAEs and CLIP models.
+- Embeddings/Textual inversion
+- [Loras (regular, locon and loha)](https://comfyanonymous.github.io/ComfyUI_examples/lora/)
+- [Hypernetworks](https://comfyanonymous.github.io/ComfyUI_examples/hypernetworks/)
+- Loading full workflows (with seeds) from generated PNG, WebP and FLAC files.
+- Saving/Loading workflows as Json files.
+- Nodes interface can be used to create complex workflows like one for [Hires fix](https://comfyanonymous.github.io/ComfyUI_examples/2_pass_txt2img/) or much more advanced ones.
+- [Area Composition](https://comfyanonymous.github.io/ComfyUI_examples/area_composition/)
+- [Inpainting](https://comfyanonymous.github.io/ComfyUI_examples/inpaint/) with both regular and inpainting models.
+- [ControlNet and T2I-Adapter](https://comfyanonymous.github.io/ComfyUI_examples/controlnet/)
+- [Upscale Models (ESRGAN, ESRGAN variants, SwinIR, Swin2SR, etc...)](https://comfyanonymous.github.io/ComfyUI_examples/upscale_models/)
+- [unCLIP Models](https://comfyanonymous.github.io/ComfyUI_examples/unclip/)
+- [GLIGEN](https://comfyanonymous.github.io/ComfyUI_examples/gligen/)
+- [Model Merging](https://comfyanonymous.github.io/ComfyUI_examples/model_merging/)
+- [LCM models and Loras](https://comfyanonymous.github.io/ComfyUI_examples/lcm/)
+- [SDXL Turbo](https://comfyanonymous.github.io/ComfyUI_examples/sdturbo/)
+- [AuraFlow](https://comfyanonymous.github.io/ComfyUI_examples/aura_flow/)
+- [HunyuanDiT](https://comfyanonymous.github.io/ComfyUI_examples/hunyuan_dit/)
+- Latent previews with [TAESD](#how-to-show-high-quality-previews)
+- Starts up very fast.
+- Works fully offline: will never download anything.
+- [Config file](extra_model_paths.yaml.example) to set the search paths for models.
 
-1. **One-Click Deployment and Plug-and-Play**: Quickly deploy all YOLOv8 task models on Nvidia Jetson Orin devices.
-2. **Comprehensive Task Support**: Enables object detection, segmentation, human pose estimation, and classification.
-3. **Versatile Input Options**: Supports uploading local videos, images, and using a webcam.
-4. **TensorRT Model Conversion**: Allows one-click conversion of models to TensorRT.
-5. **Web UI Access**: Easy access via [`http://127.0.0.1:5001`](http://127.0.0.1:5001) on the local machine or within the same LAN.
-6. **HTTP API Interface**: Added HTTP API at [`http://127.0.0.1:5001/results`](http://127.0.0.1:5001/results) to display detection data results.
-7. **Python Script Support**: Provides an additional Python script to read YOLOv8 detection data within Docker.
+Workflow examples can be found on the [Examples page](https://comfyanonymous.github.io/ComfyUI_examples/)
 
-[![My Project](images/tasks.png)](https://github.com/ultralytics/ultralytics?tab=readme-ov-file#models)
-All models implemented in this project are from the official [Ultralytics Yolo](https://github.com/ultralytics/ultralytics?tab=readme-ov-file#models).
+
+## **Shortcuts**
+
+| Keybind                            | Explanation                                                                                                        |
+|------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| Ctrl + Enter                       | Queue up current graph for generation                                                                              |
+| Ctrl + Shift + Enter               | Queue up current graph as first for generation                                                                     |
+| Ctrl + Z/Ctrl + Y                  | Undo/Redo                                                                                                          |
+| Ctrl + S                           | Save workflow                                                                                                      |
+| Ctrl + O                           | Load workflow                                                                                                      |
+| Ctrl + A                           | Select all nodes                                                                                                   |
+| Alt + C                            | Collapse/uncollapse selected nodes                                                                                 |
+| Ctrl + M                           | Mute/unmute selected nodes                                                                                         |
+| Ctrl + B                           | Bypass selected nodes (acts like the node was removed from the graph and the wires reconnected through)            |
+| Delete/Backspace                   | Delete selected nodes                                                                                              |
+| Ctrl + Backspace                   | Delete the current graph                                                                                           |
+| Space                              | Move the canvas around when held and moving the cursor                                                             |
+| Ctrl/Shift + Click                 | Add clicked node to selection                                                                                      |
+| Ctrl + C/Ctrl + V                  | Copy and paste selected nodes (without maintaining connections to outputs of unselected nodes)                     |
+| Ctrl + C/Ctrl + Shift + V          | Copy and paste selected nodes (maintaining connections from outputs of unselected nodes to inputs of pasted nodes) |
+| Shift + Drag                       | Move multiple selected nodes at the same time                                                                      |
+| Ctrl + D                           | Load default graph                                                                                                 |
+| Alt + `+`                          | Canvas Zoom in                                                                                                     |
+| Alt + `-`                          | Canvas Zoom out                                                                                                    |
+| Ctrl + Shift + LMB + Vertical drag | Canvas Zoom in/out                                                                                                 |
+| Q                                  | Toggle visibility of the queue                                                                                     |
+| H                                  | Toggle visibility of history                                                                                       |
+| R                                  | Refresh graph                                                                                                      |
+| Double-Click LMB                   | Open node quick search palette                |
+
 
 ### Get a Jetson Orin Device 🛒
 | Device Model | Description | Link |
@@ -27,7 +83,7 @@ All models implemented in this project are from the official [Ultralytics Yolo](
 | Jetson Orin Nano Dev Kit, Orin Nano 8GB, 40TOPS | Developer kit for NVIDIA Jetson Orin Nano | [Buy Here](https://www.seeedstudio.com/NVIDIAr-Jetson-Orintm-Nano-Developer-Kit-p-5617.html) |
 | reComputer J4012, powered by Orin NX 16GB, 100 TOPS | Embedded computer powered by Orin NX | [Buy Here](https://www.seeedstudio.com/reComputer-J4012-p-5586.html) |
 
-## Quickstart ⚡
+## **Quickstart** ⚡
 
 ### Modify Docker Daemon Configuration (Optional)
 To enhance the experience of quickly loading models in Docker, you need to add the following content to the `/etc/docker/daemon.json` file:
@@ -59,7 +115,7 @@ After modifying the `daemon.json` file, you need to restart the Docker service t
 sudo systemctl restart docker
 ```
 
-### Installation via PyPI (Recommended) 🐍
+### **Installation via PyPI (Recommended)** 🐍
 1. Install the package:
     ```sh
     pip install jetson-examples
@@ -70,55 +126,22 @@ sudo systemctl restart docker
     sudo reboot
     ```
 
-3. Run Ultralytics YOLO on Jetson with one command:
+3. Run ComfyUI with one command:
     ```sh
-    reComputer run ultralytics-yolo
+    reComputer run comfyui
     ```
-4. "Enter [`http://127.0.0.1:5001`](http://127.0.0.1:5001) or http://device_IP:5001 in your browser to access the Web UI."
-    <p align="center">
-      <img src="images/ultralytics_fig1.png" alt="Ultralytics YOLO">
-    </p>
+- **Input Dir**: Mount the input directory in Docker to the host directory `~/ComfyUI/input`.
+- **Output Dir**: Mount the output directory in Docker to the host directory `~/ComfyUI/output`.
 
-- **Choose Model**: Select YOLOv8 n, s, l, m, x models and various tasks such as object detection, classification, segmentation, human pose estimation, OBB, etc.
-- **Upload Custom Model**: Users can upload their own trained YOLOv8 models.
-- **Choose Input Type**: Users can select to input locally uploaded images, videos, or real-time camera devices.
-- **Enable TensorRT**: Choose whether to convert and use the TensorRT model. The initial conversion may require varying amounts of time.
-
-5. If you want to see the detection result data, you can enter [`http://127.0.0.1:5001/results`](http://127.0.0.1:5001/results) in your browser to view the `JSON` formatted data results. These results include `boxes` for object detection, `masks` for segmentation, `keypoints` for human pose estimation, and the `names` corresponding to all numerical categories.
-    <p align="center">
-      <img src="images/ultralytics_fig2.png" alt="Ultralytics YOLO">
-    </p>
-    We also provide a Python script to help users integrate the data into their own programs.
-
-    ```python
-    import requests
-
-    def fetch_results():
-        response = requests.get('http://localhost:5001/results')
-        if response.status_code == 200:
-            results = response.json()
-            return results
-        else:
-            print('Failed to fetch results')
-            return None
-
-    results = fetch_results()
-    print(results)
-    ```
+- **Models Dir**: Mount the models directory in Docker to the host directory `~/ComfyUI/models`.
 
 
-## Notes 📝
-- To stop detection at any time, press the Stop button.
-- When accessing the WebUI from other devices within the same LAN, use the URL: `http://{Jetson_IP}:5001`.
-- You can view the JSON formatted detection results by accessing http://{Jetson_IP}:5001/results.
-- The first model conversion may require different amounts of time depending on the hardware and network environment, so please be patient.
-
-
-## Further Development 🔧
-- [Training a YOLOv8 Model](https://wiki.seeedstudio.com/How_to_Train_and_Deploy_YOLOv8_on_reComputer/)
-- [TensorRT Acceleration](https://wiki.seeedstudio.com/YOLOv8-DeepStream-TRT-Jetson/)
-- [Multistreams using Deepstream](https://wiki.seeedstudio.com/YOLOv8-DeepStream-TRT-Jetson/#multistream-model-benchmarks) Tutorials.
+## **For more tutorials** 🔧
+- [ComfyUI Basic Tutorial VN](https://comfyanonymous.github.io/ComfyUI_tutorial_vn/)
+- [ComfyUI](https://github.com/comfyanonymous/ComfyUI)
+- [ComfyUI Examples](https://comfyanonymous.github.io/ComfyUI_examples/)
+- [Comfy Org](https://www.comfy.org/)
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the GNU General Public License v3.0
