@@ -46,6 +46,7 @@ Here are some examples that can be run:
 | Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 |
 | ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- |
 | 🆕 llama-factory | Finetune LLM |  | 13.5GB  | `reComputer run  llama-factory`  |
+| 🆕 [ComfyUI](/reComputer/scripts/comfyui/README.md) |Computer Vision |  | 15GB  | `reComputer run  comfyui`  |
 | 🆕 [Depth-Anything-V2](/reComputer/scripts/depth-anything-v2/README.md) |Computer Vision |  | 15GB  | `reComputer run  depth-anything-v2`  |
 | [Depth-Anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision |  | 12.9GB  | `reComputer run  depth-anything`  |
 | [Yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 |
