@@ -11,11 +11,24 @@ RESET=$(tput sgr0)
 echo "${CYAN}This script will install the necessary packages and configurations for running ultralytics-yolo on a Jetson Nano.${RESET}"
 
 # Install yq for parsing YAML files
-sudo apt-get update
-sudo apt-get install -y jq
+if ! command -v yq &> /dev/null
+then
+    echo "yq is not installed. Installing yq with pip3..."
+    pip3 install yq
+    if command -v yq &> /dev/null
+    then
+        echo "yq has been successfully installed."
+    else
+        echo "Failed to install yq."
+        exit 1
+    fi
+else
+    echo "yq is already installed."
+fi
+
 # Read configuration
 CURRENT_DIR="ultralytics-yolo"
-CONFIG_FILE="./jetson-examples/reComputer/scripts/${CURRENT_DIR}/config.yaml"
+CONFIG_FILE="${(dirname "$(realpath "$0")")}/config.yaml"
 ALLOWED_L4T_VERSIONS=$(yq -r '.allowed_l4t_versions[]' $CONFIG_FILE)
 ALLOWED_L4T_VERSIONS_ARRAY=($ALLOWED_L4T_VERSIONS)
 REQUIRED_DISK_SPACE=$(yq -r '.required_disk_space' $CONFIG_FILE)
