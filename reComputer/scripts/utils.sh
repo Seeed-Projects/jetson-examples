@@ -34,6 +34,25 @@ check_base_env()
     else
         echo "yq is already installed."
     fi
+
+    if ! command -v jq &> /dev/null
+    then
+        echo "jq is not installed. Installing jq..."
+        sudo apt-get update
+        sudo apt-get install -y jq
+
+        if command -v jq &> /dev/null
+        then
+            echo "jq has been successfully installed."
+            jq --version
+        else
+            echo "Failed to install jq."
+            exit 1
+        fi
+    else
+        echo "jq is already installed."
+        jq --version
+    fi
     ALLOWED_L4T_VERSIONS=($(yq -r '.ALLOWED_L4T_VERSIONS[]' $CONFIG_FILE))
     REQUIRED_DISK_SPACE=$(yq -r '.REQUIRED_DISK_SPACE' $CONFIG_FILE)
     REQUIRED_MEM_SPACE=$(yq -r '.REQUIRED_MEM_SPACE' $CONFIG_FILE)
@@ -136,8 +155,8 @@ check_base_env()
             echo "The current user does not have permissions to use Docker. Adding permissions..."
             sudo usermod -aG docker $USER
             sudo systemctl restart docker
+            echo "${BLUE}Permissions added. Please rerun the command.${RESET}"
             newgrp docker
-            echo "${BLUE}Permissions added. Please log out and log back in for the changes to take effect.${RESET}"
         else
             echo "${GREEN}Docker is installed and the current user has permissions to use it.${RESET}"
         fi

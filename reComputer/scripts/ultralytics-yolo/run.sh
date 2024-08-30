@@ -9,6 +9,7 @@ docker pull $IMAGE_NAME
 # Check if the container with the specified name already exists
 if [ $(docker ps -a -q -f name=^/${CONTAINER_NAME}$) ]; then
     echo "Container $CONTAINER_NAME already exists. Starting and attaching..."
+    echo "Please open http://127.0.0.1:5001 to access the WebUI."
     docker start $CONTAINER_NAME
     docker exec -it $CONTAINER_NAME /bin/bash
 else
