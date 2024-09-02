@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # TODO: clean old container
-docker rmi $(./autotag audiocraft)
+docker rmi $(/home/$USER/reComputer/jetson-containers/autotag audiocraft)
 

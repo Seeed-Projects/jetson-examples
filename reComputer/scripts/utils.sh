@@ -17,7 +17,7 @@ check_base_env()
 
     if [[ ! -f "$CONFIG_FILE" ]]; then
         echo "Error: YAML file '$CONFIG_FILE' not found."
-        return 1
+        exit 1
     fi
     # Install yq for parsing YAML file
     if ! command -v yq &> /dev/null
@@ -130,6 +130,7 @@ check_base_env()
             sudo systemctl start docker
             sudo usermod -aG docker $USER
             sudo systemctl restart docker
+            echo "${BLUE}Permissions added. Please rerun the command.${RESET}"
             newgrp docker
 
             echo "Docker has been installed and configured."

@@ -1,16 +1,16 @@
-allowed_l4t_versions:
+
+# The tested JetPack versions.
+ALLOWED_L4T_VERSIONS:
   - 35.3.1
   - 35.4.1
   - 35.5.0
-required_disk_space: 15  # in GB
-min_mem_gb: 4
-min_swap_gb: 4
-nvidia_jetson_package: "nvidia-jetpack"
-packages:
-  #- "ros-noetic-ros-base"
-  #- "flask"
-docker:
-  desired_daemon_json: |
+REQUIRED_DISK_SPACE: 15  # in GB
+REQUIRED_MEM_SPACE: 4
+PACKAGES:
+  - nvidia-jetpack
+DOCKER: 
+  ENABLE: true
+  DAEMON: |
     {
       "default-runtime": "nvidia",
       "runtimes": {
