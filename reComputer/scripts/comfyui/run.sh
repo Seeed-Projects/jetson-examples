@@ -6,7 +6,7 @@ IMAGE_NAME="yaohui1998/comfyui"
 # Pull the latest image
 docker pull $IMAGE_NAME
 
-cd ~/
+cd /home/$USER/reComputer/
 git clone https://github.com/comfyanonymous/ComfyUI.git
 
 
@@ -21,7 +21,7 @@ else
         --name $CONTAINER_NAME \
         --privileged \
         --network host \
-        -v ~/ComfyUI:/usr/src/ComfyUI-Seeed \
+        -v /home/$USER/reComputer/ComfyUI:/usr/src/ComfyUI-Seeed \
         -v /tmp/.X11-unix:/tmp/.X11-unix \
         -v /dev/*:/dev/* \
         -v /etc/localtime:/etc/localtime:ro \

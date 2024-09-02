@@ -59,7 +59,7 @@ check_base_env()
     PACKAGES=($(yq -r '.PACKAGES[]' $CONFIG_FILE))
     DOCKER=$(yq -r '.DOCKER.ENABLE' $CONFIG_FILE)
     DESIRED_DAEMON_JSON=$(yq -r '.DOCKER.DAEMON' $CONFIG_FILE)
-
+    echo "${ALLOWED_L4T_VERSIONS[@]}"
     # 3. Check L4T version
     ARCH=$(uname -i)
     if [ "$ARCH" = "aarch64" ]; then
@@ -83,6 +83,8 @@ check_base_env()
         echo "L4T VERSION ${GREEN}${L4T_VERSION}${RESET} is in the allowed: ${GREEN}OK!${RESET}"
     else
         echo "${RED}L4T VERSION ${GREEN}${L4T_VERSION}${RESET}${RED} is not in the allowed versions list.${RESET}"
+        echo "${RED}The JetPack versions currently supported by this container are: ${GREEN}${ALLOWED_L4T_VERSIONS[@]}${RESET}${RED}. ${RESET}"
+        echo "${RED}For more information : https://github.com/Seeed-Projects/jetson-examples ${RESET}"
         exit 1
     fi
 
