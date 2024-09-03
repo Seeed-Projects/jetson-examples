@@ -6,10 +6,7 @@ pip uninstall jetson-examples -y
 # 2 clean last build files
 rm -rf build/
 
-# 3 find and rm /images direct
-find . -name "images" -type d -exec rm -rf {} +
-
-# 4 install latest version
+# 3 install latest version
 pip install .
 
 # 5 build whl
