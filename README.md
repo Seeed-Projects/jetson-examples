@@ -45,7 +45,7 @@ Here are some examples that can be run:
 
 | Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 |
 | ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- |
-| 🆕 [Deep-Live-Cam](/reComputer/scripts/deep-live-cam) | Face-swapping |  | 20GB  | `reComputer run  deep-live-cam`  |
+| 🆕 [Deep-Live-Cam](/reComputer/scripts/deep-live-cam/README.md) | Face-swapping | 0.5GB | 20GB  | `reComputer run  deep-live-cam`  |
 | 🆕 llama-factory | Finetune LLM |  | 13.5GB  | `reComputer run  llama-factory`  |
 | 🆕 [ComfyUI](/reComputer/scripts/comfyui/README.md) |Computer Vision |  | 20GB  | `reComputer run comfyui`  |
 | [Depth-Anything-V2](/reComputer/scripts/depth-anything-v2/README.md) |Computer Vision |  | 15GB  | `reComputer run depth-anything-v2`  |
