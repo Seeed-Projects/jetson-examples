@@ -35,6 +35,8 @@ Map the faces
 
 And see the magic!
 
+> The images in the "New Features" section are sourced from the [github community](https://github.com/hacksider/Deep-Live-Cam).
+
 ## 🥳Getting Started
 ### 📜Prerequisites
 - AGX Orin [(🛒Buy Here)](https://www.seeedstudio.com/NVIDIArJetson-AGX-Orintm-64GB-Developer-Kit-p-5641.html)
