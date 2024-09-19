@@ -1,6 +1,6 @@
-# Jetson-Example: Run Deep Live Cam on reComputer NVIDIA AGX Orin 🚀
+# Jetson-Example: Run Deep Live Cam on Seeed Studio NVIDIA AGX Orin Developer Kit 🚀
 
-This project provides a one-click deployment of the Deep Live Cam AI face-swapping project on the [reComputer Jetson AGX Orin](https://www.seeedstudio.com/NVIDIArJetson-AGX-Orintm-64GB-Developer-Kit-p-5641.html), retaining all the features of the [original project](https://github.com/hacksider/Deep-Live-Cam) and supporting functionalities such as image-to-image, image-to-video, and image-to-webcam.
+This project provides a one-click deployment of the Deep Live Cam AI face-swapping project on the [Seeed Studio Jetson AGX Orin Developer Kit](https://www.seeedstudio.com/NVIDIArJetson-AGX-Orintm-64GB-Developer-Kit-p-5641.html), retaining all the features of the [original project](https://github.com/hacksider/Deep-Live-Cam) and supporting functionalities such as image-to-image, image-to-video, and image-to-webcam.
 
 <p align="center">
   <img src="images/WebUI.png" alt="WebUI">
@@ -39,7 +39,7 @@ And see the magic!
 
 ## 🥳Getting Started
 ### 📜Prerequisites
-- AGX Orin [(🛒Buy Here)](https://www.seeedstudio.com/NVIDIArJetson-AGX-Orintm-64GB-Developer-Kit-p-5641.html)
+- AGX Orin Developer Kit [(🛒Buy Here)](https://www.seeedstudio.com/NVIDIArJetson-AGX-Orintm-64GB-Developer-Kit-p-5641.html)
 - Jetpack 6.0
 - USB Camera (optional)
 
