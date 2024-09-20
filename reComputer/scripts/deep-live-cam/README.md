@@ -8,6 +8,11 @@ This project provides a one-click deployment of the Deep Live Cam AI face-swappi
 
 All models and inference engine implemented in this project are from the official [Deep-Live-Cam](https://github.com/hacksider/Deep-Live-Cam).
 
+## Get a Jetson Orin Device 🛒
+| Device Model  | Link |
+|--------------|------|
+| Jetson AGX Orin Dev Kit 32G | [Buy Here](https://www.seeedstudio.com/NVIDIA-Jetson-AGX-Orin-Developer-Kit-p-5314.html) |
+| Jetson AGX Orin Dev Kit 64G | [Buy Here](https://www.seeedstudio.com/NVIDIArJetson-AGX-Orintm-64GB-Developer-Kit-p-5641.html) |
 
 ## New Features 🔥
 ### Resizable Preview Window
@@ -132,4 +137,4 @@ Users of this software are expected to use this software responsibly while abidi
 
 ## ✅License
 
-This project is licensed under the MIT License.
+This project is licensed under the AGPL-3.0 License.
