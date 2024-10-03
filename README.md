@@ -45,6 +45,7 @@ Here are some examples that can be run:
 
 | Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 |
 | ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- |
+| 🆕 [Ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) | Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  |
 | 🆕 [Deep-Live-Cam](/reComputer/scripts/deep-live-cam/README.md) | Face-swapping | 0.5GB | 20GB  | `reComputer run  deep-live-cam`  |
 | 🆕 llama-factory | Finetune LLM |  | 13.5GB  | `reComputer run  llama-factory`  |
 | 🆕 [ComfyUI](/reComputer/scripts/comfyui/README.md) |Computer Vision |  | 20GB  | `reComputer run comfyui`  |
@@ -60,7 +61,6 @@ Here are some examples that can be run:
 | [Nanodb](../reComputer/scripts/nanodb/readme.md) | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
 | Whisper                                          | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
 | [Yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) | Computer Vision | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |
-|  [Ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) | Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  |
 | [TensorFlow MoveNet Thunder](/reComputer/scripts/MoveNet-Thunder/readme.md) |Computer Vision |  | 7.7GB  | `reComputer run  MoveNet-Thunder`  |
 | [Parler-TTS mini: expresso](/reComputer/scripts/parler-tts/readme.md) | Audio |  | 6.9GB  | `reComputer run  parler-tts`  |
 

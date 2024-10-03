@@ -1,25 +1,42 @@
-# Jetson-Example: Run Ultralytics YOLO Platform Service on NVIDIA Jetson Orin 🚀
+# Jetson-Example: Run Ultralytics YOLO Platform Service on NVIDIA Jetson Orin 🚀(**Supported YOLOV11**)
 
-## "One-Click Quick Deployment of Plug-and-Play Ultralytics YOLOv8 for All Task Models with Web UI and HTTP API Interface"
+## One-Click Quick Deployment of Plug-and-Play All Ultralytics YOLO for All Task Models with Web UI and HTTP API Interface
 <p align="center">
   <img src="images/Ultralytics-yolo.gif" alt="Ultralytics YOLO">
 </p>
 
 ## Introduction 📘
-In this project, you can quickly deploy all YOLOv8 task models on Nvidia Jetson Orin devices with one click. This setup enables object detection, segmentation, human pose estimation, and classification. It supports uploading local videos, images, and using a webcam, and also allows one-click TensorRT model conversion. By accessing [http://127.0.0.1:5001](http://127.0.0.1:5001) on your local machine or within the same LAN, you can quickly start using Ultralytics YOLO. Additionally, an HTTP API method has been added at [http://127.0.0.1:5001/results](http://127.0.0.1:5001/results) to display detection data results for any task, and an additional Python script is provided to read YOLOv8 detection data within Docker.
+In this project, you can quickly deploy all Ultralytics YOLO task models on Nvidia Jetson Orin devices with one click. This setup enables object detection, segmentation, human pose estimation, and classification. It supports uploading local videos, images, and using a webcam, and also allows one-click TensorRT model conversion. By accessing [http://127.0.0.1:5000](http://127.0.0.1:5000) on your local machine or within the same LAN, you can quickly start using Ultralytics YOLO. Additionally, an HTTP API method has been added at [http://127.0.0.1:5000/results](http://127.0.0.1:5000/results) to display detection data results for any task, and an additional Python script is provided to read YOLO detection data within Docker.
 
 ## **Key Features**:
 
-1. **One-Click Deployment and Plug-and-Play**: Quickly deploy all YOLOv8 task models on Nvidia Jetson Orin devices.
+1. **One-Click Deployment and Plug-and-Play**: Quickly deploy all YOLO task models on Nvidia Jetson Orin devices.
 2. **Comprehensive Task Support**: Enables object detection, segmentation, human pose estimation, and classification.
 3. **Versatile Input Options**: Supports uploading local videos, images, and using a webcam.
 4. **TensorRT Model Conversion**: Allows one-click conversion of models to TensorRT.
-5. **Web UI Access**: Easy access via [`http://127.0.0.1:5001`](http://127.0.0.1:5001) on the local machine or within the same LAN.
-6. **HTTP API Interface**: Added HTTP API at [`http://127.0.0.1:5001/results`](http://127.0.0.1:5001/results) to display detection data results.
-7. **Python Script Support**: Provides an additional Python script to read YOLOv8 detection data within Docker.
+5. **Web UI Access**: Easy access via [`http://127.0.0.1:5000`](http://127.0.0.1:5000) on the local machine or within the same LAN.
+6. **HTTP API Interface**: Added HTTP API at [`http://127.0.0.1:5000/results`](http://127.0.0.1:5000/results) to display detection data results.
+7. **Python Script Support**: Provides an additional Python script to read YOLO detection data within Docker.
 
 [![My Project](images/tasks.png)](https://github.com/ultralytics/ultralytics?tab=readme-ov-file#models)
 All models implemented in this project are from the official [Ultralytics Yolo](https://github.com/ultralytics/ultralytics?tab=readme-ov-file#models).
+
+# Supported Task Models
+
+| Model Type  | Pre-trained Weights / Filenames                                                                                                     | Task                 | Inference | Validation | Training | Export |
+|-------------|--------------------------------------------------------------------------------------------------------------------------------------|----------------------|-----------|------------|----------|--------|
+| YOLOv5u     | yolov5nu, yolov5su, yolov5mu, yolov5lu, yolov5xu, yolov5n6u, yolov5s6u, yolov5m6u, yolov5l6u, yolov5x6u                              | Object Detection      | ✅        | ✅          | ✅        | ✅      |
+| YOLOv8      | yolov8n.pt, yolov8s.pt, yolov8m.pt, yolov8l.pt, yolov8x.pt                                                                           | Detection            | ✅        | ✅          | ✅        | ✅      |
+| YOLOv8-seg  | yolov8n-seg.pt, yolov8s-seg.pt, yolov8m-seg.pt, yolov8l-seg.pt, yolov8x-seg.pt                                                       | Instance Segmentation | ✅        | ✅          | ✅        | ✅      |
+| YOLOv8-pose | yolov8n-pose.pt, yolov8s-pose.pt, yolov8m-pose.pt, yolov8l-pose.pt, yolov8x-pose-p6.pt                                               | Pose/Keypoints        | ✅        | ✅          | ✅        | ✅      |
+| YOLOv8-obb  | yolov8n-obb.pt, yolov8s-obb.pt, yolov8m-obb.pt, yolov8l-obb.pt, yolov8x-obb.pt                                                       | Oriented Detection    | ✅        | ✅          | ✅        | ✅      |
+| YOLOv8-cls  | yolov8n-cls.pt, yolov8s-cls.pt, yolov8m-cls.pt, yolov8l-cls.pt, yolov8x-cls.pt                                                       | Classification        | ✅        | ✅          | ✅        | ✅      |
+| YOLOv11     | yolov11n.pt, yolov11s.pt, yolov11m.pt, yolov11l.pt, yolov11x.pt                                                                      | Detection            | ✅        | ✅          | ✅        | ✅      |
+| YOLOv11-seg | yolov11n-seg.pt, yolov11s-seg.pt, yolov11m-seg.pt, yolov11l-seg.pt, yolov11x-seg.pt                                                  | Instance Segmentation | ✅        | ✅          | ✅        | ✅      |
+| YOLOv11-pose| yolov11n-pose.pt, yolov11s-pose.pt, yolov11m-pose.pt, yolov11l-pose.pt, yolov11x-pose.pt                                              | Pose/Keypoints        | ✅        | ✅          | ✅        | ✅      |
+| YOLOv11-obb | yolov11n-obb.pt, yolov11s-obb.pt, yolov11m-obb.pt, yolov11l-obb.pt, yolov11x-obb.pt                                                  | Oriented Detection    | ✅        | ✅          | ✅        | ✅      |
+| YOLOv11-cls | yolov11n-cls.pt, yolov11s-cls.pt, yolov11m-cls.pt, yolov11l-cls.pt, yolov11x-cls.pt                                                  | Classification        | ✅        | ✅          | ✅        | ✅      |
+
 
 ### Get a Jetson Orin Device 🛒
 | Device Model | Description | Link |
@@ -79,12 +96,12 @@ sudo systemctl restart docker
       <img src="images/ultralytics_fig1.png" alt="Ultralytics YOLO">
     </p>
 
-- **Choose Model**: Select YOLOv8 n, s, l, m, x models and various tasks such as object detection, classification, segmentation, human pose estimation, OBB, etc.
-- **Upload Custom Model**: Users can upload their own trained YOLOv8 models.
+- **Choose Model**: Select Yolo version and models for various tasks such as object detection, classification, segmentation, human pose estimation, OBB, etc.
+- **Upload Custom Model**: Users can upload their own trained YOLO models.
 - **Choose Input Type**: Users can select to input locally uploaded images, videos, or real-time camera devices.
 - **Enable TensorRT**: Choose whether to convert and use the TensorRT model. The initial conversion may require varying amounts of time.
 
-5. If you want to see the detection result data, you can enter [`http://127.0.0.1:5001/results`](http://127.0.0.1:5001/results) in your browser to view the `JSON` formatted data results. These results include `boxes` for object detection, `masks` for segmentation, `keypoints` for human pose estimation, and the `names` corresponding to all numerical categories.
+5. If you want to see the detection result data, you can enter [`http://127.0.0.1:5000/results`](http://127.0.0.1:5000/results) in your browser to view the `JSON` formatted data results. These results include `boxes` for object detection, `masks` for segmentation, `keypoints` for human pose estimation, and the `names` corresponding to all numerical categories.
     <p align="center">
       <img src="images/ultralytics_fig2.png" alt="Ultralytics YOLO">
     </p>
@@ -109,13 +126,13 @@ sudo systemctl restart docker
 
 ## Notes 📝
 - To stop detection at any time, press the Stop button.
-- When accessing the WebUI from other devices within the same LAN, use the URL: `http://{Jetson_IP}:5001`.
-- You can view the JSON formatted detection results by accessing http://{Jetson_IP}:5001/results.
+- When accessing the WebUI from other devices within the same LAN, use the URL: `http://{Jetson_IP}:5000`.
+- You can view the JSON formatted detection results by accessing http://{Jetson_IP}:5000/results.
 - The first model conversion may require different amounts of time depending on the hardware and network environment, so please be patient.
 
 
 ## Further Development 🔧
-- [Training a YOLOv8 Model](https://wiki.seeedstudio.com/How_to_Train_and_Deploy_YOLOv8_on_reComputer/)
+- [Training a YOLO Model](https://wiki.seeedstudio.com/How_to_Train_and_Deploy_YOLOv8_on_reComputer/)
 - [TensorRT Acceleration](https://wiki.seeedstudio.com/YOLOv8-DeepStream-TRT-Jetson/)
 - [Multistreams using Deepstream](https://wiki.seeedstudio.com/YOLOv8-DeepStream-TRT-Jetson/#multistream-model-benchmarks) Tutorials.
 
