@@ -1,6 +1,6 @@
-# Jetson-Example: Run Ultralytics YOLO Platform Service on NVIDIA Jetson Orin 🚀
+# Jetson-Example: Run Ultralytics YOLO Platform Service on NVIDIA Jetson Orin 🚀(**Supported YOLOV11**)
 
-## "One-Click Quick Deployment of Plug-and-Play All Ultralytics YOLO for All Task Models with Web UI and HTTP API Interface"
+## One-Click Quick Deployment of Plug-and-Play All Ultralytics YOLO for All Task Models with Web UI and HTTP API Interface
 <p align="center">
   <img src="images/Ultralytics-yolo.gif" alt="Ultralytics YOLO">
 </p>
