@@ -137,12 +137,14 @@ check_base_env()
         fi
         # 6.2 Modify the Docker configuration file
         DAEMON_JSON_PATH="/etc/docker/daemon.json"
+        NECESSARY_CONTENT=
         if [ ! -f "$DAEMON_JSON_PATH" ]; then
             echo "${BLUE}Creating $DAEMON_JSON_PATH with the desired content...${RESET}"
             echo "$DESIRED_DAEMON_JSON" | sudo tee $DAEMON_JSON_PATH > /dev/null
             sudo systemctl restart docker
             echo "${GREEN}$DAEMON_JSON_PATH has been created.${RESET}"
-        elif [ "$(cat $DAEMON_JSON_PATH)" != "$DESIRED_DAEMON_JSON" ]; then
+        elif [ "$(jq -e '.["default-runtime"] == "nvidia" and .runtimes.nvidia.path == "nvidia-container-runtime" and (.runtimes.nvidia.runtimeArgs | length == 0)' "$DAEMON_JSON_PATH")" != "true" ]; then
+        # elif [ "$(cat $DAEMON_JSON_PATH)" != "$DESIRED_DAEMON_JSON" ]; then
             echo "${BLUE}Backing up the existing $DAEMON_JSON_PATH to /etc/docker/daemon_backup.json ...${RESET}"
             sudo cp "$DAEMON_JSON_PATH" "/etc/docker/daemon_backup.json"
             echo "${GREEN}Backup completed.${RESET}"
