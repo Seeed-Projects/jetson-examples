@@ -24,6 +24,8 @@ elif [[ "$L4T_VERSION" == "35.3.1" || "$L4T_VERSION" == "35.4.1" || "$L4T_VERSIO
     IMAGE_NAME="yaohui1998/ultralytics-jetpack5:1.0"
 elif [[ "$L4T_VERSION" == "36.3.0" ]]; then
     IMAGE_NAME="yaohui1998/ultralytics-jetpack6:1.0"
+elif [[ "$L4T_VERSION" == "36.3.0" ]]; then
+    IMAGE_NAME="yaohui1998/ultralytics-jetpack61:v1.0"
 else
     echo "Error: L4T version $L4T_VERSION is not supported."
     exit 1
