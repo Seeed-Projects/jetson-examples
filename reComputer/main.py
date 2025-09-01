@@ -37,6 +37,13 @@ def run_script():
         elif sys.argv[1] == "clean":
             example_name = sys.argv[2]
             subprocess.run(["bash", path_of_script("clean.sh"), example_name], env=env)
+        elif sys.argv[1] == "list" and sys.argv[2] == "--detailed":
+            # Run the table generator script
+            script_path = path_of_script("generate_example_table.py")
+            if os.path.exists(script_path):
+                subprocess.run(["python3", script_path])
+            else:
+                print("Detailed table generator not found")
         else:
             print("Only Support `run` or `clean` for now. try `reComputer run llava` .")
     elif len(sys.argv) == 2:
