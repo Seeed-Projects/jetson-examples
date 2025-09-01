@@ -56,6 +56,8 @@ detect_jetpack_version() {
             "36.2.0") JETPACK_VERSION="6.0 DP" ;;
             "36.3.0") JETPACK_VERSION="6.0" ;;
             "36.4.0") JETPACK_VERSION="6.1" ;;
+            "36.4.3") JETPACK_VERSION="6.2" ;;
+            "36.4.4") JETPACK_VERSION="6.2.1" ;;
             *) JETPACK_VERSION="Unknown" ;;
         esac
         echo "${GREEN}✓ JetPack Version: $JETPACK_VERSION${RESET}"

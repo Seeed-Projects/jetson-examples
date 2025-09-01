@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 DEFAULT_CONFIG = {
-    "BASE_PATH": os.path.expanduser("~/reComputer"),
+    "BASE_PATH": os.path.expanduser("~/git"),  # Use git directory as base
     "JETSON_REPO_PATH": None,  # Will be set based on BASE_PATH
     "AUTO_UPDATE": True,
     "DEFAULT_DOCKER_RUNTIME": "nvidia",
