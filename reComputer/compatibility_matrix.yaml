@@ -1,0 +1,271 @@
+Sheared-LLaMA-2.7B-ShareGPT:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+audiocraft:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+comfyui:
+  disk_space: 30
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 15
+deep-live-cam:
+  disk_space: 40
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 20
+depth-anything:
+  disk_space: 20
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 4
+depth-anything-v2:
+  disk_space: 15
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 4
+llama-factory:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+llama3:
+  disk_space: 15
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+llama3.2:
+  disk_space: 15
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+llava:
+  disk_space: 15
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+llava-v1.5-7b:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+llava-v1.6-vicuna-7b:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+nanodb:
+  disk_space: 80
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 15
+nanoowl:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+ollama:
+  disk_space: 15
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+stable-diffusion-webui:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+text-generation-webui:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+ultralytics-yolo:
+  disk_space: 16
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 32.6.1
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 2
+whisper:
+  disk_space: 25
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 7
+yolov10:
+  disk_space: 20
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 4
+yolov8-rail-inspection:
+  disk_space: 20
+  jetpack_6_compatible: true
+  l4t_versions:
+  - 35.3.1
+  - 35.4.1
+  - 35.5.0
+  - 36.2.0
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  memory: 4

@@ -17,8 +17,13 @@ This repo builds upon the work of the [jetson-containers](https://github.com/dus
 
 
 ## Install
-To install the package, run:
 
+### Quick Install (Recommended)
+```sh
+curl -fsSL https://raw.githubusercontent.com/Seeed-Projects/jetson-examples/main/install.sh | bash
+```
+
+### Alternative: Install via pip
 ```sh
 pip3 install jetson-examples
 ```
@@ -92,13 +97,13 @@ For any questions or further information, feel free to reach out via the GitHub 
 
 ## TODO List
 
-- [ ] detect host environment and install what we need
-- [ ] all type jetson support checking list
-- [ ] try jetpack 6.0
-- [ ] check disk space enough or not before run
-- [ ] allow to setting some configs, such as `BASE_PATH`
-- [ ] support jetson-containers update
-- [ ] better table to show example's difference
+- [x] detect host environment and install what we need - ✅ Added `reComputer setup` command
+- [x] all type jetson support checking list - ✅ Added comprehensive Jetson compatibility checker
+- [x] try jetpack 6.0 - ✅ Added support for JetPack 6.0, 6.1, 6.2, and 6.2.1
+- [x] check disk space enough or not before run - ✅ Pre-execution disk space validation
+- [x] allow to setting some configs, such as `BASE_PATH` - ✅ Added `reComputer config` system
+- [x] support jetson-containers update - ✅ Enhanced update manager with backup/rollback
+- [x] better table to show example's difference - ✅ Added `reComputer list --detailed`
 
 ### 👥 Contributors
 

@@ -1,31 +1,21 @@
-# The tested JetPack versions.
 ALLOWED_L4T_VERSIONS:
-  - 35.3.1
-  - 35.4.1
-  - 35.5.0
-  - 36.3.0
-REQUIRED_DISK_SPACE: 25  # in GB
+- 35.3.1
+- 35.4.1
+- 35.5.0
+- 36.2.0
+- 36.3.0
+- 36.4.0
+- 36.4.3
+- 36.4.4
+REQUIRED_DISK_SPACE: 25
 REQUIRED_MEM_SPACE: 7
 PACKAGES:
-  - nvidia-jetpack
-DOCKER: 
+- nvidia-jetpack
+DOCKER:
   ENABLE: true
-  DAEMON: |
-    {
-      "default-runtime": "nvidia",
-      "runtimes": {
-        "nvidia": {
-          "path": "nvidia-container-runtime",
-          "runtimeArgs": []
-        }
-      },
-      "storage-driver": "overlay2",
-      "data-root": "/var/lib/docker",
-      "log-driver": "json-file",
-      "log-opts": {
-        "max-size": "100m",
-        "max-file": "3"
-      },
-      "no-new-privileges": true,
-      "experimental": false
-    }
+  DAEMON: "{\n  \"default-runtime\": \"nvidia\",\n  \"runtimes\": {\n    \"nvidia\"\
+    : {\n      \"path\": \"nvidia-container-runtime\",\n      \"runtimeArgs\": []\n\
+    \    }\n  },\n  \"storage-driver\": \"overlay2\",\n  \"data-root\": \"/var/lib/docker\"\
+    ,\n  \"log-driver\": \"json-file\",\n  \"log-opts\": {\n    \"max-size\": \"100m\"\
+    ,\n    \"max-file\": \"3\"\n  },\n  \"no-new-privileges\": true,\n  \"experimental\"\
+    : false\n}\n"

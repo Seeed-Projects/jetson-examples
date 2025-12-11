@@ -1,0 +1,712 @@
+[
+  {
+    "name": "audiocraft",
+    "type": "Audio",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "\ud83d\udca1 In this demo, we refer to jetson-container to deploy audiocraft on Jetson devices. And generate mu",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "whisper",
+    "type": "Audio",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "comfyui",
+    "type": "Computer Vision",
+    "models": [],
+    "disk_gb": 30,
+    "memory_gb": 15,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "<p align=\"center\">",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "depth-anything",
+    "type": "Computer Vision",
+    "models": [],
+    "disk_gb": 20,
+    "memory_gb": 4,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "This project provides an one-click deployment of the Depth Anything monocular depth estimation model",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "depth-anything-v2",
+    "type": "Computer Vision",
+    "models": [],
+    "disk_gb": 15,
+    "memory_gb": 4,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "This project provides an one-click deployment of the Depth Anything V2 monocular depth estimation mo",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "ultralytics-yolo",
+    "type": "Computer Vision",
+    "models": [],
+    "disk_gb": 16,
+    "memory_gb": 2,
+    "l4t_versions": [
+      "32.6.1",
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "<p align=\"center\">",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "yolov10",
+    "type": "Computer Vision",
+    "models": [],
+    "disk_gb": 20,
+    "memory_gb": 4,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "\ud83d\udca1 Here's an example of quickly deploying YOLOv10 on a Jetson device.",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "yolov8-rail-inspection",
+    "type": "Computer Vision",
+    "models": [],
+    "disk_gb": 20,
+    "memory_gb": 4,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "stable-diffusion-webui",
+    "type": "Image Generation",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "Sheared-LLaMA-2.7B-ShareGPT",
+    "type": "LLM/VLM",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "llama-factory",
+    "type": "LLM/VLM",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "Now you can tailor a custom private local LLM to meet your requirements.",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "llama3",
+    "type": "LLM/VLM",
+    "models": [],
+    "disk_gb": 15,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "llama3.2",
+    "type": "LLM/VLM",
+    "models": [],
+    "disk_gb": 15,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "llava",
+    "type": "LLM/VLM",
+    "models": [],
+    "disk_gb": 15,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "llava-v1.5-7b",
+    "type": "LLM/VLM",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "llava-v1.6-vicuna-7b",
+    "type": "LLM/VLM",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "ollama",
+    "type": "LLM/VLM",
+    "models": [],
+    "disk_gb": 15,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "deep-live-cam",
+    "type": "Unknown",
+    "models": [],
+    "disk_gb": 40,
+    "memory_gb": 20,
+    "l4t_versions": [
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "This project provides a one-click deployment of the Deep Live Cam AI face-swapping project on the [S",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack",
+      "x11-xserver-utils"
+    ]
+  },
+  {
+    "name": "nanoowl",
+    "type": "Unknown",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "text-generation-webui",
+    "type": "Unknown",
+    "models": [],
+    "disk_gb": 25,
+    "memory_gb": 7,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  },
+  {
+    "name": "nanodb",
+    "type": "Vector Database",
+    "models": [],
+    "disk_gb": 80,
+    "memory_gb": 15,
+    "l4t_versions": [
+      "35.3.1",
+      "35.4.1",
+      "35.5.0",
+      "36.2.0",
+      "36.3.0",
+      "36.4.0",
+      "36.4.3",
+      "36.4.4"
+    ],
+    "jetpack_versions": [
+      "5.1.1",
+      "5.1.2",
+      "5.1.3",
+      "6.0",
+      "6.0 DP",
+      "6.1",
+      "6.2",
+      "6.2.1"
+    ],
+    "cuda_required": false,
+    "docker_image_size": "N/A",
+    "description": "",
+    "features": [],
+    "dependencies": [
+      "nvidia-jetpack"
+    ]
+  }
+]

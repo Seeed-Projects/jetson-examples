@@ -21,14 +21,101 @@ check_is_jetson_or_not() {
         exit 1
     fi
 }
+
+check_disk_space() {
+    local example_name=$1
+    local config_file="$script_dir/$example_name/config.yaml"
+    
+    if [ -f "$config_file" ]; then
+        # Check if yq is installed
+        if command -v yq &> /dev/null; then
+            required_space=$(yq -r '.REQUIRED_DISK_SPACE' "$config_file" 2>/dev/null || echo "10")
+        else
+            # Default to 10GB if yq not available
+            required_space=10
+        fi
+    else
+        # Default requirement if no config
+        required_space=10
+    fi
+    
+    # Get available disk space in GB
+    available_space=$(df -BG --output=avail / | tail -1 | sed 's/[^0-9]*//g')
+    
+    echo "Disk space check:"
+    echo "  Required: ${required_space}GB"
+    echo "  Available: ${available_space}GB"
+    
+    if [ "$available_space" -lt "$required_space" ]; then
+        echo ""
+        echo "ERROR: Insufficient disk space!"
+        echo "This example requires at least ${required_space}GB of free disk space."
+        echo "You only have ${available_space}GB available."
+        echo ""
+        echo "Please free up disk space and try again."
+        exit 1
+    else
+        echo "  Status: ✓ OK"
+    fi
+}
+
 check_is_jetson_or_not
 
 echo "run example：$1"
-BASE_PATH=/home/$USER/reComputer
 
+# Use environment variables if set, otherwise use defaults
+BASE_PATH=${BASE_PATH:-/home/$USER/reComputer}
+JETSON_REPO_PATH=${JETSON_REPO_PATH:-$BASE_PATH/jetson-containers}
+
+script_dir=$(dirname "$0")
+
+# Check disk space before proceeding
+check_disk_space "$1"
+
+# Check if jetson-containers exists
+if [ ! -d "$JETSON_REPO_PATH" ]; then
+    echo "ERROR: jetson-containers not found at $JETSON_REPO_PATH"
+    echo ""
+    echo "Searching for existing jetson-containers installation..."
+    
+    # Search for jetson-containers in common locations
+    SEARCH_PATHS=(
+        "/home/$USER/git/jetson-containers"
+        "/home/$USER/jetson-containers"
+        "/opt/jetson-containers"
+        "$HOME/reComputer/jetson-containers"
+    )
+    
+    FOUND_PATH=""
+    for search_path in "${SEARCH_PATHS[@]}"; do
+        if [ -d "$search_path" ]; then
+            echo "Found jetson-containers at: $search_path"
+            FOUND_PATH="$search_path"
+            break
+        fi
+    done
+    
+    if [ -n "$FOUND_PATH" ]; then
+        JETSON_REPO_PATH="$FOUND_PATH"
+        echo "Using found path: $JETSON_REPO_PATH"
+        echo ""
+        echo "To make this permanent, run:"
+        echo "  reComputer config set JETSON_REPO_PATH $FOUND_PATH"
+        echo ""
+    else
+        echo "jetson-containers not found in common locations."
+        echo ""
+        echo "Please install jetson-containers by running:"
+        echo "  reComputer update"
+        echo ""
+        echo "Or manually clone it:"
+        echo "  git clone https://github.com/dusty-nv/jetson-containers.git"
+        echo "  reComputer config set JETSON_REPO_PATH /path/to/jetson-containers"
+        exit 1
+    fi
+fi
 
 cd $JETSON_REPO_PATH
-script_dir=$(dirname "$0")
 
 init_script=$script_dir/$1/init.sh
 if [ -f $init_script ]; then
