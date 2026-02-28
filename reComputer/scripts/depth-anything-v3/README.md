@@ -43,25 +43,56 @@ pip install .
 ## Usage
 
 1. Start the demo container with `reComputer`:
-   ```sh
-   reComputer run depth-anything-v3
-   ```
-   If your user is not in docker group yet, script will fallback to `sudo docker` automatically and ask sudo password once at startup.
+
+```sh
+reComputer run depth-anything-v3
+```
 
 2. Enter the running container:
-   ```sh
-   docker exec -it depth-anything-v3 /bin/bash
-   ```
-   If needed, use:
-   ```sh
-   sudo docker exec -it depth-anything-v3 /bin/bash
-   ```
+
+```bash
+xhost +local:docker
+
+docker run -it --rm \
+  --gpus all \
+  --network host \
+  --ipc host \
+  --privileged \
+  -e DISPLAY=$DISPLAY \
+  -e QT_X11_NO_MITSHM=1 \bash
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v /dev:/dev \
+  chenduola6/depth-anything-v3
+```
 
 3. Run USB camera inference inside the container:
-   ```sh
-   cd workspace/ros2-depth-anything-v3-trt
-   USB_SIMPLE=1 ./run_camera_depth.sh
-   ```
+
+```sh
+cd workspace/ros2-depth-anything-v3-trt
+#build the engine file
+source install/setup.bash
+ros2 run depth_anything_v3 generate_engines onnx
+```
+
+<p align="center">
+  <img src="images/engine.png" alt="generate engine">
+</p>
+
+> **Note**:If the Jetson swap space is insufficient, it may cause the engine export process to fail.
+>
+> ```bash
+> #add swap space
+> sudo mkdir -p /mnt/nvme
+> sudo fallocate -l 16G /mnt/nvme/swapfile
+> sudo chmod 600 /mnt/nvme/swapfile
+> sudo mkswap /mnt/nvme/swapfile
+> sudo swapon /mnt/nvme/swapfile
+> ```
+
+```bash
+#Run a USB camera demo
+USB_SIMPLE=1 ./run_camera_depth.sh
+```
 
 ## Cleanup
 
