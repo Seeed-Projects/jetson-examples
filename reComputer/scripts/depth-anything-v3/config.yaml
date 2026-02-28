@@ -9,7 +9,7 @@ PACKAGES:
   - nvidia-jetpack
   - x11-xserver-utils
 DOCKER: 
-  ENABLE: true
+  ENABLE: false
   DAEMON: |
     {
       "default-runtime": "nvidia",

@@ -46,10 +46,15 @@ pip install .
    ```sh
    reComputer run depth-anything-v3
    ```
+   If your user is not in docker group yet, script will fallback to `sudo docker` automatically and ask sudo password once at startup.
 
 2. Enter the running container:
    ```sh
    docker exec -it depth-anything-v3 /bin/bash
+   ```
+   If needed, use:
+   ```sh
+   sudo docker exec -it depth-anything-v3 /bin/bash
    ```
 
 3. Run USB camera inference inside the container:
