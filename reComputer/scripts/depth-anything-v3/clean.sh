@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONTAINER_NAME="depth-anything-v3"
+CONTAINER_NAME="depth_anything_v3"
 
 # Prefer plain docker, fallback to sudo docker when user has no docker group permission
 if docker info >/dev/null 2>&1; then
