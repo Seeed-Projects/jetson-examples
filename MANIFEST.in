@@ -1,1 +1,2 @@
+recursive-include reComputer/scripts *.sh *.md *.yaml *.yml *.py *.txt *.json *.cfg *.ini
 global-exclude *.png *.jpg *.jpeg *.gif *.bmp

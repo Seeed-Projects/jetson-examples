@@ -38,5 +38,8 @@ Issues = "https://github.com/Seeed-Projects/jetson-examples/issues"
 where = ["."]
 include = ["reComputer"]
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.package-data]
 "reComputer" = ["scripts/**/*"]

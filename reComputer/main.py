@@ -1,11 +1,45 @@
 import os
 import subprocess
 import sys
+from pathlib import Path
+
+
+def scripts_roots():
+    pkg_root = Path(__file__).resolve().parent
+    candidates = [
+        pkg_root / "scripts",
+        Path.cwd() / "reComputer" / "scripts",
+    ]
+
+    source_hint = os.environ.get("JETSON_EXAMPLES_SOURCE")
+    if source_hint:
+        candidates.append(Path(source_hint).expanduser().resolve() / "reComputer" / "scripts")
+
+    # Keep order while removing duplicates
+    dedup = []
+    seen = set()
+    for item in candidates:
+        key = str(item)
+        if key not in seen:
+            seen.add(key)
+            dedup.append(item)
+    return dedup
+
+
+def scripts_root():
+    for root in scripts_roots():
+        if root.is_dir():
+            return str(root)
+    # fallback to package default path
+    return str(scripts_roots()[0])
 
 
 def path_of_script(name):
-    script_path = os.path.join(os.path.dirname(__file__), "scripts", name)
-    return script_path
+    for root in scripts_roots():
+        script_path = root / name
+        if script_path.exists():
+            return str(script_path)
+    return str(scripts_roots()[0] / name)
 
 
 def list_all_examples(folder_path):
@@ -35,7 +69,7 @@ def run_script():
         elif sys.argv[1] == "update":
             subprocess.run(["bash", path_of_script("update.sh")])
         elif sys.argv[1] == "list":
-            example_folder = os.path.join(os.path.dirname(__file__), "scripts")
+            example_folder = scripts_root()
             directories = list_all_examples(example_folder)
             print("example list:")
             index = 1
