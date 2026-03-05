@@ -4,26 +4,52 @@ CONTAINER_NAME="gpt-oss"
 IMAGE_NAME="chenduola6/got-oss-20b:jp6.2"
 SERVER_CMD="cd /root/gpt-oss/llama.cpp && ./build/bin/llama-server -m /root/gpt-oss/gguf/gpt-oss-20b-Q4_K.gguf -ngl 20 -c 1024 --host 0.0.0.0 --port 8080"
 
-# Prefer plain docker, fallback to sudo docker when user has no docker group permission
-if docker info >/dev/null 2>&1; then
-    DOCKER_CMD=(docker)
-else
-    echo "Current user has no docker permission."
-    echo "Please enter sudo password once for this run."
-    if ! sudo -v; then
-        echo "Failed to authenticate sudo. Exiting."
+ensure_docker_access() {
+    if ! command -v docker >/dev/null 2>&1; then
+        echo "docker command not found."
+        echo "Please install Docker first, then rerun this command."
         exit 1
     fi
-    # Keep sudo timestamp alive during long pulls/runs to avoid repeated prompts.
-    while true; do
-        sudo -n true
-        sleep 60
-        kill -0 "$$" || exit
-    done 2>/dev/null &
-    SUDO_KEEPALIVE_PID=$!
-    trap 'kill $SUDO_KEEPALIVE_PID >/dev/null 2>&1 || true' EXIT
-    DOCKER_CMD=(sudo docker)
-fi
+
+    if docker info >/dev/null 2>&1; then
+        return 0
+    fi
+
+    if id -nG "$USER" | grep -qw docker; then
+        echo "Current user is already in docker group, but docker is still unavailable."
+        echo "Please make sure Docker daemon is running, for example:"
+        echo "sudo systemctl enable --now docker"
+        exit 1
+    fi
+
+    echo "Current user has no docker permission."
+    read -r -p "Add current user ($USER) to docker group now? (y/n): " choice
+    case "$choice" in
+        y|Y)
+            if ! sudo -v; then
+                echo "Failed to authenticate sudo. Exiting."
+                exit 1
+            fi
+            if ! getent group docker >/dev/null 2>&1; then
+                sudo groupadd docker
+            fi
+            sudo usermod -aG docker "$USER"
+            echo "Added $USER to docker group."
+            echo "Please log out and log back in (or reboot), then rerun:"
+            echo "reComputer run gpt-oss"
+            exit 1
+            ;;
+        *)
+            echo "Skipped docker group setup."
+            echo "You can run this manually:"
+            echo "sudo usermod -aG docker $USER"
+            exit 1
+            ;;
+    esac
+}
+
+ensure_docker_access
+DOCKER_CMD=(docker)
 
 # Pull the latest image
 "${DOCKER_CMD[@]}" pull "$IMAGE_NAME"

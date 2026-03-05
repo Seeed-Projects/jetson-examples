@@ -47,6 +47,8 @@ reComputer run gpt-oss
 
 This command pulls the image and starts `llama-server` in a detached container.
 
+> **Note**: If prompted by the script, allow adding your user to the `docker` group so future runs do not require `sudo docker`. After adding the group, log out and log back in once.
+>
 > **Note**: If startup fails because of memory pressure, add swap space and try again:
 >
 > ```sh
