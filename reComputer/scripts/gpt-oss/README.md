@@ -47,6 +47,8 @@ reComputer run gpt-oss
 
 This command pulls the image and starts `llama-server` in a detached container.
 
+> **Note**: The script auto-detects the available GPU run mode on your Jetson (`--runtime nvidia` or `--gpus all`).
+>
 > **Note**: If prompted by the script, allow adding your user to the `docker` group so future runs do not require `sudo docker`. After adding the group, log out and log back in once.
 >
 > **Note**: If startup fails because of memory pressure, add swap space and try again:
@@ -74,7 +76,7 @@ docker logs -f gpt-oss
 docker pull chenduola6/got-oss-20b:jp6
 
 docker run -it --rm \
-  --gpus all \
+  --runtime nvidia \
   --network host \
   --ipc=host \
   chenduola6/got-oss-20b:jp6
