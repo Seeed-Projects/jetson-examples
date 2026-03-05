@@ -2,7 +2,13 @@
 
 CONTAINER_NAME="gpt-oss"
 IMAGE_NAME="chenduola6/got-oss-20b:jp6"
-SERVER_CMD="cd /root/gpt-oss/llama.cpp && ./build/bin/llama-server -m /root/gpt-oss/gguf/gpt-oss-20b-Q4_K.gguf -ngl 20 -c 1024 --host 0.0.0.0 --port 8080"
+MODEL_PATH="/root/gpt-oss/gguf/gpt-oss-20b-Q4_K.gguf"
+HOST="0.0.0.0"
+PORT="${LLAMA_PORT:-8080}"
+NGL="${LLAMA_NGL:-20}"
+CTX="${LLAMA_CTX:-1024}"
+STARTUP_TIMEOUT="${LLAMA_STARTUP_TIMEOUT:-600}"
+SERVER_CMD="cd /root/gpt-oss/llama.cpp && ./build/bin/llama-server -m ${MODEL_PATH} -ngl ${NGL} -c ${CTX} --host ${HOST} --port ${PORT}"
 GPU_FLAGS=()
 
 ensure_docker_access() {
@@ -125,8 +131,77 @@ if [ -z "$("${DOCKER_CMD[@]}" ps -q -f name=^/${CONTAINER_NAME}$)" ]; then
     exit 1
 fi
 
-echo "GPT-OSS server should be available at: http://127.0.0.1:8080"
+wait_for_server_ready() {
+    local endpoint="http://127.0.0.1:${PORT}/v1/models"
+    local elapsed=0
+    local interval=5
+    local raw_response=""
+    local response_body=""
+    local http_code="000"
+    local last_code="000"
+    local last_body=""
+
+    if ! command -v curl >/dev/null 2>&1; then
+        echo "curl not found, skip readiness probing."
+        return 0
+    fi
+
+    echo "Waiting for GPT-OSS to be ready at ${endpoint} (timeout: ${STARTUP_TIMEOUT}s)..."
+    while [ "$elapsed" -lt "$STARTUP_TIMEOUT" ]; do
+        if [ -z "$("${DOCKER_CMD[@]}" ps -q -f name=^/${CONTAINER_NAME}$)" ]; then
+            echo "Container exited before model became ready."
+            echo "Recent logs:"
+            "${DOCKER_CMD[@]}" logs --tail 80 "$CONTAINER_NAME"
+            return 1
+        fi
+
+        raw_response="$(curl -s --max-time 3 -w "\n%{http_code}" "$endpoint" 2>/dev/null || true)"
+        http_code="$(printf '%s' "$raw_response" | tail -n 1)"
+        response_body="$(printf '%s' "$raw_response" | sed '$d')"
+
+        last_code="$http_code"
+        last_body="$response_body"
+
+        # Ready when endpoint returns model list payload.
+        if [ "$http_code" = "200" ] && echo "$response_body" | grep -q "\"data\""; then
+            return 0
+        fi
+
+        # Typical warm-up response from llama-server while loading weights.
+        if [ "$http_code" = "503" ] && echo "$response_body" | grep -q "Loading model"; then
+            if [ $((elapsed % 30)) -eq 0 ]; then
+                echo "Model is still loading... (${elapsed}s)"
+            fi
+            sleep "$interval"
+            elapsed=$((elapsed + interval))
+            continue
+        fi
+
+        if [ $((elapsed % 30)) -eq 0 ]; then
+            echo "Waiting model readiness... (${elapsed}s, http=${http_code})"
+        fi
+        sleep "$interval"
+        elapsed=$((elapsed + interval))
+    done
+
+    echo "Model is still not ready after ${STARTUP_TIMEOUT}s."
+    echo "Last endpoint status: ${last_code}"
+    if [ -n "$last_body" ]; then
+        echo "Last endpoint response: $last_body"
+    fi
+    echo "Recent logs:"
+    "${DOCKER_CMD[@]}" logs --tail 80 "$CONTAINER_NAME"
+    echo "You can try lower memory settings:"
+    echo "LLAMA_CTX=512 LLAMA_NGL=16 reComputer run gpt-oss"
+    return 1
+}
+
+if ! wait_for_server_ready; then
+    exit 1
+fi
+
+echo "GPT-OSS server is ready at: http://127.0.0.1:${PORT}"
 echo "Check models:"
-echo "curl http://127.0.0.1:8080/v1/models"
+echo "curl http://127.0.0.1:${PORT}/v1/models"
 echo "Follow server logs:"
 echo "${DOCKER_CMD[*]} logs -f $CONTAINER_NAME"

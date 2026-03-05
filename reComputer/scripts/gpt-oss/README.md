@@ -46,10 +46,13 @@ reComputer run gpt-oss
 ```
 
 This command pulls the image and starts `llama-server` in a detached container.
+The script waits for `/v1/models` to become ready before exiting.
 
 > **Note**: The script auto-detects the available GPU run mode on your Jetson (`--runtime nvidia` or `--gpus all`).
 >
 > **Note**: If prompted by the script, allow adding your user to the `docker` group so future runs do not require `sudo docker`. After adding the group, log out and log back in once.
+>
+> **Note**: If `curl /v1/models` returns `503 {"message":"Loading model"}`, the model is still loading. First startup can take several minutes.
 >
 > **Note**: If startup fails because of memory pressure, add swap space and try again:
 >
@@ -59,6 +62,11 @@ This command pulls the image and starts `llama-server` in a detached container.
 > sudo mkswap /swapfile
 > sudo swapon /swapfile
 > ```
+
+You can lower memory usage when launching:
+```sh
+LLAMA_CTX=512 LLAMA_NGL=16 reComputer run gpt-oss
+```
 
 ### Verify service
 ```sh
