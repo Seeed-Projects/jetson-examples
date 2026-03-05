@@ -104,14 +104,12 @@ probe_gpu_mode
 if [ "$("${DOCKER_CMD[@]}" ps -q -f name=^/${CONTAINER_NAME}$)" ]; then
     echo "Container $CONTAINER_NAME is already running."
 elif [ "$("${DOCKER_CMD[@]}" ps -a -q -f name=^/${CONTAINER_NAME}$)" ]; then
-    echo "Container $CONTAINER_NAME already exists. Starting..."
-    if ! "${DOCKER_CMD[@]}" start "$CONTAINER_NAME"; then
-        echo "Failed to start existing container. Recreating with current runtime settings..."
-        "${DOCKER_CMD[@]}" rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
-        if ! create_container >/dev/null; then
-            echo "Failed to create container."
-            exit 1
-        fi
+    echo "Container $CONTAINER_NAME already exists but is not running."
+    echo "Recreating with current runtime settings..."
+    "${DOCKER_CMD[@]}" rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    if ! create_container >/dev/null; then
+        echo "Failed to create container."
+        exit 1
     fi
 else
     echo "Container $CONTAINER_NAME does not exist. Creating and starting..."
