@@ -35,8 +35,8 @@ Issues = "https://github.com/Seeed-Projects/jetson-examples/issues"
 # Tools settings -------------------------------------------------------------------------------------------------------
 
 [tool.setuptools.packages.find]
-namespaces = true
 where = ["."]
+include = ["reComputer"]
 
 [tool.setuptools.package-data]
-"reComputer.scripts" = ["**/*"]
+"reComputer" = ["scripts/**/*"]
