@@ -11,7 +11,7 @@ Docker image size: **31.28 GB**
 
 ## Hardware Requirements
 - NVIDIA Jetson device with at least **16GB VRAM**
-- At least **80GB** available disk space
+- At least **50GB** available disk space
 
 Supported JetPack/L4T versions:
 - JetPack 6.2 -> L4T 36.4.0
@@ -46,6 +46,15 @@ reComputer run gpt-oss
 ```
 
 This command pulls the image and starts `llama-server` in a detached container.
+
+> **Note**: If startup fails because of memory pressure, add swap space and try again:
+>
+> ```sh
+> sudo fallocate -l 16G /swapfile
+> sudo chmod 600 /swapfile
+> sudo mkswap /swapfile
+> sudo swapon /swapfile
+> ```
 
 ### Verify service
 ```sh
