@@ -4,7 +4,7 @@ This project provides one-click deployment for **GPT-OSS 20B** on NVIDIA Jetson 
 It uses the prebuilt Docker image:
 
 ```sh
-chenduola6/got-oss-20b:jp6.2
+chenduola6/got-oss-20b:jp6
 ```
 
 Docker image size: **31.28 GB**
@@ -71,13 +71,13 @@ docker logs -f gpt-oss
 ## Manual Deployment (inside Docker)
 
 ```sh
-docker pull chenduola6/got-oss-20b:jp6.2
+docker pull chenduola6/got-oss-20b:jp6
 
 docker run -it --rm \
   --gpus all \
   --network host \
   --ipc=host \
-  chenduola6/got-oss-20b:jp6.2
+  chenduola6/got-oss-20b:jp6
 
 # inside the container
 cd /root/gpt-oss/llama.cpp

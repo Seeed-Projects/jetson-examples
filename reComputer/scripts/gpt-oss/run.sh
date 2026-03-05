@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CONTAINER_NAME="gpt-oss"
-IMAGE_NAME="chenduola6/got-oss-20b:jp6.2"
+IMAGE_NAME="chenduola6/got-oss-20b:jp6"
 SERVER_CMD="cd /root/gpt-oss/llama.cpp && ./build/bin/llama-server -m /root/gpt-oss/gguf/gpt-oss-20b-Q4_K.gguf -ngl 20 -c 1024 --host 0.0.0.0 --port 8080"
 
 ensure_docker_access() {
