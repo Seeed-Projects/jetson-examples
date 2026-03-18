@@ -1,0 +1,52 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+ARG ROS_DISTRO=humble
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ROS_DISTRO=${ROS_DISTRO}
+
+SHELL ["/bin/bash", "-lc"]
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      git \
+      curl \
+      ca-certificates \
+      python3-rosdep \
+      python3-vcstool \
+      python3-colcon-common-extensions \
+      build-essential \
+      libgflags-dev \
+      nlohmann-json3-dev \
+      libdw-dev \
+      libssl-dev \
+      mesa-utils \
+      libgl1 \
+      libgoogle-glog-dev \
+      ros-${ROS_DISTRO}-image-transport \
+      ros-${ROS_DISTRO}-image-transport-plugins \
+      ros-${ROS_DISTRO}-compressed-image-transport \
+      ros-${ROS_DISTRO}-image-publisher \
+      ros-${ROS_DISTRO}-camera-info-manager \
+      ros-${ROS_DISTRO}-diagnostic-updater \
+      ros-${ROS_DISTRO}-diagnostic-msgs \
+      ros-${ROS_DISTRO}-statistics-msgs \
+      ros-${ROS_DISTRO}-xacro \
+      ros-${ROS_DISTRO}-backward-ros \
+      ros-${ROS_DISTRO}-magic-enum \
+      ros-${ROS_DISTRO}-foxglove-msgs && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN if [[ -f /opt/ros/${ROS_DISTRO}/include/magic_enum.hpp ]]; then \
+      ln -sf /opt/ros/${ROS_DISTRO}/include/magic_enum.hpp /usr/include/magic_enum.hpp; \
+    fi && \
+    if [[ -d /opt/ros/${ROS_DISTRO}/include/foxglove_msgs/foxglove_msgs/msg ]]; then \
+      mkdir -p /opt/ros/${ROS_DISTRO}/include/foxglove_msgs && \
+      ln -sfn /opt/ros/${ROS_DISTRO}/include/foxglove_msgs/foxglove_msgs/msg /opt/ros/${ROS_DISTRO}/include/foxglove_msgs/msg; \
+    fi
+
+COPY docker/prepare_container_workspace.sh /opt/nvblox/bin/prepare_container_workspace.sh
+COPY docker/launch_nvblox.sh /opt/nvblox/bin/launch_nvblox.sh
+RUN chmod +x /opt/nvblox/bin/prepare_container_workspace.sh /opt/nvblox/bin/launch_nvblox.sh
+
+WORKDIR /workspaces/isaac_ros-dev

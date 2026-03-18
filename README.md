@@ -55,6 +55,7 @@ Here are some examples that can be run:
 | [Yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 | 5.1.1, 5.1.2, 5.1.3, 6.0 |
 | Llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 | 5.1.1, 5.1.2, 5.1.3, 6.0 |
 | [gpt-oss](/reComputer/scripts/gpt-oss/README.md)     | Text (LLM)               | 39GB | 31.28GB    | `reComputer run gpt-oss`               | 6.1, 6.2, 6.2.1 |
+| [nvblox](/reComputer/scripts/nvblox/README.md)       | Robotics / Mapping       | *    | 20.5GB+    | `reComputer run nvblox`                | 6.x |
 
 
 > Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally
