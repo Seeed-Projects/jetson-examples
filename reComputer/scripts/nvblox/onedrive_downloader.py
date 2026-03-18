@@ -402,7 +402,7 @@ def main() -> int:
             print(f"aria2c '{resolved_url}' -d '{output_dir}' -o '{filename}'")
             return 0
 
-        download_file(resolved_url, filepath, filename)
+        download_file(normalized_url, filepath, filename)
         print(f"Download complete: {filepath}")
         return 0
     except DownloadError as exc:
