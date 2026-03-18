@@ -28,7 +28,7 @@ ensure_base_image() {
     return 0
   fi
 
-  install_packages_if_missing python3-requests
+  install_packages_if_missing python3-requests python3-tqdm
 
   share_url="$(resolve_nvblox_image_share_url)"
   archive_name="$(resolve_nvblox_image_archive_name)"
@@ -39,7 +39,7 @@ ensure_base_image() {
   cleanup_nvblox_partial_downloads "${cache_dir}"
 
   info "Ensuring NVBlox base image archive at ${archive_path}"
-  python3 "${SCRIPT_DIR}/onedrive_downloader.py" "${share_url}" "${archive_name}" --download-dir "${cache_dir}"
+  python3 "${SCRIPT_DIR}/onedrive_downloader.py" "${share_url}" --filename "${archive_name}" --output-dir "${cache_dir}"
   [[ -f "${archive_path}" ]] || die "Base image archive was not created at ${archive_path}."
 
   info "Loading Docker image archive ${archive_path}"
