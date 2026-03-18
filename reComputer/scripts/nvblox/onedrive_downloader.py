@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import html
 import re
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -33,6 +34,23 @@ class OneDriveDownloader:
     def __init__(self, download_dir: str | Path = ".") -> None:
         self.download_dir = Path(download_dir)
         self.download_dir.mkdir(parents=True, exist_ok=True)
+        self._progress_stream = self._open_progress_stream()
+        self._progress_active = False
+
+    @staticmethod
+    def _open_progress_stream():
+        try:
+            stream = open("/dev/tty", "w", encoding="utf-8", buffering=1)
+        except OSError:
+            stream = None
+
+        if stream is not None:
+            return stream
+
+        if sys.stdout.isatty():
+            return sys.stdout
+
+        return None
 
     @staticmethod
     def _looks_like_html(content_type: str, first_chunk: bytes) -> bool:
@@ -129,15 +147,43 @@ class OneDriveDownloader:
         if not force and (now - started_at) < 2:
             return
 
+        if self._progress_stream is None:
+            return
+
+        elapsed = max(now - started_at, 0.001)
+        speed = written / elapsed
+        terminal_width = shutil.get_terminal_size((100, 20)).columns
+        bar_width = min(36, max(12, terminal_width - 70))
+
         if total and total > 0:
-            percent = written * 100.0 / total
+            percent = min(max(written / total, 0.0), 1.0)
+            filled = int(bar_width * percent)
+            bar = "#" * filled + "-" * (bar_width - filled)
             message = (
-                f"Downloading {filename}: {percent:5.1f}% "
-                f"({self._format_bytes(written)}/{self._format_bytes(total)})"
+                f"\rDownloading {filename} [{bar}] {percent * 100:5.1f}% "
+                f"{self._format_bytes(written)}/{self._format_bytes(total)} "
+                f"{self._format_bytes(int(speed))}/s"
             )
         else:
-            message = f"Downloading {filename}: {self._format_bytes(written)}"
-        print(message, flush=True)
+            message = (
+                f"\rDownloading {filename} "
+                f"{self._format_bytes(written)} {self._format_bytes(int(speed))}/s"
+            )
+
+        if len(message) > terminal_width:
+            message = message[: terminal_width - 1]
+
+        self._progress_stream.write(message.ljust(terminal_width - 1))
+        self._progress_stream.flush()
+        self._progress_active = True
+
+    def _finish_progress(self) -> None:
+        if self._progress_stream is None or not self._progress_active:
+            return
+
+        self._progress_stream.write("\n")
+        self._progress_stream.flush()
+        self._progress_active = False
 
     def _download_from_url(self, download_url: str, filepath: Path, filename: str) -> None:
         tmp_path = filepath.with_suffix(filepath.suffix + ".part")
@@ -173,6 +219,13 @@ class OneDriveDownloader:
 
                 started_at = time.monotonic()
                 written = 0
+                if total_size and total_size > 0:
+                    print(
+                        f"Downloading {filename} ({self._format_bytes(total_size)})...",
+                        flush=True,
+                    )
+                else:
+                    print(f"Downloading {filename}...", flush=True)
 
                 output_file.write(first_chunk)
                 written += len(first_chunk)
@@ -198,8 +251,10 @@ class OneDriveDownloader:
                 filepath.unlink()
             tmp_path.replace(filepath)
             self._emit_progress(filename, written, total_size, started_at, force=True)
+            self._finish_progress()
             print(f"Download complete: {filepath}", flush=True)
         except Exception:
+            self._finish_progress()
             if tmp_path.exists():
                 tmp_path.unlink()
             raise
