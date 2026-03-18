@@ -5,6 +5,20 @@ from setuptools import setup
 
 README_PATH = Path(__file__).parent / "README.md"
 LONG_DESCRIPTION = README_PATH.read_text(encoding="utf-8")
+PACKAGE_ROOT = Path(__file__).parent / "reComputer"
+
+
+def package_files(root: Path):
+    files = []
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        if "__pycache__" in path.parts:
+            continue
+        if path.suffix in {".pyc", ".pyo"}:
+            continue
+        files.append(path.relative_to(PACKAGE_ROOT).as_posix())
+    return sorted(files)
 
 
 setup(
@@ -33,7 +47,7 @@ setup(
     ],
     packages=["reComputer"],
     include_package_data=True,
-    package_data={"reComputer": ["scripts/**/*"]},
+    package_data={"reComputer": package_files(PACKAGE_ROOT / "scripts")},
     entry_points={
         "console_scripts": [
             "reComputer=reComputer.main:run_script",

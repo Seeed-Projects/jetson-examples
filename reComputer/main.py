@@ -7,13 +7,13 @@ from pathlib import Path
 def scripts_roots():
     pkg_root = Path(__file__).resolve().parent
     candidates = [
-        pkg_root / "scripts",
         Path.cwd() / "reComputer" / "scripts",
+        pkg_root / "scripts",
     ]
 
     source_hint = os.environ.get("JETSON_EXAMPLES_SOURCE")
     if source_hint:
-        candidates.append(Path(source_hint).expanduser().resolve() / "reComputer" / "scripts")
+        candidates.insert(1, Path(source_hint).expanduser().resolve() / "reComputer" / "scripts")
 
     # Keep order while removing duplicates
     dedup = []

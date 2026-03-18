@@ -1,2 +1,4 @@
-recursive-include reComputer/scripts *.sh *.md *.yaml *.yml *.py *.txt *.json *.cfg *.ini
+recursive-include reComputer/scripts *
+global-exclude __pycache__
+global-exclude *.pyc *.pyo
 global-exclude *.png *.jpg *.jpeg *.gif *.bmp
