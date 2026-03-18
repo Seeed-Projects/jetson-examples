@@ -771,21 +771,6 @@ while true; do
       wait "${PROBE_PID}" 2>/dev/null || true
     fi
 
-    if grep -q 'Camera info readiness probe timed out waiting for:' "${LAUNCH_LOG}"; then
-      printf '[full-demo-probe] Launch failed during internal camera readiness probe.\n'
-      grep 'Camera info readiness probe timed out waiting for:' "${LAUNCH_LOG}" | tail -n 1
-      printf '[full-demo-probe] Relevant launch log tail:\n'
-      tail -n 40 "${LAUNCH_LOG}" 2>/dev/null || true
-      exit 1
-    fi
-    if grep -q 'TF readiness probe failed.' "${LAUNCH_LOG}"; then
-      printf '[full-demo-probe] Launch failed during TF readiness.\n'
-      grep 'TF readiness probe failed.' "${LAUNCH_LOG}" | tail -n 1
-      printf '[full-demo-probe] Relevant launch log tail:\n'
-      tail -n 40 "${LAUNCH_LOG}" 2>/dev/null || true
-      exit 1
-    fi
-
     printf '[full-demo-probe] Launch exited before runtime output probe succeeded (status=%s).\n' "${launch_status}"
     printf '[full-demo-probe] Relevant launch log tail:\n'
     tail -n 40 "${LAUNCH_LOG}" 2>/dev/null || true
