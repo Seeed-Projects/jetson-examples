@@ -271,6 +271,8 @@ probe_container_static_tf() {
   append_jetson_container_args probe_args
   append_ros_discovery_container_args probe_args
 
+  info "Probing container static TF chain in a short-lived container."
+
   probe_output="$(
     docker_cmd "${probe_args[@]}" "${DERIVED_IMAGE_TAG}" bash -lc "$(cat <<'EOF'
 set -euo pipefail
@@ -288,10 +290,33 @@ fi
 LOG_FILE="/tmp/orbbec-tf-probe.log"
 LAUNCH_PID=""
 
+terminate_pid() {
+  local pid="${1:-}"
+  local signal=""
+  local deadline=0
+
+  [[ -n "${pid}" ]] || return 0
+  if ! kill -0 "${pid}" 2>/dev/null; then
+    return 0
+  fi
+
+  for signal in INT TERM KILL; do
+    kill "-${signal}" "${pid}" 2>/dev/null || true
+    deadline=$((SECONDS + 2))
+    while ((SECONDS < deadline)); do
+      if ! kill -0 "${pid}" 2>/dev/null; then
+        return 0
+      fi
+      sleep 1
+    done
+  done
+
+  return 0
+}
+
 cleanup() {
   if [[ -n "${LAUNCH_PID}" ]] && kill -0 "${LAUNCH_PID}" 2>/dev/null; then
-    kill -INT "${LAUNCH_PID}" 2>/dev/null || true
-    wait "${LAUNCH_PID}" 2>/dev/null || true
+    terminate_pid "${LAUNCH_PID}" || true
   fi
 }
 trap cleanup EXIT INT TERM
