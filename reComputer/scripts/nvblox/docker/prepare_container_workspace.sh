@@ -9,12 +9,8 @@ COMMUNITY_REPO_URL="${COMMUNITY_REPO_URL:-https://github.com/jjjadand/isaac-NVbl
 COMMUNITY_REPO_BRANCH="${COMMUNITY_REPO_BRANCH:-main}"
 OFFICIAL_NVBLOX_REPO_URL="${OFFICIAL_NVBLOX_REPO_URL:-https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_nvblox.git}"
 OFFICIAL_NVBLOX_REPO_BRANCH="${OFFICIAL_NVBLOX_REPO_BRANCH:-release-3.2}"
-OFFICIAL_VSLAM_REPO_URL="${OFFICIAL_VSLAM_REPO_URL:-https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_visual_slam.git}"
-OFFICIAL_VSLAM_REPO_BRANCH="${OFFICIAL_VSLAM_REPO_BRANCH:-release-3.2}"
-ORBBEC_LAUNCH_REPO_URL="${ORBBEC_LAUNCH_REPO_URL:-https://github.com/orbbec/isaac_orbbec_launch.git}"
-ORBBEC_LAUNCH_REPO_BRANCH="${ORBBEC_LAUNCH_REPO_BRANCH:-main}"
 
-WORKSPACE_SPEC_VERSION="${EXPECTED_WORKSPACE_SPEC_VERSION:-mobile-vslam-dynamics-v2}"
+WORKSPACE_SPEC_VERSION="${EXPECTED_WORKSPACE_SPEC_VERSION:-static-demo-final-v3}"
 
 ISAAC_WS="/workspaces/isaac_ros-dev"
 SRC_DIR="${ISAAC_WS}/src"
@@ -22,14 +18,11 @@ SETUP_DIR="${ISAAC_WS}/.setup-nvbox"
 STAMP_PATH="${SETUP_DIR}/container_workspace.env"
 COMMUNITY_REPO_PATH="${SETUP_DIR}/isaac-NVblox-Orbbec"
 OFFICIAL_NVBLOX_REPO_PATH="${SETUP_DIR}/isaac_ros_nvblox"
-OFFICIAL_VSLAM_REPO_PATH="${SETUP_DIR}/isaac_ros_visual_slam"
-ORBBEC_LAUNCH_REPO_PATH="${SETUP_DIR}/isaac_orbbec_launch"
 
 COMMUNITY_COMMON_ROOT="${COMMUNITY_REPO_PATH}/src/isaac_ros_common"
 COMMUNITY_NITROS_ROOT="${COMMUNITY_REPO_PATH}/src/isaac_ros_nitros"
+COMMUNITY_NVBLOX_ROOT="${COMMUNITY_REPO_PATH}/src/isaac_ros_nvblox"
 OFFICIAL_NVBLOX_ROOT="${OFFICIAL_NVBLOX_REPO_PATH}"
-OFFICIAL_VSLAM_ROOT="${OFFICIAL_VSLAM_REPO_PATH}"
-ORBBEC_LAUNCH_ROOT="${ORBBEC_LAUNCH_REPO_PATH}"
 
 COMMUNITY_COMMON_PACKAGE_PATHS=(
   "isaac_common"
@@ -59,16 +52,22 @@ OFFICIAL_NVBLOX_PACKAGE_PATHS=(
   "nvblox_ros_python_utils"
   "nvblox_ros"
   "nvblox_rviz_plugin"
+  "nvblox_examples/nvblox_examples_bringup"
 )
 
-OFFICIAL_VSLAM_PACKAGE_PATHS=(
-  "isaac_ros_visual_slam"
-  "isaac_ros_visual_slam_interfaces"
+STATIC_DEMO_OVERLAY_FILE_PATHS=(
+  "nvblox_examples/nvblox_examples_bringup/config/visualization/orbbec_example.rviz"
 )
 
 GENERATED_LAUNCH_FILE_PATHS=(
-  "isaac_orbbec_launch/launch/recomputer_orbbec_dynamics.launch.py"
-  "isaac_orbbec_launch/launch/recomputer_orbbec_vslam_probe.launch.py"
+  "nvblox_examples/nvblox_examples_bringup/launch/orbbec_transforms.launch.py"
+  "nvblox_examples/nvblox_examples_bringup/launch/orbbec_example.launch.py"
+  "nvblox_examples/nvblox_examples_bringup/launch/orbbec_debug.launch.py"
+  "nvblox_examples/nvblox_examples_bringup/launch/orbbec_nvblox_standalone.launch.py"
+)
+
+GENERATED_CONFIG_FILE_PATHS=(
+  "nvblox_examples/nvblox_examples_bringup/config/nvblox/specializations/nvblox_orbbec_static.yaml"
 )
 
 REQUIRED_SRC_PATHS=(
@@ -88,33 +87,24 @@ REQUIRED_SRC_PATHS=(
   "isaac_ros_gxf_extensions/gxf_isaac_sight"
   "isaac_ros_gxf_extensions/gxf_isaac_atlas"
   "isaac_ros_gxf_extensions/gxf_isaac_gems"
-  "isaac_ros_visual_slam"
-  "isaac_ros_visual_slam_interfaces"
-  "isaac_orbbec_launch"
   "nvblox_msgs"
   "nvblox_ros_common"
   "nvblox_ros_python_utils"
   "nvblox_ros"
   "nvblox_rviz_plugin"
+  "nvblox_examples/nvblox_examples_bringup"
 )
 
 REQUIRED_SRC_FILE_PATHS=(
-  "isaac_ros_visual_slam/package.xml"
-  "isaac_ros_visual_slam_interfaces/package.xml"
-  "isaac_orbbec_launch/package.xml"
-  "isaac_orbbec_launch/launch/perception/vslam.launch.py"
-  "isaac_orbbec_launch/launch/nvblox/nvblox.launch.py"
-  "isaac_orbbec_launch/launch/rviz/rviz.launch.py"
-  "isaac_orbbec_launch/config/sensors/orbbec.yaml"
-  "isaac_orbbec_launch/config/nvblox/nvblox_base.yaml"
-  "isaac_orbbec_launch/config/nvblox/specializations/nvblox_dynamics.yaml"
-  "isaac_orbbec_launch/config/nvblox/specializations/nvblox_realsense.yaml"
-  "isaac_orbbec_launch/config/rviz/realsense_dynamics_example.rviz"
-  "isaac_orbbec_launch/launch/recomputer_orbbec_dynamics.launch.py"
-  "isaac_orbbec_launch/launch/recomputer_orbbec_vslam_probe.launch.py"
   "nvblox_ros/CMakeLists.txt"
   "nvblox_ros/nvblox_core/CMakeLists.txt"
   "nvblox_ros/nvblox_core/cmake/cuda/setup_compute_capability.cmake"
+  "nvblox_examples/nvblox_examples_bringup/launch/orbbec_transforms.launch.py"
+  "nvblox_examples/nvblox_examples_bringup/config/visualization/orbbec_example.rviz"
+  "nvblox_examples/nvblox_examples_bringup/launch/orbbec_example.launch.py"
+  "nvblox_examples/nvblox_examples_bringup/launch/orbbec_debug.launch.py"
+  "nvblox_examples/nvblox_examples_bringup/launch/orbbec_nvblox_standalone.launch.py"
+  "nvblox_examples/nvblox_examples_bringup/config/nvblox/specializations/nvblox_orbbec_static.yaml"
 )
 
 EXCLUDED_SRC_PATHS=(
@@ -122,40 +112,48 @@ EXCLUDED_SRC_PATHS=(
   "isaac_ros_managed_nitros_examples"
   "isaac_ros_nitros_bridge"
   "isaac_ros_nitros_topic_tools"
+  "isaac_ros_visual_slam"
+  "isaac_ros_visual_slam_interfaces"
   "nvblox_nav2"
   "nvblox_examples/nvblox_image_padding"
   "nvblox_examples/semantic_label_conversion"
 )
 
+STATIC_DEMO_REMOVED_DEPENDENCIES=(
+  "nova_carter_navigation"
+  "isaac_ros_visual_slam"
+  "isaac_ros_visual_slam_interfaces"
+  "isaac_ros_peoplenet_models_install"
+  "isaac_ros_detectnet"
+  "isaac_ros_peoplesemseg_models_install"
+  "isaac_ros_dnn_image_encoder"
+  "isaac_ros_triton"
+  "isaac_ros_unet"
+  "semantic_label_conversion"
+  "nvblox_image_padding"
+)
+
 ROSDEP_SKIP_KEYS=(
+  "isaac_ros_peoplenet_models_install"
+  "isaac_ros_detectnet"
   "isaac_ros_image_proc"
 )
 
 COLCON_TARGETS=(
-  "isaac_orbbec_launch"
-  "isaac_ros_visual_slam"
-  "nvblox_ros"
-  "nvblox_rviz_plugin"
+  "nvblox_examples_bringup"
 )
 
 RUNTIME_REQUIRED_PACKAGES=(
-  "isaac_orbbec_launch"
-  "isaac_ros_visual_slam"
+  "nvblox_examples_bringup"
   "nvblox_ros"
-  "nvblox_rviz_plugin"
 )
 
 INSTALL_REQUIRED_FILE_PATHS=(
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/launch/perception/vslam.launch.py"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/launch/nvblox/nvblox.launch.py"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/launch/rviz/rviz.launch.py"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/launch/recomputer_orbbec_dynamics.launch.py"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/launch/recomputer_orbbec_vslam_probe.launch.py"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/config/sensors/orbbec.yaml"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/config/nvblox/nvblox_base.yaml"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/config/nvblox/specializations/nvblox_dynamics.yaml"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/config/nvblox/specializations/nvblox_realsense.yaml"
-  "install/isaac_orbbec_launch/share/isaac_orbbec_launch/config/rviz/realsense_dynamics_example.rviz"
+  "install/nvblox_examples_bringup/share/nvblox_examples_bringup/launch/orbbec_transforms.launch.py"
+  "install/nvblox_examples_bringup/share/nvblox_examples_bringup/launch/orbbec_example.launch.py"
+  "install/nvblox_examples_bringup/share/nvblox_examples_bringup/launch/orbbec_debug.launch.py"
+  "install/nvblox_examples_bringup/share/nvblox_examples_bringup/launch/orbbec_nvblox_standalone.launch.py"
+  "install/nvblox_examples_bringup/share/nvblox_examples_bringup/config/nvblox/specializations/nvblox_orbbec_static.yaml"
 )
 
 log() {
@@ -305,16 +303,12 @@ initialize_managed_git_access() {
   ensure_repo_safe_directories "${COMMUNITY_REPO_PATH}"
   ensure_repo_safe_directories "${OFFICIAL_NVBLOX_REPO_PATH}"
   ensure_repo_safe_directories "${OFFICIAL_NVBLOX_REPO_PATH}/nvblox_ros/nvblox_core"
-  ensure_repo_safe_directories "${OFFICIAL_VSLAM_REPO_PATH}"
-  ensure_repo_safe_directories "${ORBBEC_LAUNCH_REPO_PATH}"
 }
 
 verify_managed_git_cache_state() {
   assert_git_repo_accessible "${COMMUNITY_REPO_PATH}" "community repo"
   assert_git_repo_accessible "${OFFICIAL_NVBLOX_REPO_PATH}" "official Isaac ROS Nvblox repo"
   assert_git_repo_accessible "${OFFICIAL_NVBLOX_REPO_PATH}/nvblox_ros/nvblox_core" "official Isaac ROS Nvblox submodule"
-  assert_git_repo_accessible "${OFFICIAL_VSLAM_REPO_PATH}" "official Isaac ROS Visual SLAM repo"
-  assert_git_repo_accessible "${ORBBEC_LAUNCH_REPO_PATH}" "Orbbec Isaac launch repo"
 }
 
 clone_or_update_repo() {
@@ -401,8 +395,6 @@ stamp_current() {
   [[ "${STAMP_COMMUNITY_COMMIT:-}" == "${COMMUNITY_COMMIT}" ]] || return 1
   [[ "${STAMP_OFFICIAL_NVBLOX_COMMIT:-}" == "${OFFICIAL_NVBLOX_COMMIT}" ]] || return 1
   [[ "${STAMP_OFFICIAL_NVBLOX_CORE_COMMIT:-}" == "${OFFICIAL_NVBLOX_CORE_COMMIT}" ]] || return 1
-  [[ "${STAMP_OFFICIAL_VSLAM_COMMIT:-}" == "${OFFICIAL_VSLAM_COMMIT}" ]] || return 1
-  [[ "${STAMP_ORBBEC_LAUNCH_COMMIT:-}" == "${ORBBEC_LAUNCH_COMMIT}" ]] || return 1
   [[ "${STAMP_WORKSPACE_SPEC_VERSION:-}" == "${WORKSPACE_SPEC_VERSION}" ]] || return 1
   verify_synced_workspace_layout
   verify_workspace_install
@@ -415,8 +407,6 @@ write_stamp() {
     printf 'STAMP_COMMUNITY_COMMIT=%q\n' "${COMMUNITY_COMMIT}"
     printf 'STAMP_OFFICIAL_NVBLOX_COMMIT=%q\n' "${OFFICIAL_NVBLOX_COMMIT}"
     printf 'STAMP_OFFICIAL_NVBLOX_CORE_COMMIT=%q\n' "${OFFICIAL_NVBLOX_CORE_COMMIT}"
-    printf 'STAMP_OFFICIAL_VSLAM_COMMIT=%q\n' "${OFFICIAL_VSLAM_COMMIT}"
-    printf 'STAMP_ORBBEC_LAUNCH_COMMIT=%q\n' "${ORBBEC_LAUNCH_COMMIT}"
     printf 'STAMP_WORKSPACE_SPEC_VERSION=%q\n' "${WORKSPACE_SPEC_VERSION}"
     printf 'STAMPED_AT=%q\n' "$(date -Is 2>/dev/null || date)"
   } > "${STAMP_PATH}"
@@ -461,126 +451,459 @@ sync_package_group() {
   done
 }
 
-write_recomputer_dynamics_launch() {
-  cat > "${SRC_DIR}/isaac_orbbec_launch/launch/recomputer_orbbec_dynamics.launch.py" <<'EOF'
-import os
+apply_overlay_files() {
+  local source_root="$1"
+  shift
+  local relative_path=""
+  local source_path=""
+  local dest_path=""
 
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
+  for relative_path in "$@"; do
+    source_path="${source_root}/${relative_path}"
+    dest_path="${SRC_DIR}/${relative_path}"
+    [[ -f "${source_path}" ]] || die "Expected overlay file ${relative_path} is missing from ${source_root}."
+    mkdir -p "$(dirname "${dest_path}")"
+    cp -a "${source_path}" "${dest_path}"
+  done
+}
+
+write_orbbec_transforms_launch() {
+  cat > "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/launch/orbbec_transforms.launch.py" <<'EOF'
+from isaac_ros_launch_utils.all_types import *
+import isaac_ros_launch_utils as lu
 
 
-def generate_launch_description():
-    bringup_dir = get_package_share_directory('isaac_orbbec_launch')
-    run_rviz = LaunchConfiguration('run_rviz', default='True')
-    global_frame = LaunchConfiguration('global_frame', default='odom')
-    flatten_odometry = LaunchConfiguration('flatten_odometry_to_2d', default='False')
-    shared_container_name = 'shared_nvblox_container'
-
-    shared_container = Node(
-        name=shared_container_name,
-        package='rclcpp_components',
-        executable='component_container_mt',
+def static_tf(parent: str, child: str, xyz: tuple[float, float, float], rpy: tuple[float, float, float]) -> Node:
+    return Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        arguments=[
+            '--x', str(xyz[0]),
+            '--y', str(xyz[1]),
+            '--z', str(xyz[2]),
+            '--roll', str(rpy[0]),
+            '--pitch', str(rpy[1]),
+            '--yaw', str(rpy[2]),
+            '--frame-id', parent,
+            '--child-frame-id', child,
+        ],
         output='screen')
 
-    vslam_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(bringup_dir, 'launch', 'perception', 'vslam.launch.py')]),
-        launch_arguments={
-            'output_odom_frame_name': global_frame,
-            'setup_for_orbbec': 'True',
-            'run_odometry_flattening': flatten_odometry,
-            'attach_to_shared_component_container': 'True',
-            'component_container_name': shared_container_name,
-        }.items())
 
-    nvblox_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(bringup_dir, 'launch', 'nvblox', 'nvblox.launch.py')]),
-        launch_arguments={
-            'global_frame': global_frame,
-            'setup_for_dynamics': 'True',
-            'setup_for_orbbec': 'True',
-            'attach_to_shared_component_container': 'True',
-            'component_container_name': shared_container_name,
-        }.items())
+def generate_launch_description() -> LaunchDescription:
+    args = lu.ArgumentContainer()
+    actions = args.get_launch_actions()
 
-    rviz_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(bringup_dir, 'launch', 'rviz', 'rviz.launch.py')]),
-        launch_arguments={
-            'config_name': 'realsense_dynamics_example.rviz',
-            'global_frame': global_frame,
-        }.items(),
-        condition=IfCondition(run_rviz))
+    actions.append(static_tf('odom', 'base_link', (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
+    actions.append(static_tf('base_link', 'camera_link', (0.1, 0.0, 0.2), (0.0, 0.0, 0.0)))
+    actions.append(static_tf('camera_link', 'camera0_link', (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)))
+    actions.append(static_tf(
+        'camera_link',
+        'camera_color_optical_frame',
+        (0.0, 0.0, 0.0),
+        (-1.57079632679, 0.0, -1.57079632679)))
+    actions.append(static_tf(
+        'camera_color_optical_frame',
+        'camera_depth_optical_frame',
+        (0.0, 0.0, 0.0),
+        (0.0, 0.0, 0.0)))
 
-    return LaunchDescription([
-        DeclareLaunchArgument('run_rviz', default_value='True'),
-        DeclareLaunchArgument('global_frame', default_value='odom'),
-        DeclareLaunchArgument('flatten_odometry_to_2d', default_value='False'),
-        shared_container,
-        vslam_launch,
-        nvblox_launch,
-        rviz_launch,
-    ])
+    return LaunchDescription(actions)
 EOF
 }
 
-write_recomputer_vslam_probe_launch() {
-  cat > "${SRC_DIR}/isaac_orbbec_launch/launch/recomputer_orbbec_vslam_probe.launch.py" <<'EOF'
-import os
-
-from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
-
-
-def generate_launch_description():
-    bringup_dir = get_package_share_directory('isaac_orbbec_launch')
-    global_frame = LaunchConfiguration('global_frame', default='odom')
-    shared_container_name = 'shared_vslam_probe_container'
-
-    shared_container = Node(
-        name=shared_container_name,
-        package='rclcpp_components',
-        executable='component_container_mt',
-        output='screen')
-
-    vslam_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(bringup_dir, 'launch', 'perception', 'vslam.launch.py')]),
-        launch_arguments={
-            'output_odom_frame_name': global_frame,
-            'setup_for_orbbec': 'True',
-            'attach_to_shared_component_container': 'True',
-            'component_container_name': shared_container_name,
-        }.items())
-
-    return LaunchDescription([
-        DeclareLaunchArgument('global_frame', default_value='odom'),
-        shared_container,
-        vslam_launch,
-    ])
+write_orbbec_static_config() {
+  cat > "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/config/nvblox/specializations/nvblox_orbbec_static.yaml" <<'EOF'
+/**:
+  ros__parameters:
+    use_lidar: false
+    input_qos: "SENSOR_DATA"
+    map_clearing_frame_id: "base_link"
+    esdf_slice_bounds_visualization_attachment_frame_id: "base_link"
+    static_mapper:
+      esdf_slice_height: 0.0
+      esdf_slice_min_height: -0.1
+      esdf_slice_max_height: 0.3
 EOF
 }
 
-generate_mobile_demo_launches() {
-  log "Generating managed mobile mapping launch files."
-  mkdir -p "${SRC_DIR}/isaac_orbbec_launch/launch"
-  write_recomputer_dynamics_launch
-  write_recomputer_vslam_probe_launch
+write_orbbec_example_launch() {
+  cat > "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/launch/orbbec_example.launch.py" <<'EOF'
+from isaac_ros_launch_utils.all_types import *
+import isaac_ros_launch_utils as lu
+import time
+
+from launch.actions import OpaqueFunction
+from launch.logging import get_logger
+import rclpy
+from rclpy.duration import Duration
+from rclpy.time import Time
+from tf2_ros import Buffer, TransformListener
+
+from nvblox_ros_python_utils.nvblox_constants import NVBLOX_CONTAINER_NAME
+
+READINESS_TIMEOUT_SEC = 20.0
+
+
+def wait_for_orbbec_readiness(context, *args, **kwargs):
+    logger = get_logger('orbbec_readiness_probe')
+    logger.info(
+        'Managed static TF chain: odom -> base_link -> camera_link -> camera_color_optical_frame')
+    did_init = not rclpy.ok()
+    if did_init:
+        rclpy.init(args=None)
+    node = rclpy.create_node('orbbec_readiness_probe')
+    tf_buffer = Buffer(cache_time=Duration(seconds=READINESS_TIMEOUT_SEC))
+    tf_listener = TransformListener(tf_buffer, node, spin_thread=False)
+
+    last_missing_transforms = []
+
+    try:
+        tf_deadline = time.monotonic() + READINESS_TIMEOUT_SEC
+        required_transforms = [
+            ('odom', 'base_link'),
+            ('odom', 'camera_link'),
+            ('odom', 'camera_color_optical_frame'),
+        ]
+        while time.monotonic() < tf_deadline:
+            rclpy.spin_once(node, timeout_sec=0.2)
+            last_missing_transforms = []
+            for target_frame, source_frame in required_transforms:
+                if not tf_buffer.can_transform(
+                        target_frame,
+                        source_frame,
+                        Time(),
+                        timeout=Duration(seconds=0.1)):
+                    last_missing_transforms.append(f'{target_frame} <- {source_frame}')
+
+            if not last_missing_transforms:
+                logger.info(
+                    'TF readiness probe passed for odom <- base_link, odom <- camera_link, '
+                    'odom <- camera_color_optical_frame')
+                return []
+
+        raise RuntimeError(
+            'TF readiness probe failed. Missing transforms: '
+            + ', '.join(last_missing_transforms or ['unknown']))
+    finally:
+        del tf_listener
+        node.destroy_node()
+        if did_init:
+            rclpy.shutdown()
+
+
+def generate_launch_description() -> LaunchDescription:
+    args = lu.ArgumentContainer()
+    args.add_arg('log_level', 'info', choices=['debug', 'info', 'warn'], cli=True)
+    actions = args.get_launch_actions()
+
+    actions.append(
+        lu.include(
+            'nvblox_examples_bringup',
+            'launch/orbbec_transforms.launch.py'))
+
+    actions.append(lu.component_container(NVBLOX_CONTAINER_NAME, log_level=args.log_level))
+    actions.append(OpaqueFunction(function=wait_for_orbbec_readiness))
+
+    base_config = lu.get_path('nvblox_examples_bringup', 'config/nvblox/nvblox_base.yaml')
+    realsense_config = lu.get_path(
+        'nvblox_examples_bringup',
+        'config/nvblox/specializations/nvblox_realsense.yaml')
+    orbbec_static_config = lu.get_path(
+        'nvblox_examples_bringup',
+        'config/nvblox/specializations/nvblox_orbbec_static.yaml')
+
+    nvblox_node = ComposableNode(
+        name='nvblox_node',
+        package='nvblox_ros',
+        plugin='nvblox::NvbloxNode',
+        remappings=[
+            ('camera_0/depth/image', '/camera/depth/image_raw'),
+            ('camera_0/depth/camera_info', '/camera/depth/camera_info'),
+            ('camera_0/color/image', '/camera/color/image_raw'),
+            ('camera_0/color/camera_info', '/camera/color/camera_info'),
+        ],
+        parameters=[
+            base_config,
+            realsense_config,
+            orbbec_static_config,
+            {'num_cameras': 1},
+            {'use_lidar': False},
+        ],
+    )
+
+    actions.append(lu.load_composable_nodes(NVBLOX_CONTAINER_NAME, [nvblox_node]))
+
+    rviz_config_path = lu.get_path(
+        'nvblox_examples_bringup',
+        'config/visualization/orbbec_example.rviz')
+    actions.append(
+        Node(
+            package='rviz2',
+            executable='rviz2',
+            arguments=['-d', str(rviz_config_path)],
+            output='screen'))
+
+    return LaunchDescription(actions)
+EOF
+}
+
+write_orbbec_debug_launch() {
+  cat > "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/launch/orbbec_debug.launch.py" <<'EOF'
+from isaac_ros_launch_utils.all_types import *
+import isaac_ros_launch_utils as lu
+import time
+
+from launch.actions import OpaqueFunction
+from launch.logging import get_logger
+import rclpy
+from rclpy.duration import Duration
+from rclpy.time import Time
+from tf2_ros import Buffer, TransformListener
+
+from nvblox_ros_python_utils.nvblox_constants import NVBLOX_CONTAINER_NAME
+
+READINESS_TIMEOUT_SEC = 20.0
+
+
+def wait_for_orbbec_readiness(context, *args, **kwargs):
+    logger = get_logger('orbbec_readiness_probe')
+    logger.info(
+        'Managed static TF chain: odom -> base_link -> camera_link -> camera_color_optical_frame')
+    did_init = not rclpy.ok()
+    if did_init:
+        rclpy.init(args=None)
+    node = rclpy.create_node('orbbec_readiness_probe')
+    tf_buffer = Buffer(cache_time=Duration(seconds=READINESS_TIMEOUT_SEC))
+    tf_listener = TransformListener(tf_buffer, node, spin_thread=False)
+
+    last_missing_transforms = []
+
+    try:
+        tf_deadline = time.monotonic() + READINESS_TIMEOUT_SEC
+        required_transforms = [
+            ('odom', 'base_link'),
+            ('odom', 'camera_link'),
+            ('odom', 'camera_color_optical_frame'),
+        ]
+        while time.monotonic() < tf_deadline:
+            rclpy.spin_once(node, timeout_sec=0.2)
+            last_missing_transforms = []
+            for target_frame, source_frame in required_transforms:
+                if not tf_buffer.can_transform(
+                        target_frame,
+                        source_frame,
+                        Time(),
+                        timeout=Duration(seconds=0.1)):
+                    last_missing_transforms.append(f'{target_frame} <- {source_frame}')
+
+            if not last_missing_transforms:
+                logger.info(
+                    'TF readiness probe passed for odom <- base_link, odom <- camera_link, '
+                    'odom <- camera_color_optical_frame')
+                return []
+
+        raise RuntimeError(
+            'TF readiness probe failed. Missing transforms: '
+            + ', '.join(last_missing_transforms or ['unknown']))
+    finally:
+        del tf_listener
+        node.destroy_node()
+        if did_init:
+            rclpy.shutdown()
+
+
+def generate_launch_description() -> LaunchDescription:
+    args = lu.ArgumentContainer()
+    args.add_arg('log_level', 'debug', choices=['debug', 'info', 'warn'], cli=True)
+    actions = args.get_launch_actions()
+
+    actions.append(
+        lu.include(
+            'nvblox_examples_bringup',
+            'launch/orbbec_transforms.launch.py'))
+
+    actions.append(lu.component_container(NVBLOX_CONTAINER_NAME, log_level=args.log_level))
+    actions.append(OpaqueFunction(function=wait_for_orbbec_readiness))
+
+    base_config = lu.get_path('nvblox_examples_bringup', 'config/nvblox/nvblox_base.yaml')
+    realsense_config = lu.get_path(
+        'nvblox_examples_bringup',
+        'config/nvblox/specializations/nvblox_realsense.yaml')
+    orbbec_static_config = lu.get_path(
+        'nvblox_examples_bringup',
+        'config/nvblox/specializations/nvblox_orbbec_static.yaml')
+
+    nvblox_node = ComposableNode(
+        name='nvblox_node',
+        package='nvblox_ros',
+        plugin='nvblox::NvbloxNode',
+        remappings=[
+            ('camera_0/depth/image', '/camera/depth/image_raw'),
+            ('camera_0/depth/camera_info', '/camera/depth/camera_info'),
+            ('camera_0/color/image', '/camera/color/image_raw'),
+            ('camera_0/color/camera_info', '/camera/color/camera_info'),
+        ],
+        parameters=[
+            base_config,
+            realsense_config,
+            orbbec_static_config,
+            {'num_cameras': 1},
+            {'use_lidar': False},
+        ],
+    )
+
+    actions.append(lu.load_composable_nodes(NVBLOX_CONTAINER_NAME, [nvblox_node]))
+    return LaunchDescription(actions)
+EOF
+}
+
+write_orbbec_standalone_launch() {
+  cat > "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/launch/orbbec_nvblox_standalone.launch.py" <<'EOF'
+from isaac_ros_launch_utils.all_types import *
+import isaac_ros_launch_utils as lu
+import time
+
+from launch.actions import OpaqueFunction
+from launch.logging import get_logger
+import rclpy
+from rclpy.duration import Duration
+from rclpy.time import Time
+from tf2_ros import Buffer, TransformListener
+
+from nvblox_ros_python_utils.nvblox_constants import NVBLOX_CONTAINER_NAME
+
+READINESS_TIMEOUT_SEC = 20.0
+
+
+def wait_for_orbbec_readiness(context, *args, **kwargs):
+    logger = get_logger('orbbec_readiness_probe')
+    logger.info(
+        'Managed static TF chain: odom -> base_link -> camera_link -> camera_color_optical_frame')
+    did_init = not rclpy.ok()
+    if did_init:
+        rclpy.init(args=None)
+    node = rclpy.create_node('orbbec_readiness_probe')
+    tf_buffer = Buffer(cache_time=Duration(seconds=READINESS_TIMEOUT_SEC))
+    tf_listener = TransformListener(tf_buffer, node, spin_thread=False)
+
+    last_missing_transforms = []
+
+    try:
+        tf_deadline = time.monotonic() + READINESS_TIMEOUT_SEC
+        required_transforms = [
+            ('odom', 'base_link'),
+            ('odom', 'camera_link'),
+            ('odom', 'camera_color_optical_frame'),
+        ]
+        while time.monotonic() < tf_deadline:
+            rclpy.spin_once(node, timeout_sec=0.2)
+            last_missing_transforms = []
+            for target_frame, source_frame in required_transforms:
+                if not tf_buffer.can_transform(
+                        target_frame,
+                        source_frame,
+                        Time(),
+                        timeout=Duration(seconds=0.1)):
+                    last_missing_transforms.append(f'{target_frame} <- {source_frame}')
+
+            if not last_missing_transforms:
+                logger.info(
+                    'TF readiness probe passed for odom <- base_link, odom <- camera_link, '
+                    'odom <- camera_color_optical_frame')
+                return []
+
+        raise RuntimeError(
+            'TF readiness probe failed. Missing transforms: '
+            + ', '.join(last_missing_transforms or ['unknown']))
+    finally:
+        del tf_listener
+        node.destroy_node()
+        if did_init:
+            rclpy.shutdown()
+
+
+def generate_launch_description() -> LaunchDescription:
+    args = lu.ArgumentContainer()
+    args.add_arg('log_level', 'info', choices=['debug', 'info', 'warn'], cli=True)
+    actions = args.get_launch_actions()
+
+    actions.append(
+        lu.include(
+            'nvblox_examples_bringup',
+            'launch/orbbec_transforms.launch.py'))
+
+    actions.append(lu.component_container(NVBLOX_CONTAINER_NAME, log_level=args.log_level))
+    actions.append(OpaqueFunction(function=wait_for_orbbec_readiness))
+
+    base_config = lu.get_path('nvblox_examples_bringup', 'config/nvblox/nvblox_base.yaml')
+    realsense_config = lu.get_path(
+        'nvblox_examples_bringup',
+        'config/nvblox/specializations/nvblox_realsense.yaml')
+    orbbec_static_config = lu.get_path(
+        'nvblox_examples_bringup',
+        'config/nvblox/specializations/nvblox_orbbec_static.yaml')
+
+    nvblox_node = ComposableNode(
+        name='nvblox_node',
+        package='nvblox_ros',
+        plugin='nvblox::NvbloxNode',
+        remappings=[
+            ('camera_0/depth/image', '/camera/depth/image_raw'),
+            ('camera_0/depth/camera_info', '/camera/depth/camera_info'),
+            ('camera_0/color/image', '/camera/color/image_raw'),
+            ('camera_0/color/camera_info', '/camera/color/camera_info'),
+        ],
+        parameters=[
+            base_config,
+            realsense_config,
+            orbbec_static_config,
+            {'num_cameras': 1},
+            {'use_lidar': False},
+        ],
+    )
+
+    actions.append(lu.load_composable_nodes(NVBLOX_CONTAINER_NAME, [nvblox_node]))
+    return LaunchDescription(actions)
+EOF
+}
+
+generate_static_demo_launches() {
+  log "Generating managed static demo launch files."
+  mkdir -p \
+    "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/launch" \
+    "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/config/nvblox/specializations"
+  write_orbbec_transforms_launch
+  write_orbbec_static_config
+  write_orbbec_example_launch
+  write_orbbec_debug_launch
+  write_orbbec_standalone_launch
+}
+
+patch_manifest_remove_dependencies() {
+  local manifest_path="$1"
+  shift
+  local dependency_name=""
+
+  [[ -f "${manifest_path}" ]] || die "Expected manifest does not exist: ${manifest_path}"
+
+  for dependency_name in "$@"; do
+    sed -i "/>${dependency_name}</d" "${manifest_path}"
+  done
+}
+
+patch_static_demo_manifests() {
+  local bringup_manifest="${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/package.xml"
+
+  log "Patching synced manifests for the static demo workspace."
+  patch_manifest_remove_dependencies "${bringup_manifest}" "${STATIC_DEMO_REMOVED_DEPENDENCIES[@]}"
 }
 
 verify_synced_workspace_layout() {
   local path_name=""
   local file_path=""
+  local bringup_manifest="${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/package.xml"
+  local dependency_name=""
 
   for path_name in "${REQUIRED_SRC_PATHS[@]}"; do
     [[ -d "${SRC_DIR}/${path_name}" ]] || die "Required synced package path is missing: ${SRC_DIR}/${path_name}"
@@ -593,17 +916,24 @@ verify_synced_workspace_layout() {
   for file_path in "${REQUIRED_SRC_FILE_PATHS[@]}"; do
     [[ -f "${SRC_DIR}/${file_path}" ]] || die "Required synced file is missing: ${SRC_DIR}/${file_path}"
   done
+
+  [[ -f "${bringup_manifest}" ]] || die "Expected bringup manifest is missing: ${bringup_manifest}"
+  for dependency_name in "${STATIC_DEMO_REMOVED_DEPENDENCIES[@]}"; do
+    if grep -q ">${dependency_name}<" "${bringup_manifest}"; then
+      die "Static demo manifest still declares excluded dependency ${dependency_name}."
+    fi
+  done
 }
 
-sync_mobile_demo_workspace() {
+sync_static_demo_workspace() {
   log "Syncing package whitelist into the managed workspace."
   clear_managed_src_dir
   sync_package_group "${COMMUNITY_COMMON_ROOT}" "${COMMUNITY_COMMON_PACKAGE_PATHS[@]}"
   sync_package_group "${COMMUNITY_NITROS_ROOT}" "${COMMUNITY_NITROS_PACKAGE_PATHS[@]}"
   sync_package_group "${OFFICIAL_NVBLOX_ROOT}" "${OFFICIAL_NVBLOX_PACKAGE_PATHS[@]}"
-  sync_package_group "${OFFICIAL_VSLAM_ROOT}" "${OFFICIAL_VSLAM_PACKAGE_PATHS[@]}"
-  copy_package_root "${ORBBEC_LAUNCH_ROOT}" "isaac_orbbec_launch"
-  generate_mobile_demo_launches
+  apply_overlay_files "${COMMUNITY_NVBLOX_ROOT}" "${STATIC_DEMO_OVERLAY_FILE_PATHS[@]}"
+  generate_static_demo_launches
+  patch_static_demo_manifests
   verify_synced_workspace_layout
 }
 
@@ -740,26 +1070,20 @@ verify_managed_git_cache_state
 
 clone_or_update_repo "${COMMUNITY_REPO_URL}" "${COMMUNITY_REPO_BRANCH}" "${COMMUNITY_REPO_PATH}" "community repo"
 clone_or_update_repo "${OFFICIAL_NVBLOX_REPO_URL}" "${OFFICIAL_NVBLOX_REPO_BRANCH}" "${OFFICIAL_NVBLOX_REPO_PATH}" "official Isaac ROS Nvblox repo"
-clone_or_update_repo "${OFFICIAL_VSLAM_REPO_URL}" "${OFFICIAL_VSLAM_REPO_BRANCH}" "${OFFICIAL_VSLAM_REPO_PATH}" "official Isaac ROS Visual SLAM repo"
-clone_or_update_repo "${ORBBEC_LAUNCH_REPO_URL}" "${ORBBEC_LAUNCH_REPO_BRANCH}" "${ORBBEC_LAUNCH_REPO_PATH}" "Orbbec Isaac launch repo"
 sync_git_submodule "${OFFICIAL_NVBLOX_REPO_PATH}" "nvblox_ros/nvblox_core" "official Isaac ROS Nvblox"
 assert_git_repo_accessible "${COMMUNITY_REPO_PATH}" "community repo"
 assert_git_repo_accessible "${OFFICIAL_NVBLOX_REPO_PATH}" "official Isaac ROS Nvblox repo"
 assert_git_repo_accessible "${OFFICIAL_NVBLOX_REPO_PATH}/nvblox_ros/nvblox_core" "official Isaac ROS Nvblox submodule"
-assert_git_repo_accessible "${OFFICIAL_VSLAM_REPO_PATH}" "official Isaac ROS Visual SLAM repo"
-assert_git_repo_accessible "${ORBBEC_LAUNCH_REPO_PATH}" "Orbbec Isaac launch repo"
 COMMUNITY_COMMIT="$(git -C "${COMMUNITY_REPO_PATH}" rev-parse HEAD)"
 OFFICIAL_NVBLOX_COMMIT="$(git -C "${OFFICIAL_NVBLOX_REPO_PATH}" rev-parse HEAD)"
 OFFICIAL_NVBLOX_CORE_COMMIT="$(git -C "${OFFICIAL_NVBLOX_REPO_PATH}/nvblox_ros/nvblox_core" rev-parse HEAD)"
-OFFICIAL_VSLAM_COMMIT="$(git -C "${OFFICIAL_VSLAM_REPO_PATH}" rev-parse HEAD)"
-ORBBEC_LAUNCH_COMMIT="$(git -C "${ORBBEC_LAUNCH_REPO_PATH}" rev-parse HEAD)"
 
 if [[ "${FORCE_REBUILD}" != "1" ]] && stamp_current; then
   log "Container workspace is already current. Skipping rebuild."
   exit 0
 fi
 
-sync_mobile_demo_workspace
+sync_static_demo_workspace
 rebuild_workspace
 verify_synced_workspace_layout
 verify_workspace_install || die "Container workspace verification failed."

@@ -1,13 +1,20 @@
-# Jetson Example: Run NVBlox on NVIDIA Jetson from a OneDrive Docker Archive
+# Jetson Example: Run Static NVBlox Mapping on NVIDIA Jetson from a OneDrive Docker Archive
 
-This example vendors the NVBlox setup flow into `reComputer`, uses a shared OneDrive `.tar` archive instead of `docker pull`, and runs mobile mapping with `isaac_ros_visual_slam`.
+This example vendors the NVBlox setup flow into `reComputer`, uses a shared OneDrive `.tar` archive instead of `docker pull`, and now defaults to the Gemini2-friendly static mapping path from `setup_nvbox`.
+
+The default runtime is no longer the old `isaac_ros_visual_slam + dynamic nvblox` mobile-mapping path. `reComputer run nvblox` now launches:
+
+- Host-side Orbbec Gemini2 color + depth streaming
+- Container-side `nvblox_examples_bringup/orbbec_example.launch.py` or `orbbec_debug.launch.py`
+- Managed static TF chain: `odom -> base_link -> camera_link -> camera_color_optical_frame -> camera_depth_optical_frame`
+- Static NVBlox output probing through `/nvblox_node/static_esdf_pointcloud` or `/nvblox_node/static_map_slice`
 
 On the first prepare run it will:
 
 1. Download `nvblox_images.tar` from the built-in OneDrive share link into `~/.cache/jetson-examples/nvblox`
 2. Run `docker load -i` on that archive
-3. Reuse the vendored NVBlox host/container prepare scripts
-4. Launch the mobile mapping demo
+3. Build the derived image and prepared host/container workspaces
+4. Launch the static Gemini2 NVBlox demo
 
 ## Requirements
 
@@ -15,8 +22,7 @@ On the first prepare run it will:
 - Ubuntu 22.04
 - JetPack 6.x
 - Docker with NVIDIA Container Runtime
-- Orbbec camera that exposes stereo IR + depth for host-side Visual SLAM input
-- Supported examples for this mobile mapping path include Gemini 330 series, Gemini 2 XL, and Gemini 2 VL
+- Orbbec Gemini2 or another Orbbec camera that provides `/camera/color/*` and `/camera/depth/*`
 - Roughly 60GB free disk space for the cached archive, derived image, and managed workspace
 
 ## Usage
@@ -81,26 +87,38 @@ It keeps:
 
 ## Troubleshooting
 
-- `reComputer run nvblox` now starts with a short stereo capability probe before the main demo. The probe must observe `depth`, `left_ir/right_ir` camera info, and `infra_1/infra_2` image topics before the container-side flow is allowed to start.
-- If the stereo capability probe fails, the run exits early and explains that this mobile mapping path requires stereo IR + depth input for `isaac_ros_visual_slam`. A plain USB link speed report such as `usb speed: 5000 Mbps` is not treated as proof that stereo input is actually available.
-- If the host camera stage fails after the capability probe passes, `reComputer run nvblox` prints the tail of the host camera log, the Gemini2 device state, the current `/dev/video*` snapshot, and the readiness-probe failure details.
-- If the host driver exits and the Gemini2 device falls back to `usb_present_no_video`, the run path automatically attempts one full recovery before exiting, so you can usually retry without unplugging the camera first.
-- If the run still fails, use the built-in connectivity debugger to isolate the host camera stage before investigating container-side ROS discovery:
+- The default path checks ordinary Gemini2 color/depth readiness, not stereo IR capability.
+- Host readiness now requires only:
+  - `/camera/color/camera_info`
+  - `/camera/depth/camera_info`
+  - `/camera/color/image_raw`
+  - `/camera/depth/image_raw`
+- Container readiness now checks host camera discovery through `/camera/color/camera_info` and `/camera/depth/camera_info`.
+- The runtime success criterion is static map output from `/nvblox_node/static_esdf_pointcloud` or `/nvblox_node/static_map_slice`.
+- `usb speed: 5000 Mbps` is not treated as proof that the full demo is healthy. The final authority is whether host color/depth, container visibility, static TF, and static map output all succeed.
+- If the host driver exits and Gemini2 falls back to `usb_present_no_video`, the run path still attempts automatic recovery with udev refresh and USB rebind so you can usually retry without unplugging the camera.
+- If the run still fails, use the built-in connectivity debugger:
 
 ```sh
 bash reComputer/scripts/nvblox/scripts/debug_runtime_connectivity.sh
 ```
+
+That debug path follows the same stages as the default runtime:
+
+1. Gemini2 device state
+2. Host ROS discovery environment
+3. Container ROS discovery environment
+4. Host color/depth readiness
+5. Container camera visibility
+6. Managed static TF availability
+7. Static NVBlox output
 
 ## Notes
 
 - This example does not use `docker pull` for the base image path.
 - The OneDrive downloader resolves the anonymous `download.aspx?...tempauth=...` URL from the preview page before downloading.
 - `NVBLOX_MODE=run` expects an already prepared `MANAGED_ROOT`.
-- The packaged runtime starts the Orbbec camera on the host and runs `isaac_ros_visual_slam + nvblox` in the container.
-- This mobile mapping path requires stereo IR + depth input because `isaac_ros_visual_slam` is launched from the stereo Orbbec pipeline before NVBlox is brought up.
-- The host launch enables left/right IR, depth, and color streams so Visual SLAM can publish live odometry for hand-held/mobile mapping after the stereo capability probe passes.
-- The container launch uses `isaac_orbbec_launch` with a managed top-level launch file that skips the in-container camera driver and consumes the host ROS topics instead.
-- The managed container workspace intentionally excludes upstream `nvblox_examples_bringup` and its segmentation/detection example dependencies. This mobile profile only builds the packages needed for Orbbec + Visual SLAM + dynamic NVBlox mapping.
-- Ordinary Gemini 2 should not be treated as a supported input for this demo unless the capability probe actually confirms stereo IR + depth topics on the current firmware, driver, and USB path.
-- The stereo IR requirement is consistent with Orbbec's published [DoubleInfraredViewer example](https://orbbec.github.io/OrbbecSDK/examples/cpp/Sample-DoubleInfraredViewer/) and the broader [Orbbec SDK device support matrix](https://orbbec.github.io/OrbbecSDK/).
-- If Visual SLAM odometry starts but the map looks sparse at first, move the camera to accumulate dynamic NVBlox output in RViz.
+- The host camera is launched with `ros2 launch orbbec_camera gemini2.launch.py publish_tf:=false tf_publish_rate:=0.0`.
+- The container workspace now centers on `nvblox_examples_bringup` static Orbbec launches and removes the old default dependence on Visual SLAM.
+- The managed static TF chain is generated inside the prepared container workspace rather than relying on device-published TF.
+- Headless mode switches the default launch file to `orbbec_debug.launch.py`, while GUI mode uses `orbbec_example.launch.py`.
