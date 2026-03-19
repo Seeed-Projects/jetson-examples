@@ -14,7 +14,7 @@ OFFICIAL_VSLAM_REPO_BRANCH="${OFFICIAL_VSLAM_REPO_BRANCH:-release-3.2}"
 ORBBEC_LAUNCH_REPO_URL="${ORBBEC_LAUNCH_REPO_URL:-https://github.com/orbbec/isaac_orbbec_launch.git}"
 ORBBEC_LAUNCH_REPO_BRANCH="${ORBBEC_LAUNCH_REPO_BRANCH:-main}"
 
-WORKSPACE_SPEC_VERSION="${EXPECTED_WORKSPACE_SPEC_VERSION:-mobile-vslam-dynamics-v1}"
+WORKSPACE_SPEC_VERSION="${EXPECTED_WORKSPACE_SPEC_VERSION:-mobile-vslam-dynamics-v2}"
 
 ISAAC_WS="/workspaces/isaac_ros-dev"
 SRC_DIR="${ISAAC_WS}/src"
@@ -59,7 +59,6 @@ OFFICIAL_NVBLOX_PACKAGE_PATHS=(
   "nvblox_ros_python_utils"
   "nvblox_ros"
   "nvblox_rviz_plugin"
-  "nvblox_examples/nvblox_examples_bringup"
 )
 
 OFFICIAL_VSLAM_PACKAGE_PATHS=(
@@ -97,7 +96,6 @@ REQUIRED_SRC_PATHS=(
   "nvblox_ros_python_utils"
   "nvblox_ros"
   "nvblox_rviz_plugin"
-  "nvblox_examples/nvblox_examples_bringup"
 )
 
 REQUIRED_SRC_FILE_PATHS=(
@@ -130,21 +128,21 @@ EXCLUDED_SRC_PATHS=(
 )
 
 ROSDEP_SKIP_KEYS=(
-  "isaac_ros_peoplenet_models_install"
-  "isaac_ros_detectnet"
   "isaac_ros_image_proc"
 )
 
 COLCON_TARGETS=(
   "isaac_orbbec_launch"
   "isaac_ros_visual_slam"
-  "nvblox_examples_bringup"
+  "nvblox_ros"
+  "nvblox_rviz_plugin"
 )
 
 RUNTIME_REQUIRED_PACKAGES=(
   "isaac_orbbec_launch"
   "isaac_ros_visual_slam"
   "nvblox_ros"
+  "nvblox_rviz_plugin"
 )
 
 INSTALL_REQUIRED_FILE_PATHS=(

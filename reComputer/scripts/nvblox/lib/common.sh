@@ -60,7 +60,7 @@ readonly ORBBEC_LAUNCH_REPO_BRANCH_DEFAULT="main"
 readonly BASE_IMAGE_PREFERRED="isaac_ros_dev-aarch64:latest"
 readonly DERIVED_IMAGE_TAG="local/isaac_ros_nvblox_orbbec:jp6-humble"
 readonly CONTAINER_NAME_DEFAULT="isaac_ros_nvblox_orbbec"
-readonly CONTAINER_WORKSPACE_SPEC_VERSION="mobile-vslam-dynamics-v1"
+readonly CONTAINER_WORKSPACE_SPEC_VERSION="mobile-vslam-dynamics-v2"
 readonly NVBLOX_IMAGE_SHARE_URL_DEFAULT="https://seeedstudio88-my.sharepoint.com/:u:/g/personal/youjiang_yu_seeedstudio88_onmicrosoft_com/IQCCDToomY6WSaRZdfsTs9vXAengb-SCEvNfSUgq0cipP6w?e=z9axor"
 readonly NVBLOX_IMAGE_ARCHIVE_NAME_DEFAULT="nvblox_images.tar"
 readonly NVBLOX_IMAGE_CACHE_DIR_DEFAULT="${SETUP_USER_HOME}/.cache/jetson-examples/nvblox"
@@ -921,13 +921,6 @@ EOF
   )
 
   docker_cmd "${validate_args[@]}" "${DERIVED_IMAGE_TAG}" bash -lc "${validate_cmd}"
-}
-
-validate_nvblox_examples_bringup_install_artifacts() {
-  local workspace_root="$1"
-  shift
-  local required_paths=("$@")
-  validate_package_install_artifacts "${workspace_root}" "nvblox_examples_bringup" "${required_paths[@]}"
 }
 
 select_base_image() {

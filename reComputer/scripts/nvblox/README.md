@@ -86,4 +86,5 @@ It keeps:
 - The packaged runtime starts the Orbbec camera on the host and runs `isaac_ros_visual_slam + nvblox` in the container.
 - The host launch enables left/right IR, depth, and color streams so Visual SLAM can publish live odometry for hand-held/mobile mapping.
 - The container launch uses `isaac_orbbec_launch` with a managed top-level launch file that skips the in-container camera driver and consumes the host ROS topics instead.
+- The managed container workspace intentionally excludes upstream `nvblox_examples_bringup` and its segmentation/detection example dependencies. This mobile profile only builds the packages needed for Orbbec + Visual SLAM + dynamic NVBlox mapping.
 - If Visual SLAM odometry starts but the map looks sparse at first, move the camera to accumulate dynamic NVBlox output in RViz.
