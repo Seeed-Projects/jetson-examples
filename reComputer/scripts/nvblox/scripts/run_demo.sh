@@ -40,6 +40,8 @@ LOG_DIR="${MANAGED_ROOT}/logs"
 CONTAINER_NAME="${CONTAINER_NAME_DEFAULT}"
 HOST_CAMERA_LOG="${LOG_DIR}/host-camera-$(date '+%Y%m%d-%H%M%S').log"
 HOST_CAMERA_PID=""
+HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH=""
+HOST_CAMERA_READINESS_OUTPUT=""
 XHOST_GRANTED=0
 USE_GUI=0
 RUN_RVIZ=1
@@ -499,6 +501,8 @@ launch_host_camera() {
   local launch_cmd=""
 
   ensure_gemini2_ready_for_run
+  HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH="$(gemini2_device_state)"
+  HOST_CAMERA_READINESS_OUTPUT=""
   launch_cmd=$(
     cat <<EOF
 source /opt/ros/${ROS_DISTRO_DEFAULT}/setup.bash
@@ -611,16 +615,48 @@ def main():
 sys.exit(main())
 PY
   )" || {
+    HOST_CAMERA_READINESS_OUTPUT="${readiness_output}"
     printf '%s\n' "${readiness_output}" >&2
     return 1
   }
 
+  HOST_CAMERA_READINESS_OUTPUT="${readiness_output}"
   while IFS= read -r readiness_line; do
     [[ -n "${readiness_line}" ]] || continue
     info "${readiness_line}"
   done <<< "${readiness_output}"
 
   return 0
+}
+
+handle_host_camera_failure() {
+  local driver_exited=0
+  local current_state=""
+  local recovery_succeeded=0
+
+  if ! kill -0 "${HOST_CAMERA_PID}" 2>/dev/null; then
+    driver_exited=1
+  fi
+  current_state="$(gemini2_device_state)"
+
+  log_host_camera_failure_diagnostics "${HOST_CAMERA_LOG}" "${HOST_CAMERA_READINESS_OUTPUT}" "Host Gemini2 startup failure"
+
+  if (( driver_exited )) && recover_gemini2_after_host_camera_failure "host camera startup failure" "${HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH}"; then
+    recovery_succeeded=1
+    current_state="$(gemini2_device_state)"
+  fi
+
+  if (( driver_exited )); then
+    if [[ "${current_state}" == "usb_present_no_video" ]]; then
+      die "Host Gemini2 driver exited before camera streams became ready, and the device lost its /dev/video nodes. Automatic recovery did not restore the camera. Check the diagnostics above and ${HOST_CAMERA_LOG}."
+    fi
+    if (( recovery_succeeded )); then
+      die "Host Gemini2 driver exited before camera streams became ready. Automatic recovery restored the device, so retry the demo after reviewing the diagnostics above and ${HOST_CAMERA_LOG}."
+    fi
+    die "Host Gemini2 driver exited before camera streams became ready. Check the diagnostics above and ${HOST_CAMERA_LOG}."
+  fi
+
+  die "Camera stream readiness probe failed while the host Gemini2 driver was still running. Check the diagnostics above and ${HOST_CAMERA_LOG}."
 }
 
 validate_container_launch_artifact() {
@@ -718,10 +754,7 @@ fi
 
 launch_host_camera
 if ! wait_for_camera_streams_ready; then
-  if ! kill -0 "${HOST_CAMERA_PID}" 2>/dev/null; then
-    die "Host Gemini2 driver exited before camera streams became ready. Check ${HOST_CAMERA_LOG}."
-  fi
-  die "Camera stream readiness probe failed. Check ${HOST_CAMERA_LOG}."
+  handle_host_camera_failure
 fi
 info "Host stereo, depth, and color streams are ready for mobile mapping."
 

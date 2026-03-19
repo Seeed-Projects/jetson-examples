@@ -17,6 +17,8 @@ VSLAM_POSE_TIMEOUT_SEC=30
 RUNTIME_OUTPUT_TIMEOUT_SEC=30
 CURRENT_STAGE=""
 HOST_CAMERA_PID=""
+HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH=""
+HOST_CAMERA_READINESS_OUTPUT=""
 
 while (($#)); do
   case "$1" in
@@ -174,6 +176,8 @@ trap stop_host_camera_driver EXIT INT TERM
 launch_host_camera() {
   local launch_cmd=""
 
+  HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH="$(gemini2_device_state)"
+  HOST_CAMERA_READINESS_OUTPUT=""
   launch_cmd=$(
     cat <<EOF
 source /opt/ros/${ROS_DISTRO_DEFAULT}/setup.bash
@@ -286,16 +290,39 @@ def main():
 sys.exit(main())
 PY
   )" || {
+    HOST_CAMERA_READINESS_OUTPUT="${readiness_output}"
     printf '%s\n' "${readiness_output}" >&2
     return 1
   }
 
+  HOST_CAMERA_READINESS_OUTPUT="${readiness_output}"
   while IFS= read -r readiness_line; do
     [[ -n "${readiness_line}" ]] || continue
     info "${readiness_line}"
   done <<< "${readiness_output}"
 
   return 0
+}
+
+handle_host_camera_failure() {
+  local driver_exited=0
+  local current_state=""
+
+  if ! kill -0 "${HOST_CAMERA_PID}" 2>/dev/null; then
+    driver_exited=1
+  fi
+  current_state="$(gemini2_device_state)"
+
+  log_host_camera_failure_diagnostics "${HOST_CAMERA_LOG}" "${HOST_CAMERA_READINESS_OUTPUT}" "Host Gemini2 debug failure"
+
+  if (( driver_exited )); then
+    if [[ "${HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH}" == "ready" && "${current_state}" == "usb_present_no_video" ]]; then
+      fail_stage "Host Gemini2 driver exited before camera streams became ready, and the device lost its /dev/video nodes."
+    fi
+    fail_stage "Host Gemini2 driver exited before camera streams became ready."
+  fi
+
+  fail_stage "Camera stream readiness probe failed while the host Gemini2 driver was still running."
 }
 
 probe_container_camera_visibility() {
@@ -726,10 +753,7 @@ launch_host_camera
 if wait_for_camera_streams_ready; then
   pass_stage
 else
-  if ! kill -0 "${HOST_CAMERA_PID}" 2>/dev/null; then
-    fail_stage "Host Gemini2 driver exited before camera streams became ready. Check ${HOST_CAMERA_LOG}."
-  fi
-  fail_stage "Camera stream readiness probe failed. Check ${HOST_CAMERA_LOG}."
+  handle_host_camera_failure
 fi
 
 begin_stage "5/7 Container camera visibility probe"

@@ -78,6 +78,16 @@ It keeps:
 - the cached base archive in `~/.cache/jetson-examples/nvblox`
 - the loaded base image imported from `nvblox_images.tar`
 
+## Troubleshooting
+
+- If the host Gemini2 camera stage fails, `reComputer run nvblox` now prints the tail of the host camera log, the Gemini2 device state, the current `/dev/video*` snapshot, and the readiness-probe failure details.
+- If the host driver exits and the Gemini2 device falls back to `usb_present_no_video`, the run path automatically attempts one full recovery before exiting, so you can usually retry without unplugging the camera first.
+- If the run still fails, use the built-in connectivity debugger to isolate the host camera stage before investigating container-side ROS discovery:
+
+```sh
+bash reComputer/scripts/nvblox/scripts/debug_runtime_connectivity.sh
+```
+
 ## Notes
 
 - This example does not use `docker pull` for the base image path.

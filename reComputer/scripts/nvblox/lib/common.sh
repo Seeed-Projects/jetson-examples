@@ -51,6 +51,7 @@ readonly GEMINI2_USB_VENDOR_ID="2bc5"
 readonly GEMINI2_USB_PRODUCT_ID="0670"
 readonly GEMINI2_READY_TIMEOUT_SECONDS=15
 readonly GEMINI2_SIGNAL_TIMEOUT_SECONDS=5
+readonly HOST_CAMERA_LOG_TAIL_LINES=40
 readonly COMMUNITY_REPO_URL_DEFAULT="https://github.com/jjjadand/isaac-NVblox-Orbbec.git"
 readonly COMMUNITY_REPO_BRANCH_DEFAULT="main"
 readonly OFFICIAL_VSLAM_REPO_URL_DEFAULT="https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_visual_slam.git"
@@ -334,6 +335,18 @@ gemini2_video_nodes_joined() {
   printf '%s\n' "${video_nodes[*]}"
 }
 
+log_gemini2_video_nodes_snapshot() {
+  local prefix="${1:-Gemini2 /dev/video snapshot}"
+  local video_nodes=""
+
+  video_nodes="$(gemini2_video_nodes_joined)"
+  if [[ -n "${video_nodes}" ]]; then
+    info "${prefix}: ${video_nodes}"
+  else
+    warn "${prefix}: <none>"
+  fi
+}
+
 gemini2_device_state() {
   local video_nodes=""
 
@@ -552,6 +565,55 @@ recover_gemini2_device() {
 
   log_gemini2_device_state "Gemini2 device state after ${context}"
   return 1
+}
+
+recover_gemini2_after_host_camera_failure() {
+  local context="${1:-host camera failure}"
+  local initial_state="${2:-}"
+  local current_state=""
+
+  current_state="$(gemini2_device_state)"
+  if [[ "${initial_state}" != "ready" || "${current_state}" != "usb_present_no_video" ]]; then
+    return 1
+  fi
+
+  warn "Gemini2 lost its /dev/video nodes during ${context}. Attempting one full recovery."
+  if recover_gemini2_device "${context}" 0 1 1; then
+    info "Gemini2 full recovery succeeded after ${context}."
+    return 0
+  fi
+
+  warn "Gemini2 full recovery did not restore /dev/video nodes after ${context}."
+  return 1
+}
+
+log_host_camera_failure_diagnostics() {
+  local log_path="$1"
+  local readiness_output="${2:-}"
+  local context="${3:-Host camera failure}"
+  local line=""
+
+  warn "${context}: Gemini2 device state is $(gemini2_device_state)."
+  log_gemini2_video_nodes_snapshot "${context} /dev/video snapshot"
+
+  if [[ -n "${readiness_output}" ]]; then
+    while IFS= read -r line; do
+      [[ -n "${line}" ]] || continue
+      warn "${context}: ${line}"
+    done <<< "${readiness_output}"
+  else
+    warn "${context}: readiness probe produced no additional output."
+  fi
+
+  if [[ -f "${log_path}" ]]; then
+    warn "${context}: host camera log tail (${log_path})"
+    while IFS= read -r line; do
+      [[ -n "${line}" ]] || continue
+      warn "[host-camera-log] ${line}"
+    done < <(tail -n "${HOST_CAMERA_LOG_TAIL_LINES}" "${log_path}" 2>/dev/null || true)
+  else
+    warn "${context}: host camera log is missing at ${log_path}."
+  fi
 }
 
 assert_supported_platform() {
