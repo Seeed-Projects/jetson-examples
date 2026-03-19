@@ -488,9 +488,9 @@ stop_host_camera_driver() {
   cleanup_residual_gemini2_processes "post-run Gemini2 cleanup" || true
 
   if [[ "$(gemini2_device_state)" == "usb_present_no_video" ]]; then
-    warn "Gemini2 USB device is still present, but /dev/video nodes are missing after cleanup. Attempting light recovery."
-    if ! recover_gemini2_device "post-run cleanup" 0 0 0; then
-      warn "Gemini2 light recovery did not restore /dev/video nodes after cleanup."
+    warn "Gemini2 USB device is still present, but /dev/video nodes are missing after cleanup. Attempting full recovery."
+    if ! recover_gemini2_device "post-run cleanup" 0 1 0; then
+      warn "Gemini2 full recovery did not restore /dev/video nodes after cleanup."
     fi
   fi
 
