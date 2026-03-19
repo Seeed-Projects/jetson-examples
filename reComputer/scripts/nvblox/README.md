@@ -1,13 +1,13 @@
 # Jetson Example: Run NVBlox on NVIDIA Jetson from a OneDrive Docker Archive
 
-This example vendors the NVBlox setup flow into `reComputer` and uses a shared OneDrive `.tar` archive instead of `docker pull`.
+This example vendors the NVBlox setup flow into `reComputer`, uses a shared OneDrive `.tar` archive instead of `docker pull`, and runs mobile mapping with `isaac_ros_visual_slam`.
 
 On the first prepare run it will:
 
 1. Download `nvblox_images.tar` from the built-in OneDrive share link into `~/.cache/jetson-examples/nvblox`
 2. Run `docker load -i` on that archive
 3. Reuse the vendored NVBlox host/container prepare scripts
-4. Launch the demo
+4. Launch the mobile mapping demo
 
 ## Requirements
 
@@ -83,3 +83,7 @@ It keeps:
 - This example does not use `docker pull` for the base image path.
 - The OneDrive downloader resolves the anonymous `download.aspx?...tempauth=...` URL from the preview page before downloading.
 - `NVBLOX_MODE=run` expects an already prepared `MANAGED_ROOT`.
+- The packaged runtime starts the Orbbec camera on the host and runs `isaac_ros_visual_slam + nvblox` in the container.
+- The host launch enables left/right IR, depth, and color streams so Visual SLAM can publish live odometry for hand-held/mobile mapping.
+- The container launch uses `isaac_orbbec_launch` with a managed top-level launch file that skips the in-container camera driver and consumes the host ROS topics instead.
+- If Visual SLAM odometry starts but the map looks sparse at first, move the camera to accumulate dynamic NVBlox output in RViz.

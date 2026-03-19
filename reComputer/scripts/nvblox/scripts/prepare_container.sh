@@ -35,12 +35,18 @@ CONTAINER_WS="${MANAGED_ROOT}/isaac_ros-dev"
 IMAGE_STAMP="${MANAGED_ROOT}/.stamps/derived_image.env"
 DOCKERFILE_PATH="${PROJECT_ROOT}/docker/Dockerfile.nvblox_orbbec"
 CONTEXT_HASH="$(container_image_context_hash)"
+PREPARED_CONTAINER_REQUIRED_PACKAGE="isaac_orbbec_launch"
 PREPARED_CONTAINER_REQUIRED_PATHS=(
-  "launch/orbbec_transforms.launch.py"
-  "launch/orbbec_example.launch.py"
-  "launch/orbbec_debug.launch.py"
-  "launch/orbbec_nvblox_standalone.launch.py"
-  "config/nvblox/specializations/nvblox_orbbec_static.yaml"
+  "launch/perception/vslam.launch.py"
+  "launch/nvblox/nvblox.launch.py"
+  "launch/rviz/rviz.launch.py"
+  "launch/recomputer_orbbec_dynamics.launch.py"
+  "launch/recomputer_orbbec_vslam_probe.launch.py"
+  "config/sensors/orbbec.yaml"
+  "config/nvblox/nvblox_base.yaml"
+  "config/nvblox/specializations/nvblox_dynamics.yaml"
+  "config/nvblox/specializations/nvblox_realsense.yaml"
+  "config/rviz/realsense_dynamics_example.rviz"
 )
 
 probe_gpu_runtime() {
@@ -124,6 +130,10 @@ prepare_container_workspace() {
     -e "SETUP_IMAGE_CONTEXT_HASH=${CONTEXT_HASH}" \
     -e "COMMUNITY_REPO_URL=${COMMUNITY_REPO_URL_DEFAULT}" \
     -e "COMMUNITY_REPO_BRANCH=${COMMUNITY_REPO_BRANCH_DEFAULT}" \
+    -e "OFFICIAL_VSLAM_REPO_URL=${OFFICIAL_VSLAM_REPO_URL_DEFAULT}" \
+    -e "OFFICIAL_VSLAM_REPO_BRANCH=${OFFICIAL_VSLAM_REPO_BRANCH_DEFAULT}" \
+    -e "ORBBEC_LAUNCH_REPO_URL=${ORBBEC_LAUNCH_REPO_URL_DEFAULT}" \
+    -e "ORBBEC_LAUNCH_REPO_BRANCH=${ORBBEC_LAUNCH_REPO_BRANCH_DEFAULT}" \
     -v "${CONTAINER_WS}:/workspaces/isaac_ros-dev" \
     "${DERIVED_IMAGE_TAG}" \
     /opt/nvblox/bin/prepare_container_workspace.sh
@@ -150,7 +160,7 @@ validate_prepared_container_workspace() {
   [[ "${STAMP_IMAGE_ID:-}" == "${current_image_id}" ]] || \
     die "Prepared container workspace was built against image ${STAMP_IMAGE_ID:-unknown}, expected ${current_image_id}."
 
-  if ! validate_nvblox_examples_bringup_install_artifacts "${CONTAINER_WS}" "${PREPARED_CONTAINER_REQUIRED_PATHS[@]}"; then
+  if ! validate_package_install_artifacts "${CONTAINER_WS}" "${PREPARED_CONTAINER_REQUIRED_PACKAGE}" "${PREPARED_CONTAINER_REQUIRED_PATHS[@]}"; then
     die "Prepared container install artifacts are missing or invalid inside the container workspace."
   fi
 

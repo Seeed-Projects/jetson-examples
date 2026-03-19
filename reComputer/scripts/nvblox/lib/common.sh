@@ -45,16 +45,22 @@ readonly MANAGED_SENTINEL_NAME=".managed-by-setup-nvbox"
 readonly ROS_DISTRO_DEFAULT="humble"
 readonly ORBBEC_VERSION="v2.3.4"
 readonly ORBBEC_REPO_URL="https://github.com/orbbec/OrbbecSDK_ROS2.git"
+readonly ORBBEC_HOST_LAUNCH_PATH_DEFAULT="${PROJECT_ROOT}/host/orbbec_mobile_host.launch.py"
+readonly ORBBEC_HOST_CONFIG_PATH_DEFAULT="${PROJECT_ROOT}/config/orbbec_vslam_mobile.yaml"
 readonly GEMINI2_USB_VENDOR_ID="2bc5"
 readonly GEMINI2_USB_PRODUCT_ID="0670"
 readonly GEMINI2_READY_TIMEOUT_SECONDS=15
 readonly GEMINI2_SIGNAL_TIMEOUT_SECONDS=5
 readonly COMMUNITY_REPO_URL_DEFAULT="https://github.com/jjjadand/isaac-NVblox-Orbbec.git"
 readonly COMMUNITY_REPO_BRANCH_DEFAULT="main"
+readonly OFFICIAL_VSLAM_REPO_URL_DEFAULT="https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_visual_slam.git"
+readonly OFFICIAL_VSLAM_REPO_BRANCH_DEFAULT="release-3.2"
+readonly ORBBEC_LAUNCH_REPO_URL_DEFAULT="https://github.com/orbbec/isaac_orbbec_launch.git"
+readonly ORBBEC_LAUNCH_REPO_BRANCH_DEFAULT="main"
 readonly BASE_IMAGE_PREFERRED="isaac_ros_dev-aarch64:latest"
 readonly DERIVED_IMAGE_TAG="local/isaac_ros_nvblox_orbbec:jp6-humble"
 readonly CONTAINER_NAME_DEFAULT="isaac_ros_nvblox_orbbec"
-readonly CONTAINER_WORKSPACE_SPEC_VERSION="static-demo-final-v4"
+readonly CONTAINER_WORKSPACE_SPEC_VERSION="mobile-vslam-dynamics-v1"
 readonly NVBLOX_IMAGE_SHARE_URL_DEFAULT="https://seeedstudio88-my.sharepoint.com/:u:/g/personal/youjiang_yu_seeedstudio88_onmicrosoft_com/IQCCDToomY6WSaRZdfsTs9vXAengb-SCEvNfSUgq0cipP6w?e=z9axor"
 readonly NVBLOX_IMAGE_ARCHIVE_NAME_DEFAULT="nvblox_images.tar"
 readonly NVBLOX_IMAGE_CACHE_DIR_DEFAULT="${SETUP_USER_HOME}/.cache/jetson-examples/nvblox"
@@ -391,7 +397,10 @@ cleanup_residual_gemini2_processes() {
   local context="${1:-Gemini2 cleanup}"
   local patterns=(
     'ros2 launch orbbec_camera gemini2.launch.py'
+    'ros2 launch orbbec_camera gemini_330_series.launch.py'
+    'orbbec_mobile_host.launch.py'
     'camera_container'
+    'orbbec_host_container'
     'orbbec_camera_node'
   )
   local pattern=""
@@ -863,9 +872,10 @@ append_ros_discovery_container_args() {
   append_ros_discovery_mount_args "${docker_args_name}"
 }
 
-validate_nvblox_examples_bringup_install_artifacts() {
+validate_package_install_artifacts() {
   local workspace_root="$1"
-  shift
+  local package_name="$2"
+  shift 2
   local required_paths=("$@")
   local required_artifact_list=""
   local validate_cmd=""
@@ -873,6 +883,7 @@ validate_nvblox_examples_bringup_install_artifacts() {
     run
     --rm
     -e "ROS_DISTRO=${ROS_DISTRO_DEFAULT}"
+    -e "PACKAGE_NAME=${package_name}"
     -v "${workspace_root}:/workspaces/isaac_ros-dev"
   )
 
@@ -895,9 +906,9 @@ source "/workspaces/isaac_ros-dev/install/setup.bash"
 if (( restore_nounset )); then
   set -u
 fi
-PACKAGE_PREFIX="$(ros2 pkg prefix nvblox_examples_bringup 2>/dev/null || true)"
+PACKAGE_PREFIX="$(ros2 pkg prefix "${PACKAGE_NAME}" 2>/dev/null || true)"
 [[ -n "${PACKAGE_PREFIX}" ]]
-INSTALL_ROOT="${PACKAGE_PREFIX}/share/nvblox_examples_bringup"
+INSTALL_ROOT="${PACKAGE_PREFIX}/share/${PACKAGE_NAME}"
 
 while IFS= read -r relative_path; do
   [[ -n "${relative_path}" ]] || continue
@@ -910,6 +921,13 @@ EOF
   )
 
   docker_cmd "${validate_args[@]}" "${DERIVED_IMAGE_TAG}" bash -lc "${validate_cmd}"
+}
+
+validate_nvblox_examples_bringup_install_artifacts() {
+  local workspace_root="$1"
+  shift
+  local required_paths=("$@")
+  validate_package_install_artifacts "${workspace_root}" "nvblox_examples_bringup" "${required_paths[@]}"
 }
 
 select_base_image() {

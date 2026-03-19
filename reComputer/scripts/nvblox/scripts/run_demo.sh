@@ -41,24 +41,37 @@ CONTAINER_NAME="${CONTAINER_NAME_DEFAULT}"
 HOST_CAMERA_LOG="${LOG_DIR}/host-camera-$(date '+%Y%m%d-%H%M%S').log"
 HOST_CAMERA_PID=""
 XHOST_GRANTED=0
-LAUNCH_FILE="orbbec_example.launch.py"
 USE_GUI=0
-EXPECTED_CAMERA_INFO_FRAME="camera_color_optical_frame"
-STATIC_TF_PROBE_TIMEOUT_SEC=20
+RUN_RVIZ=1
+LAUNCH_PACKAGE="isaac_orbbec_launch"
+LAUNCH_FILE="recomputer_orbbec_dynamics.launch.py"
+VSLAM_PROBE_LAUNCH_FILE="recomputer_orbbec_vslam_probe.launch.py"
+EXPECTED_COLOR_CAMERA_INFO_FRAME="camera_color_optical_frame"
+VSLAM_POSE_PROBE_TIMEOUT_SEC=30
 PREPARE_HINT="Run NVBLOX_MODE=prepare NVBLOX_FORCE_REBUILD=1 reComputer run nvblox."
 CONTAINER_PREPARE_HINT="Prepared container workspace is invalid. ${PREPARE_HINT}"
+HOST_CAMERA_LAUNCH_FILE="${ORBBEC_HOST_LAUNCH_PATH_DEFAULT}"
+HOST_CAMERA_CONFIG_FILE="${ORBBEC_HOST_CONFIG_PATH_DEFAULT}"
+PREPARED_CONTAINER_REQUIRED_PACKAGE="isaac_orbbec_launch"
 
 [[ -f "${HOST_WS}/install/setup.bash" ]] || die "Host workspace is missing at ${HOST_WS}. ${PREPARE_HINT}"
 [[ -f "${CONTAINER_WS}/install/setup.bash" ]] || die "Container workspace is missing at ${CONTAINER_WS}. ${PREPARE_HINT}"
 [[ -f "${CONTAINER_STAMP}" ]] || die "Container workspace stamp is missing at ${CONTAINER_STAMP}. ${PREPARE_HINT}"
+[[ -f "${HOST_CAMERA_LAUNCH_FILE}" ]] || die "Missing host camera launch file ${HOST_CAMERA_LAUNCH_FILE}."
+[[ -f "${HOST_CAMERA_CONFIG_FILE}" ]] || die "Missing host camera config ${HOST_CAMERA_CONFIG_FILE}."
 docker_cmd image inspect "${DERIVED_IMAGE_TAG}" >/dev/null 2>&1 || die "Derived image ${DERIVED_IMAGE_TAG} is missing. ${PREPARE_HINT}"
 
 PREPARED_CONTAINER_REQUIRED_PATHS=(
-  "launch/orbbec_transforms.launch.py"
-  "launch/orbbec_example.launch.py"
-  "launch/orbbec_debug.launch.py"
-  "launch/orbbec_nvblox_standalone.launch.py"
-  "config/nvblox/specializations/nvblox_orbbec_static.yaml"
+  "launch/perception/vslam.launch.py"
+  "launch/nvblox/nvblox.launch.py"
+  "launch/rviz/rviz.launch.py"
+  "launch/recomputer_orbbec_dynamics.launch.py"
+  "launch/recomputer_orbbec_vslam_probe.launch.py"
+  "config/sensors/orbbec.yaml"
+  "config/nvblox/nvblox_base.yaml"
+  "config/nvblox/specializations/nvblox_dynamics.yaml"
+  "config/nvblox/specializations/nvblox_realsense.yaml"
+  "config/rviz/realsense_dynamics_example.rviz"
 )
 
 validate_prepared_image_state() {
@@ -117,7 +130,7 @@ validate_prepared_container_workspace_state() {
   [[ "${STAMP_IMAGE_ID:-}" == "${current_image_id}" ]] || \
     die "Prepared container workspace was built against image ${STAMP_IMAGE_ID:-unknown}, expected ${current_image_id}. ${PREPARE_HINT}"
 
-  if ! validate_nvblox_examples_bringup_install_artifacts "${CONTAINER_WS}" "${PREPARED_CONTAINER_REQUIRED_PATHS[@]}"; then
+  if ! validate_package_install_artifacts "${CONTAINER_WS}" "${PREPARED_CONTAINER_REQUIRED_PACKAGE}" "${PREPARED_CONTAINER_REQUIRED_PATHS[@]}"; then
     die "Prepared container install artifacts are missing or invalid. ${PREPARE_HINT}"
   fi
 
@@ -132,8 +145,8 @@ probe_container_camera_visibility() {
     run
     --rm
     -e "ROS_DISTRO=${ROS_DISTRO_DEFAULT}"
-    -e "EXPECTED_CAMERA_INFO_FRAME=${EXPECTED_CAMERA_INFO_FRAME}"
-    -e "PROBE_TIMEOUT_SECONDS=20"
+    -e "EXPECTED_COLOR_FRAME=${EXPECTED_COLOR_CAMERA_INFO_FRAME}"
+    -e "PROBE_TIMEOUT_SECONDS=25"
     -v "${CONTAINER_WS}:/workspaces/isaac_ros-dev"
   )
 
@@ -153,7 +166,7 @@ source "/workspaces/isaac_ros-dev/install/setup.bash"
 if (( restore_nounset )); then
   set -u
 fi
-python3 - "${EXPECTED_CAMERA_INFO_FRAME}" "${PROBE_TIMEOUT_SECONDS}" <<'PY'
+python3 - "${EXPECTED_COLOR_FRAME}" "${PROBE_TIMEOUT_SECONDS}" <<'PY'
 import sys
 import time
 
@@ -161,9 +174,9 @@ import rclpy
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
-from sensor_msgs.msg import CameraInfo
+from sensor_msgs.msg import CameraInfo, Image
 
-expected_frame = sys.argv[1]
+expected_color_frame = sys.argv[1]
 timeout_seconds = float(sys.argv[2])
 
 
@@ -171,26 +184,37 @@ class CameraVisibilityProbe(Node):
     def __init__(self):
         super().__init__('orbbec_container_camera_visibility_probe')
         self.frames = {}
-        self.create_subscription(
-            CameraInfo,
-            '/camera/color/camera_info',
-            self._color_info_callback,
-            qos_profile_sensor_data)
-        self.create_subscription(
-            CameraInfo,
-            '/camera/depth/camera_info',
-            self._depth_info_callback,
-            qos_profile_sensor_data)
+        self.received = {
+            'color_info': False,
+            'depth_info': False,
+            'left_ir_info': False,
+            'right_ir_info': False,
+            'infra_1': False,
+            'infra_2': False,
+            'depth_output': False,
+        }
+        self.create_subscription(CameraInfo, '/camera/color/camera_info', self._info('color_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/depth/camera_info', self._info('depth_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/left_ir/camera_info', self._info('left_ir_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/right_ir/camera_info', self._info('right_ir_info'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/orbbec_camera_node/output/infra_1', self._mark('infra_1'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/orbbec_camera_node/output/infra_2', self._mark('infra_2'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/orbbec_camera_node/output/depth', self._mark('depth_output'), qos_profile_sensor_data)
 
-    def _color_info_callback(self, msg: CameraInfo):
-        self.frames['color'] = msg.header.frame_id
+    def _mark(self, key):
+        def callback(_msg):
+            self.received[key] = True
+        return callback
 
-    def _depth_info_callback(self, msg: CameraInfo):
-        self.frames['depth'] = msg.header.frame_id
+    def _info(self, key):
+        def callback(msg: CameraInfo):
+            self.received[key] = True
+            self.frames[key] = msg.header.frame_id
+        return callback
 
 
 def main() -> int:
-    print('[container-probe] Waiting for host camera_info topics inside the container', flush=True)
+    print('[container-probe] Waiting for host stereo, depth, and color topics inside the container', flush=True)
     rclpy.init(args=None)
     node = CameraVisibilityProbe()
     executor = SingleThreadedExecutor()
@@ -200,37 +224,26 @@ def main() -> int:
     try:
         while time.monotonic() < deadline:
             executor.spin_once(timeout_sec=0.2)
-            if 'color' in node.frames and 'depth' in node.frames:
+            if all(node.received.values()):
                 break
 
-        missing = []
-        if 'color' not in node.frames:
-            missing.append('/camera/color/camera_info')
-        if 'depth' not in node.frames:
-            missing.append('/camera/depth/camera_info')
+        missing = [name for name, received in node.received.items() if not received]
         if missing:
+            print('[container-probe] Timed out waiting for: ' + ', '.join(missing), file=sys.stderr, flush=True)
+            return 1
+
+        for key in ('color_info', 'depth_info', 'left_ir_info', 'right_ir_info'):
+            print(f'[container-probe] Observed {key} frame_id: {node.frames.get(key, "<empty>")}', flush=True)
+
+        if node.frames['color_info'] != expected_color_frame:
             print(
-                '[container-probe] Timed out waiting for: ' + ', '.join(missing),
+                f'[container-probe] Unexpected /camera/color/camera_info frame_id: {node.frames["color_info"]} '
+                f'(expected {expected_color_frame})',
                 file=sys.stderr,
                 flush=True)
             return 1
-
-        print(f'[container-probe] Observed /camera/color/camera_info frame_id: {node.frames["color"]}', flush=True)
-        print(f'[container-probe] Observed /camera/depth/camera_info frame_id: {node.frames["depth"]}', flush=True)
-
-        if node.frames['color'] != expected_frame:
-            print(
-                f'[container-probe] Unexpected /camera/color/camera_info frame_id: {node.frames["color"]} '
-                f'(expected {expected_frame})',
-                file=sys.stderr,
-                flush=True)
-            return 1
-        if node.frames['depth'] != expected_frame:
-            print(
-                f'[container-probe] Unexpected /camera/depth/camera_info frame_id: {node.frames["depth"]} '
-                f'(expected {expected_frame})',
-                file=sys.stderr,
-                flush=True)
+        if not node.frames['depth_info']:
+            print('[container-probe] /camera/depth/camera_info frame_id is empty', file=sys.stderr, flush=True)
             return 1
 
         print('[container-probe] Container camera visibility probe passed.', flush=True)
@@ -258,20 +271,23 @@ EOF
   return 0
 }
 
-probe_container_static_tf() {
+probe_container_visual_slam_pose() {
   local probe_output=""
   local probe_args=(
     run
     --rm
     -e "ROS_DISTRO=${ROS_DISTRO_DEFAULT}"
-    -e "PROBE_TIMEOUT_SECONDS=${STATIC_TF_PROBE_TIMEOUT_SEC}"
+    -e "NVBLOX_LAUNCH_PACKAGE=${LAUNCH_PACKAGE}"
+    -e "NVBLOX_VSLAM_PROBE_LAUNCH_FILE=${VSLAM_PROBE_LAUNCH_FILE}"
+    -e "PROBE_TIMEOUT_SECONDS=${VSLAM_POSE_PROBE_TIMEOUT_SEC}"
+    -e "NVBLOX_GLOBAL_FRAME=odom"
     -v "${CONTAINER_WS}:/workspaces/isaac_ros-dev"
   )
 
   append_jetson_container_args probe_args
   append_ros_discovery_container_args probe_args
 
-  info "Probing container static TF chain in a short-lived container."
+  info "Probing container Visual SLAM pose output in a short-lived container."
 
   probe_output="$(
     docker_cmd "${probe_args[@]}" "${DERIVED_IMAGE_TAG}" bash -lc "$(cat <<'EOF'
@@ -287,7 +303,7 @@ if (( restore_nounset )); then
   set -u
 fi
 
-LOG_FILE="/tmp/orbbec-tf-probe.log"
+LOG_FILE="/tmp/orbbec-vslam-probe.log"
 LAUNCH_PID=""
 
 terminate_pid() {
@@ -321,72 +337,78 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-ros2 launch nvblox_examples_bringup orbbec_transforms.launch.py >"${LOG_FILE}" 2>&1 &
+ros2 launch "${NVBLOX_LAUNCH_PACKAGE}" "${NVBLOX_VSLAM_PROBE_LAUNCH_FILE}" global_frame:="${NVBLOX_GLOBAL_FRAME}" >"${LOG_FILE}" 2>&1 &
 LAUNCH_PID=$!
 
 status=0
-python3 - "${PROBE_TIMEOUT_SECONDS}" <<'PY' || status=$?
+python3 - "${PROBE_TIMEOUT_SECONDS}" "${NVBLOX_GLOBAL_FRAME}" <<'PY' || status=$?
 import sys
 import time
 
 import rclpy
+from nav_msgs.msg import Odometry
 from rclpy.duration import Duration
+from rclpy.executors import SingleThreadedExecutor
+from rclpy.node import Node
 from rclpy.time import Time
 from tf2_ros import Buffer, TransformListener
 
 timeout_seconds = float(sys.argv[1])
-required_transforms = [
-    ('odom', 'base_link'),
-    ('odom', 'camera_link'),
-    ('odom', 'camera_color_optical_frame'),
-]
+global_frame = sys.argv[2]
+
+
+class VisualSlamProbe(Node):
+    def __init__(self):
+        super().__init__('orbbec_container_vslam_probe')
+        self.odom_frame_id = None
+        self.child_frame_id = None
+        self.create_subscription(Odometry, '/visual_slam/tracking/odometry', self._odom_callback, 10)
+
+    def _odom_callback(self, msg: Odometry):
+        self.odom_frame_id = msg.header.frame_id
+        self.child_frame_id = msg.child_frame_id
 
 
 def main() -> int:
-    print('[container-tf-probe] Waiting for managed static TF chain inside the container', flush=True)
+    print('[container-vslam-probe] Waiting for Visual SLAM odometry and TF output', flush=True)
     rclpy.init(args=None)
-    node = rclpy.create_node('orbbec_container_tf_probe')
+    node = VisualSlamProbe()
+    executor = SingleThreadedExecutor()
+    executor.add_node(node)
     tf_buffer = Buffer(cache_time=Duration(seconds=timeout_seconds))
     tf_listener = TransformListener(tf_buffer, node, spin_thread=False)
     deadline = time.monotonic() + timeout_seconds
-    last_missing = []
 
     try:
-        while time.monotonic() < deadline:
-            rclpy.spin_once(node, timeout_sec=0.2)
-            last_missing = []
-            for target_frame, source_frame in required_transforms:
-                if not tf_buffer.can_transform(
-                        target_frame,
-                        source_frame,
-                        Time(),
-                        timeout=Duration(seconds=0.1)):
-                    last_missing.append(f'{target_frame} <- {source_frame}')
+      while time.monotonic() < deadline:
+        executor.spin_once(timeout_sec=0.2)
+        has_tf = tf_buffer.can_transform(global_frame, 'camera_link', Time(), timeout=Duration(seconds=0.1))
+        has_odom = node.odom_frame_id is not None
+        if has_tf and has_odom:
+          print(
+              f'[container-vslam-probe] Observed /visual_slam/tracking/odometry frame_id={node.odom_frame_id} '
+              f'child_frame_id={node.child_frame_id}',
+              flush=True)
+          print(f'[container-vslam-probe] TF probe passed for {global_frame} <- camera_link', flush=True)
+          return 0
 
-            if not last_missing:
-                print(
-                    '[container-tf-probe] TF probe passed for odom <- base_link, '
-                    'odom <- camera_link, odom <- camera_color_optical_frame',
-                    flush=True)
-                return 0
-
-        print(
-            '[container-tf-probe] TF probe failed. Missing transforms: '
-            + ', '.join(last_missing or ['unknown']),
-            file=sys.stderr,
-            flush=True)
-        return 1
+      print(
+          f'[container-vslam-probe] Timed out waiting for Visual SLAM odometry and TF {global_frame} <- camera_link.',
+          file=sys.stderr,
+          flush=True)
+      return 1
     finally:
-        del tf_listener
-        node.destroy_node()
-        rclpy.shutdown()
+      del tf_listener
+      executor.remove_node(node)
+      node.destroy_node()
+      rclpy.shutdown()
 
 
 sys.exit(main())
 PY
 
 if (( status != 0 )); then
-  printf '[container-tf-probe] Relevant launch log tail:\n'
+  printf '[container-vslam-probe] Relevant launch log tail:\n'
   tail -n 40 "${LOG_FILE}" 2>/dev/null || true
 fi
 
@@ -474,7 +496,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 launch_host_camera() {
-  local launch_cmd
+  local launch_cmd=""
 
   ensure_gemini2_ready_for_run
   launch_cmd=$(
@@ -482,11 +504,11 @@ launch_host_camera() {
 source /opt/ros/${ROS_DISTRO_DEFAULT}/setup.bash
 source "${HOST_WS}/install/setup.bash"
 $(emit_ros_discovery_env_shell_exports)
-exec ros2 launch orbbec_camera gemini2.launch.py publish_tf:=false tf_publish_rate:=0.0
+exec ros2 launch "${HOST_CAMERA_LAUNCH_FILE}" "config_file_path:=${HOST_CAMERA_CONFIG_FILE}"
 EOF
   )
 
-  info "Launching Gemini2 driver on the host."
+  info "Launching Gemini2 mobile-mapping driver on the host."
   bash -lc "${launch_cmd}" >>"${HOST_CAMERA_LOG}" 2>&1 &
   HOST_CAMERA_PID=$!
   info "Host camera log: ${HOST_CAMERA_LOG}"
@@ -498,7 +520,7 @@ wait_for_camera_streams_ready() {
   source_ros_setup "${HOST_WS}"
 
   readiness_output="$(
-    python3 - "${EXPECTED_CAMERA_INFO_FRAME}" <<'PY' 2>&1
+    python3 - "${EXPECTED_COLOR_CAMERA_INFO_FRAME}" <<'PY' 2>&1
 import sys
 import time
 
@@ -508,7 +530,7 @@ from rclpy.node import Node
 from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import CameraInfo, Image
 
-expected_frame = sys.argv[1]
+expected_color_frame = sys.argv[1]
 timeout_seconds = 90.0
 
 
@@ -519,43 +541,34 @@ class CameraReadinessProbe(Node):
         self.received = {
             'color_info': False,
             'depth_info': False,
+            'left_ir_info': False,
+            'right_ir_info': False,
             'color_image': False,
             'depth_image': False,
+            'infra_1': False,
+            'infra_2': False,
+            'depth_output': False,
         }
-        self.create_subscription(
-            CameraInfo,
-            '/camera/color/camera_info',
-            self._color_info_callback,
-            qos_profile_sensor_data)
-        self.create_subscription(
-            CameraInfo,
-            '/camera/depth/camera_info',
-            self._depth_info_callback,
-            qos_profile_sensor_data)
-        self.create_subscription(
-            Image,
-            '/camera/color/image_raw',
-            self._color_image_callback,
-            qos_profile_sensor_data)
-        self.create_subscription(
-            Image,
-            '/camera/depth/image_raw',
-            self._depth_image_callback,
-            qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/color/camera_info', self._info('color_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/depth/camera_info', self._info('depth_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/left_ir/camera_info', self._info('left_ir_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/right_ir/camera_info', self._info('right_ir_info'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/color/image_raw', self._mark('color_image'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/depth/image_raw', self._mark('depth_image'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/orbbec_camera_node/output/infra_1', self._mark('infra_1'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/orbbec_camera_node/output/infra_2', self._mark('infra_2'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/orbbec_camera_node/output/depth', self._mark('depth_output'), qos_profile_sensor_data)
 
-    def _color_info_callback(self, msg: CameraInfo):
-        self.received['color_info'] = True
-        self.frames['color_info'] = msg.header.frame_id
+    def _mark(self, key):
+        def callback(_msg):
+            self.received[key] = True
+        return callback
 
-    def _depth_info_callback(self, msg: CameraInfo):
-        self.received['depth_info'] = True
-        self.frames['depth_info'] = msg.header.frame_id
-
-    def _color_image_callback(self, msg: Image):
-        self.received['color_image'] = True
-
-    def _depth_image_callback(self, msg: Image):
-        self.received['depth_image'] = True
+    def _info(self, key):
+        def callback(msg: CameraInfo):
+            self.received[key] = True
+            self.frames[key] = msg.header.frame_id
+        return callback
 
 
 def main():
@@ -573,27 +586,20 @@ def main():
 
         missing = [name for name, received in node.received.items() if not received]
         if missing:
-            print(
-                'Host stream readiness probe timed out waiting for: ' + ', '.join(missing),
-                file=sys.stderr)
+            print('Host stream readiness probe timed out waiting for: ' + ', '.join(missing), file=sys.stderr)
             return 1
 
-        color_frame = node.frames.get('color_info', '')
-        depth_frame = node.frames.get('depth_info', '')
-        print(f'/camera/color/camera_info frame_id={color_frame}')
-        print(f'/camera/depth/camera_info frame_id={depth_frame}')
+        for key in ('color_info', 'depth_info', 'left_ir_info', 'right_ir_info'):
+            print(f'{key} frame_id={node.frames.get(key, "<empty>")}')
 
-        if color_frame != expected_frame:
+        if node.frames.get('color_info') != expected_color_frame:
             print(
-                f'Unexpected /camera/color/camera_info frame_id: {color_frame} '
-                f'(expected {expected_frame})',
+                f'Unexpected /camera/color/camera_info frame_id: {node.frames.get("color_info", "")} '
+                f'(expected {expected_color_frame})',
                 file=sys.stderr)
             return 1
-        if depth_frame != expected_frame:
-            print(
-                f'Unexpected /camera/depth/camera_info frame_id: {depth_frame} '
-                f'(expected {expected_frame})',
-                file=sys.stderr)
+        if not node.frames.get('depth_info'):
+            print('Unexpected empty /camera/depth/camera_info frame_id', file=sys.stderr)
             return 1
         return 0
     finally:
@@ -623,6 +629,7 @@ validate_container_launch_artifact() {
     run
     --rm
     -e "ROS_DISTRO=${ROS_DISTRO_DEFAULT}"
+    -e "NVBLOX_LAUNCH_PACKAGE=${LAUNCH_PACKAGE}"
     -e "NVBLOX_LAUNCH_FILE=${LAUNCH_FILE}"
     -e "EXPECTED_WORKSPACE_SPEC_VERSION=${CONTAINER_WORKSPACE_SPEC_VERSION}"
     -v "${CONTAINER_WS}:/workspaces/isaac_ros-dev"
@@ -644,10 +651,10 @@ source "/workspaces/isaac_ros-dev/.setup-nvbox/container_workspace.env"
 if (( restore_nounset )); then
   set -u
 fi
-PACKAGE_PREFIX="$(ros2 pkg prefix nvblox_examples_bringup 2>/dev/null || true)"
+PACKAGE_PREFIX="$(ros2 pkg prefix "${NVBLOX_LAUNCH_PACKAGE}" 2>/dev/null || true)"
 [[ -n "${PACKAGE_PREFIX}" ]]
 [[ "${STAMP_WORKSPACE_SPEC_VERSION:-}" == "${EXPECTED_WORKSPACE_SPEC_VERSION}" ]]
-[[ -f "${PACKAGE_PREFIX}/share/nvblox_examples_bringup/launch/${NVBLOX_LAUNCH_FILE}" ]]
+[[ -f "${PACKAGE_PREFIX}/share/${NVBLOX_LAUNCH_PACKAGE}/launch/${NVBLOX_LAUNCH_FILE}" ]]
 EOF
   )
 
@@ -657,46 +664,44 @@ EOF
 
 configure_display() {
   if (( HEADLESS )); then
+    RUN_RVIZ=0
     return 0
   fi
 
   if [[ -z "${DISPLAY:-}" ]]; then
     warn "DISPLAY is not set. Falling back to headless mode."
     HEADLESS=1
+    RUN_RVIZ=0
     return 0
   fi
 
   if [[ ! -d /tmp/.X11-unix ]]; then
     warn "/tmp/.X11-unix is missing. Falling back to headless mode."
     HEADLESS=1
+    RUN_RVIZ=0
     return 0
   fi
 
   if ! command -v xhost >/dev/null 2>&1; then
     warn "xhost is not available. Falling back to headless mode."
     HEADLESS=1
+    RUN_RVIZ=0
     return 0
   fi
 
   if xhost +si:localuser:root >/dev/null 2>&1; then
     XHOST_GRANTED=1
     USE_GUI=1
-    LAUNCH_FILE="orbbec_example.launch.py"
+    RUN_RVIZ=1
     return 0
   fi
 
   warn "Failed to grant X11 access for the container. Falling back to headless mode."
   HEADLESS=1
+  RUN_RVIZ=0
 }
 
-if (( HEADLESS )); then
-  LAUNCH_FILE="orbbec_debug.launch.py"
-fi
-
 configure_display
-if (( HEADLESS )); then
-  LAUNCH_FILE="orbbec_debug.launch.py"
-fi
 
 enable_managed_fastdds_udp_runtime "${MANAGED_ROOT}"
 export_effective_ros_discovery_env
@@ -718,14 +723,14 @@ if ! wait_for_camera_streams_ready; then
   fi
   die "Camera stream readiness probe failed. Check ${HOST_CAMERA_LOG}."
 fi
-info "Camera streams and frame IDs are ready."
+info "Host stereo, depth, and color streams are ready for mobile mapping."
 
 if ! probe_container_camera_visibility; then
-  die "Host camera streams are ready, but the container cannot discover host camera topics. Check the ROS discovery environment shown above, or run the vendored scripts/debug_runtime_connectivity.sh --managed-root ${MANAGED_ROOT} for a discovery snapshot."
+  die "Host camera streams are ready, but the container cannot discover host stereo/depth/color topics. Check the ROS discovery environment shown above."
 fi
 
-if ! probe_container_static_tf; then
-  die "Host camera streams are ready, but the container managed static TF chain is not queryable. Check the launch log tail above, or run the vendored scripts/debug_runtime_connectivity.sh --managed-root ${MANAGED_ROOT} for a full runtime diagnosis."
+if ! probe_container_visual_slam_pose; then
+  die "Host camera streams are ready, but the container did not produce Visual SLAM odometry. Check the launch log tail above."
 fi
 
 docker_cmd rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true
@@ -735,7 +740,10 @@ DOCKER_ARGS=(
   --rm
   --name "${CONTAINER_NAME}"
   -e "ROS_DISTRO=${ROS_DISTRO_DEFAULT}"
+  -e "NVBLOX_LAUNCH_PACKAGE=${LAUNCH_PACKAGE}"
   -e "NVBLOX_LAUNCH_FILE=${LAUNCH_FILE}"
+  -e "NVBLOX_RUN_RVIZ=${RUN_RVIZ}"
+  -e "NVBLOX_GLOBAL_FRAME=odom"
   -e "EXPECTED_WORKSPACE_SPEC_VERSION=${CONTAINER_WORKSPACE_SPEC_VERSION}"
   -v "${CONTAINER_WS}:/workspaces/isaac_ros-dev"
   -v "${PROJECT_ROOT}/docker/launch_nvblox.sh:/opt/nvblox/bin/launch_nvblox.sh:ro"
@@ -756,8 +764,8 @@ if (( USE_GUI )); then
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw
   )
 else
-  info "Starting in headless mode with ${LAUNCH_FILE}."
+  info "Starting in headless mode with ${LAUNCH_PACKAGE}/${LAUNCH_FILE}."
 fi
 
-info "Launching NVBlox demo in container ${CONTAINER_NAME}."
+info "Launching NVBlox mobile mapping demo in container ${CONTAINER_NAME}."
 docker_cmd "${DOCKER_ARGS[@]}" "${DERIVED_IMAGE_TAG}" bash /opt/nvblox/bin/launch_nvblox.sh

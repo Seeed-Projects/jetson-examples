@@ -131,7 +131,7 @@ verify_host_workspace() {
   source_ros_setup "${HOST_WS}"
   pkg_prefix="$(ros2 pkg prefix orbbec_camera 2>/dev/null || true)"
   [[ -n "${pkg_prefix}" ]] || return 1
-  [[ -f "${pkg_prefix}/share/orbbec_camera/launch/gemini2.launch.py" ]] || return 1
+  [[ -d "${pkg_prefix}/share/orbbec_camera" ]] || return 1
 }
 
 host_stamp_current() {
