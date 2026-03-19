@@ -47,10 +47,9 @@ readonly ORBBEC_VERSION="v2.3.4"
 readonly ORBBEC_REPO_URL="https://github.com/orbbec/OrbbecSDK_ROS2.git"
 readonly ORBBEC_HOST_LAUNCH_PATH_DEFAULT="${PROJECT_ROOT}/host/orbbec_mobile_host.launch.py"
 readonly ORBBEC_HOST_CONFIG_PATH_DEFAULT="${PROJECT_ROOT}/config/orbbec_vslam_mobile.yaml"
-readonly ORBBEC_HOST_LOW_BANDWIDTH_CONFIG_PATH_DEFAULT="${PROJECT_ROOT}/config/orbbec_vslam_mobile_low_bandwidth.yaml"
+readonly ORBBEC_HOST_STEREO_PROBE_CONFIG_PATH_DEFAULT="${PROJECT_ROOT}/config/orbbec_stereo_capability_probe.yaml"
 readonly GEMINI2_USB_VENDOR_ID="2bc5"
 readonly GEMINI2_USB_PRODUCT_ID="0670"
-readonly GEMINI2_USB_SUPERSPEED_MBPS=5000
 readonly GEMINI2_READY_TIMEOUT_SECONDS=15
 readonly GEMINI2_SIGNAL_TIMEOUT_SECONDS=5
 readonly HOST_CAMERA_LOG_TAIL_LINES=40
@@ -325,14 +324,6 @@ gemini2_usb_link_speed_mbps() {
   speed_value="$(tr -d '[:space:]' < "${speed_path}" 2>/dev/null || true)"
   [[ "${speed_value}" =~ ^[0-9]+$ ]] || return 0
   printf '%s\n' "${speed_value}"
-}
-
-gemini2_usb_low_bandwidth_connection() {
-  local speed_mbps=""
-
-  speed_mbps="$(gemini2_usb_link_speed_mbps)"
-  [[ -n "${speed_mbps}" ]] || return 1
-  (( speed_mbps < GEMINI2_USB_SUPERSPEED_MBPS ))
 }
 
 gemini2_video_nodes() {
@@ -654,12 +645,6 @@ log_host_camera_failure_diagnostics() {
   else
     warn "${context}: host camera log is missing at ${log_path}."
   fi
-}
-
-host_camera_log_indicates_low_bandwidth_connection() {
-  local log_path="$1"
-  [[ -f "${log_path}" ]] || return 1
-  grep -Eiq 'USB 2\.0|connected via USB 2\.0|bandwidth' "${log_path}"
 }
 
 assert_supported_platform() {

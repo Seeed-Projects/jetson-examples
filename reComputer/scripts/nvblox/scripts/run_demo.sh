@@ -39,9 +39,11 @@ HOST_STAMP="${MANAGED_ROOT}/.stamps/host_workspace.env"
 LOG_DIR="${MANAGED_ROOT}/logs"
 CONTAINER_NAME="${CONTAINER_NAME_DEFAULT}"
 HOST_CAMERA_LOG="${LOG_DIR}/host-camera-$(date '+%Y%m%d-%H%M%S').log"
+HOST_CAMERA_CAPABILITY_LOG="${LOG_DIR}/host-camera-capability-$(date '+%Y%m%d-%H%M%S').log"
 HOST_CAMERA_PID=""
 HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH=""
 HOST_CAMERA_READINESS_OUTPUT=""
+HOST_CAMERA_CAPABILITY_OUTPUT=""
 XHOST_GRANTED=0
 USE_GUI=0
 RUN_RVIZ=1
@@ -49,24 +51,21 @@ LAUNCH_PACKAGE="isaac_orbbec_launch"
 LAUNCH_FILE="recomputer_orbbec_dynamics.launch.py"
 VSLAM_PROBE_LAUNCH_FILE="recomputer_orbbec_vslam_probe.launch.py"
 EXPECTED_COLOR_CAMERA_INFO_FRAME="camera_color_optical_frame"
+HOST_STEREO_CAPABILITY_TIMEOUT_SEC=15
 VSLAM_POSE_PROBE_TIMEOUT_SEC=30
 PREPARE_HINT="Run NVBLOX_MODE=prepare NVBLOX_FORCE_REBUILD=1 reComputer run nvblox."
 CONTAINER_PREPARE_HINT="Prepared container workspace is invalid. ${PREPARE_HINT}"
 HOST_CAMERA_LAUNCH_FILE="${ORBBEC_HOST_LAUNCH_PATH_DEFAULT}"
-HOST_CAMERA_PRIMARY_CONFIG_FILE="${ORBBEC_HOST_CONFIG_PATH_DEFAULT}"
-HOST_CAMERA_LOW_BANDWIDTH_CONFIG_FILE="${ORBBEC_HOST_LOW_BANDWIDTH_CONFIG_PATH_DEFAULT}"
-HOST_CAMERA_CONFIG_FILE="${HOST_CAMERA_PRIMARY_CONFIG_FILE}"
-HOST_CAMERA_PROFILE_MODE="standard"
-HOST_CAMERA_EXPECT_COLOR=1
-HOST_CAMERA_LOW_BANDWIDTH_RETRY_ATTEMPTED=0
+HOST_CAMERA_CONFIG_FILE="${ORBBEC_HOST_CONFIG_PATH_DEFAULT}"
+HOST_CAMERA_CAPABILITY_CONFIG_FILE="${ORBBEC_HOST_STEREO_PROBE_CONFIG_PATH_DEFAULT}"
 PREPARED_CONTAINER_REQUIRED_PACKAGE="isaac_orbbec_launch"
 
 [[ -f "${HOST_WS}/install/setup.bash" ]] || die "Host workspace is missing at ${HOST_WS}. ${PREPARE_HINT}"
 [[ -f "${CONTAINER_WS}/install/setup.bash" ]] || die "Container workspace is missing at ${CONTAINER_WS}. ${PREPARE_HINT}"
 [[ -f "${CONTAINER_STAMP}" ]] || die "Container workspace stamp is missing at ${CONTAINER_STAMP}. ${PREPARE_HINT}"
 [[ -f "${HOST_CAMERA_LAUNCH_FILE}" ]] || die "Missing host camera launch file ${HOST_CAMERA_LAUNCH_FILE}."
-[[ -f "${HOST_CAMERA_PRIMARY_CONFIG_FILE}" ]] || die "Missing host camera config ${HOST_CAMERA_PRIMARY_CONFIG_FILE}."
-[[ -f "${HOST_CAMERA_LOW_BANDWIDTH_CONFIG_FILE}" ]] || die "Missing low-bandwidth host camera config ${HOST_CAMERA_LOW_BANDWIDTH_CONFIG_FILE}."
+[[ -f "${HOST_CAMERA_CONFIG_FILE}" ]] || die "Missing host camera config ${HOST_CAMERA_CONFIG_FILE}."
+[[ -f "${HOST_CAMERA_CAPABILITY_CONFIG_FILE}" ]] || die "Missing stereo capability probe config ${HOST_CAMERA_CAPABILITY_CONFIG_FILE}."
 docker_cmd image inspect "${DERIVED_IMAGE_TAG}" >/dev/null 2>&1 || die "Derived image ${DERIVED_IMAGE_TAG} is missing. ${PREPARE_HINT}"
 
 PREPARED_CONTAINER_REQUIRED_PATHS=(
@@ -147,43 +146,8 @@ validate_prepared_container_workspace_state() {
   info "Validated prepared container artifacts: ${PREPARED_CONTAINER_REQUIRED_PATHS[*]}"
 }
 
-set_host_camera_profile_mode() {
-  local mode="${1:-standard}"
-
-  case "${mode}" in
-    standard)
-      HOST_CAMERA_PROFILE_MODE="standard"
-      HOST_CAMERA_CONFIG_FILE="${HOST_CAMERA_PRIMARY_CONFIG_FILE}"
-      HOST_CAMERA_EXPECT_COLOR=1
-      ;;
-    low_bandwidth)
-      HOST_CAMERA_PROFILE_MODE="low_bandwidth"
-      HOST_CAMERA_CONFIG_FILE="${HOST_CAMERA_LOW_BANDWIDTH_CONFIG_FILE}"
-      HOST_CAMERA_EXPECT_COLOR=0
-      ;;
-    *)
-      die "Unknown host camera profile mode: ${mode}"
-      ;;
-  esac
-}
-
 host_camera_stream_summary() {
-  if (( HOST_CAMERA_EXPECT_COLOR )); then
-    printf 'stereo, depth, and color'
-  else
-    printf 'stereo and depth'
-  fi
-}
-
-maybe_select_initial_host_camera_profile_mode() {
-  local speed_mbps=""
-
-  set_host_camera_profile_mode standard
-  if gemini2_usb_low_bandwidth_connection; then
-    speed_mbps="$(gemini2_usb_link_speed_mbps)"
-    warn "Gemini2 USB link speed is ${speed_mbps:-unknown} Mbps. Starting the host camera with the low-bandwidth profile."
-    set_host_camera_profile_mode low_bandwidth
-  fi
+  printf 'stereo, depth, and color'
 }
 
 probe_container_camera_visibility() {
@@ -193,7 +157,6 @@ probe_container_camera_visibility() {
     --rm
     -e "ROS_DISTRO=${ROS_DISTRO_DEFAULT}"
     -e "EXPECTED_COLOR_FRAME=${EXPECTED_COLOR_CAMERA_INFO_FRAME}"
-    -e "EXPECT_COLOR_STREAM=${HOST_CAMERA_EXPECT_COLOR}"
     -e "PROBE_TIMEOUT_SECONDS=25"
     -v "${CONTAINER_WS}:/workspaces/isaac_ros-dev"
   )
@@ -214,7 +177,7 @@ source "/workspaces/isaac_ros-dev/install/setup.bash"
 if (( restore_nounset )); then
   set -u
 fi
-python3 - "${EXPECTED_COLOR_FRAME}" "${EXPECT_COLOR_STREAM}" "${PROBE_TIMEOUT_SECONDS}" <<'PY'
+python3 - "${EXPECTED_COLOR_FRAME}" "${PROBE_TIMEOUT_SECONDS}" <<'PY'
 import sys
 import time
 
@@ -225,8 +188,7 @@ from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import CameraInfo, Image
 
 expected_color_frame = sys.argv[1]
-expect_color_stream = sys.argv[2] == '1'
-timeout_seconds = float(sys.argv[3])
+timeout_seconds = float(sys.argv[2])
 
 
 class CameraVisibilityProbe(Node):
@@ -234,6 +196,7 @@ class CameraVisibilityProbe(Node):
         super().__init__('orbbec_container_camera_visibility_probe')
         self.frames = {}
         self.received = {
+            'color_info': False,
             'depth_info': False,
             'left_ir_info': False,
             'right_ir_info': False,
@@ -241,9 +204,7 @@ class CameraVisibilityProbe(Node):
             'infra_2': False,
             'depth_output': False,
         }
-        if expect_color_stream:
-            self.received['color_info'] = False
-            self.create_subscription(CameraInfo, '/camera/color/camera_info', self._info('color_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/color/camera_info', self._info('color_info'), qos_profile_sensor_data)
         self.create_subscription(CameraInfo, '/camera/depth/camera_info', self._info('depth_info'), qos_profile_sensor_data)
         self.create_subscription(CameraInfo, '/camera/left_ir/camera_info', self._info('left_ir_info'), qos_profile_sensor_data)
         self.create_subscription(CameraInfo, '/camera/right_ir/camera_info', self._info('right_ir_info'), qos_profile_sensor_data)
@@ -264,8 +225,7 @@ class CameraVisibilityProbe(Node):
 
 
 def main() -> int:
-    stream_summary = 'host stereo, depth, and color topics' if expect_color_stream else 'host stereo and depth topics'
-    print(f'[container-probe] Waiting for {stream_summary} inside the container', flush=True)
+    print('[container-probe] Waiting for host stereo, depth, and color topics inside the container', flush=True)
     rclpy.init(args=None)
     node = CameraVisibilityProbe()
     executor = SingleThreadedExecutor()
@@ -283,20 +243,16 @@ def main() -> int:
             print('[container-probe] Timed out waiting for: ' + ', '.join(missing), file=sys.stderr, flush=True)
             return 1
 
-        frame_keys = ['depth_info', 'left_ir_info', 'right_ir_info']
-        if expect_color_stream:
-            frame_keys.insert(0, 'color_info')
-        for key in frame_keys:
+        for key in ('color_info', 'depth_info', 'left_ir_info', 'right_ir_info'):
             print(f'[container-probe] Observed {key} frame_id: {node.frames.get(key, "<empty>")}', flush=True)
 
-        if expect_color_stream:
-            if node.frames['color_info'] != expected_color_frame:
-                print(
-                    f'[container-probe] Unexpected /camera/color/camera_info frame_id: {node.frames["color_info"]} '
-                    f'(expected {expected_color_frame})',
-                    file=sys.stderr,
-                    flush=True)
-                return 1
+        if node.frames['color_info'] != expected_color_frame:
+            print(
+                f'[container-probe] Unexpected /camera/color/camera_info frame_id: {node.frames["color_info"]} '
+                f'(expected {expected_color_frame})',
+                file=sys.stderr,
+                flush=True)
+            return 1
         if not node.frames['depth_info']:
             print('[container-probe] /camera/depth/camera_info frame_id is empty', file=sys.stderr, flush=True)
             return 1
@@ -550,25 +506,37 @@ cleanup() {
 }
 trap cleanup EXIT INT TERM
 
-launch_host_camera() {
+launch_host_camera_process() {
+  local config_file="$1"
+  local log_path="$2"
+  local purpose="$3"
   local launch_cmd=""
 
   ensure_gemini2_ready_for_run
   HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH="$(gemini2_device_state)"
-  HOST_CAMERA_READINESS_OUTPUT=""
   launch_cmd=$(
     cat <<EOF
 source /opt/ros/${ROS_DISTRO_DEFAULT}/setup.bash
 source "${HOST_WS}/install/setup.bash"
 $(emit_ros_discovery_env_shell_exports)
-exec ros2 launch "${HOST_CAMERA_LAUNCH_FILE}" "config_file_path:=${HOST_CAMERA_CONFIG_FILE}"
+exec ros2 launch "${HOST_CAMERA_LAUNCH_FILE}" "config_file_path:=${config_file}"
 EOF
   )
 
-  info "Launching Gemini2 mobile-mapping driver on the host with ${HOST_CAMERA_PROFILE_MODE} profile (${HOST_CAMERA_CONFIG_FILE})."
-  bash -lc "${launch_cmd}" >>"${HOST_CAMERA_LOG}" 2>&1 &
+  info "Launching Gemini2 ${purpose} on the host with config ${config_file}."
+  bash -lc "${launch_cmd}" >>"${log_path}" 2>&1 &
   HOST_CAMERA_PID=$!
-  info "Host camera log: ${HOST_CAMERA_LOG}"
+  info "Host camera log: ${log_path}"
+}
+
+launch_host_camera() {
+  HOST_CAMERA_READINESS_OUTPUT=""
+  launch_host_camera_process "${HOST_CAMERA_CONFIG_FILE}" "${HOST_CAMERA_LOG}" "mobile-mapping driver"
+}
+
+launch_host_camera_stereo_probe() {
+  HOST_CAMERA_CAPABILITY_OUTPUT=""
+  launch_host_camera_process "${HOST_CAMERA_CAPABILITY_CONFIG_FILE}" "${HOST_CAMERA_CAPABILITY_LOG}" "stereo capability probe"
 }
 
 wait_for_camera_streams_ready() {
@@ -577,7 +545,7 @@ wait_for_camera_streams_ready() {
   source_ros_setup "${HOST_WS}"
 
   readiness_output="$(
-    python3 - "${EXPECTED_COLOR_CAMERA_INFO_FRAME}" "${HOST_CAMERA_EXPECT_COLOR}" <<'PY' 2>&1
+    python3 - "${EXPECTED_COLOR_CAMERA_INFO_FRAME}" <<'PY' 2>&1
 import sys
 import time
 
@@ -588,7 +556,6 @@ from rclpy.qos import qos_profile_sensor_data
 from sensor_msgs.msg import CameraInfo, Image
 
 expected_color_frame = sys.argv[1]
-expect_color_stream = sys.argv[2] == '1'
 timeout_seconds = 90.0
 
 
@@ -597,22 +564,21 @@ class CameraReadinessProbe(Node):
         super().__init__('orbbec_host_readiness_probe')
         self.frames = {}
         self.received = {
+            'color_info': False,
             'depth_info': False,
             'left_ir_info': False,
             'right_ir_info': False,
+            'color_image': False,
             'depth_image': False,
             'infra_1': False,
             'infra_2': False,
             'depth_output': False,
         }
-        if expect_color_stream:
-            self.received['color_info'] = False
-            self.received['color_image'] = False
-            self.create_subscription(CameraInfo, '/camera/color/camera_info', self._info('color_info'), qos_profile_sensor_data)
-            self.create_subscription(Image, '/camera/color/image_raw', self._mark('color_image'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/color/camera_info', self._info('color_info'), qos_profile_sensor_data)
         self.create_subscription(CameraInfo, '/camera/depth/camera_info', self._info('depth_info'), qos_profile_sensor_data)
         self.create_subscription(CameraInfo, '/camera/left_ir/camera_info', self._info('left_ir_info'), qos_profile_sensor_data)
         self.create_subscription(CameraInfo, '/camera/right_ir/camera_info', self._info('right_ir_info'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/color/image_raw', self._mark('color_image'), qos_profile_sensor_data)
         self.create_subscription(Image, '/camera/depth/image_raw', self._mark('depth_image'), qos_profile_sensor_data)
         self.create_subscription(Image, '/camera/orbbec_camera_node/output/infra_1', self._mark('infra_1'), qos_profile_sensor_data)
         self.create_subscription(Image, '/camera/orbbec_camera_node/output/infra_2', self._mark('infra_2'), qos_profile_sensor_data)
@@ -648,19 +614,15 @@ def main():
             print('Host stream readiness probe timed out waiting for: ' + ', '.join(missing), file=sys.stderr)
             return 1
 
-        frame_keys = ['depth_info', 'left_ir_info', 'right_ir_info']
-        if expect_color_stream:
-            frame_keys.insert(0, 'color_info')
-        for key in frame_keys:
+        for key in ('color_info', 'depth_info', 'left_ir_info', 'right_ir_info'):
             print(f'{key} frame_id={node.frames.get(key, "<empty>")}')
 
-        if expect_color_stream:
-            if node.frames.get('color_info') != expected_color_frame:
-                print(
-                    f'Unexpected /camera/color/camera_info frame_id: {node.frames.get("color_info", "")} '
-                    f'(expected {expected_color_frame})',
-                    file=sys.stderr)
-                return 1
+        if node.frames.get('color_info') != expected_color_frame:
+            print(
+                f'Unexpected /camera/color/camera_info frame_id: {node.frames.get("color_info", "")} '
+                f'(expected {expected_color_frame})',
+                file=sys.stderr)
+            return 1
         if not node.frames.get('depth_info'):
             print('Unexpected empty /camera/depth/camera_info frame_id', file=sys.stderr)
             return 1
@@ -686,6 +648,130 @@ PY
   done <<< "${readiness_output}"
 
   return 0
+}
+
+probe_host_stereo_capability() {
+  local probe_output=""
+
+  source_ros_setup "${HOST_WS}"
+
+  launch_host_camera_stereo_probe
+  probe_output="$(
+    python3 - "${HOST_STEREO_CAPABILITY_TIMEOUT_SEC}" <<'PY' 2>&1
+import sys
+import time
+
+import rclpy
+from rclpy.executors import SingleThreadedExecutor
+from rclpy.node import Node
+from rclpy.qos import qos_profile_sensor_data
+from sensor_msgs.msg import CameraInfo, Image
+
+timeout_seconds = float(sys.argv[1])
+
+
+class StereoCapabilityProbe(Node):
+    def __init__(self):
+        super().__init__('orbbec_host_stereo_capability_probe')
+        self.frames = {}
+        self.received = {
+            'depth_info': False,
+            'left_ir_info': False,
+            'right_ir_info': False,
+            'depth_image': False,
+            'infra_1': False,
+            'infra_2': False,
+        }
+        self.create_subscription(CameraInfo, '/camera/depth/camera_info', self._info('depth_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/left_ir/camera_info', self._info('left_ir_info'), qos_profile_sensor_data)
+        self.create_subscription(CameraInfo, '/camera/right_ir/camera_info', self._info('right_ir_info'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/depth/image_raw', self._mark('depth_image'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/orbbec_camera_node/output/infra_1', self._mark('infra_1'), qos_profile_sensor_data)
+        self.create_subscription(Image, '/camera/orbbec_camera_node/output/infra_2', self._mark('infra_2'), qos_profile_sensor_data)
+
+    def _mark(self, key):
+        def callback(_msg):
+            self.received[key] = True
+        return callback
+
+    def _info(self, key):
+        def callback(msg: CameraInfo):
+            self.received[key] = True
+            self.frames[key] = msg.header.frame_id
+        return callback
+
+
+def main():
+    print('[stereo-probe] Waiting for host stereo IR and depth topics', flush=True)
+    rclpy.init(args=None)
+    node = StereoCapabilityProbe()
+    executor = SingleThreadedExecutor()
+    executor.add_node(node)
+    deadline = time.monotonic() + timeout_seconds
+
+    try:
+        while time.monotonic() < deadline:
+            executor.spin_once(timeout_sec=0.2)
+            if all(node.received.values()):
+                break
+
+        missing = [name for name, received in node.received.items() if not received]
+        if missing:
+            print('[stereo-probe] Timed out waiting for: ' + ', '.join(missing), file=sys.stderr, flush=True)
+            return 1
+
+        for key in ('depth_info', 'left_ir_info', 'right_ir_info'):
+            print(f'[stereo-probe] Observed {key} frame_id: {node.frames.get(key, "<empty>")}', flush=True)
+        return 0
+    finally:
+        executor.remove_node(node)
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+sys.exit(main())
+PY
+  )" || {
+    HOST_CAMERA_CAPABILITY_OUTPUT="${probe_output}"
+    printf '%s\n' "${probe_output}" >&2
+    return 1
+  }
+
+  HOST_CAMERA_CAPABILITY_OUTPUT="${probe_output}"
+  while IFS= read -r probe_line; do
+    [[ -n "${probe_line}" ]] || continue
+    info "${probe_line}"
+  done <<< "${probe_output}"
+
+  return 0
+}
+
+handle_stereo_capability_failure() {
+  local driver_exited=0
+  local current_state=""
+  local recovery_succeeded=0
+
+  if ! kill -0 "${HOST_CAMERA_PID}" 2>/dev/null; then
+    driver_exited=1
+  fi
+  current_state="$(gemini2_device_state)"
+
+  log_host_camera_failure_diagnostics "${HOST_CAMERA_CAPABILITY_LOG}" "${HOST_CAMERA_CAPABILITY_OUTPUT}" "Host stereo capability probe failure"
+
+  if (( driver_exited )) && recover_gemini2_after_host_camera_failure "host stereo capability probe" "${HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH}"; then
+    recovery_succeeded=1
+    current_state="$(gemini2_device_state)"
+  fi
+
+  if (( driver_exited )) && [[ "${current_state}" == "usb_present_no_video" ]]; then
+    die "The host stereo capability probe failed and the Gemini2 device lost its /dev/video nodes. Automatic recovery did not restore the camera. This NVBlox demo requires stereo IR + depth input and currently supports stereo-capable Orbbec models such as Gemini 330 series, Gemini 2 XL, and Gemini 2 VL."
+  fi
+
+  if (( recovery_succeeded )); then
+    die "The host stereo capability probe recovered the device, but the current camera or connection still does not expose the stereo IR topics required by this NVBlox + Visual SLAM demo. Use a stereo-capable Orbbec model such as Gemini 330 series, Gemini 2 XL, or Gemini 2 VL."
+  fi
+
+  die "The current Orbbec camera or connection does not expose the stereo IR + depth topics required by this NVBlox + Visual SLAM demo. Use a stereo-capable Orbbec model such as Gemini 330 series, Gemini 2 XL, or Gemini 2 VL."
 }
 
 handle_host_camera_failure() {
@@ -716,41 +802,6 @@ handle_host_camera_failure() {
   fi
 
   die "Camera stream readiness probe failed while the host Gemini2 driver was still running. Check the diagnostics above and ${HOST_CAMERA_LOG}."
-}
-
-retry_host_camera_with_low_bandwidth_profile() {
-  local retry_reason=""
-  local speed_mbps=""
-
-  (( HOST_CAMERA_LOW_BANDWIDTH_RETRY_ATTEMPTED == 0 )) || return 1
-  [[ "${HOST_CAMERA_PROFILE_MODE}" != "low_bandwidth" ]] || return 1
-
-  if gemini2_usb_low_bandwidth_connection; then
-    speed_mbps="$(gemini2_usb_link_speed_mbps)"
-    retry_reason="Gemini2 USB link speed is ${speed_mbps:-unknown} Mbps"
-  elif host_camera_log_indicates_low_bandwidth_connection "${HOST_CAMERA_LOG}"; then
-    retry_reason="host camera log indicates a USB 2.0 or bandwidth-limited connection"
-  else
-    return 1
-  fi
-
-  HOST_CAMERA_LOW_BANDWIDTH_RETRY_ATTEMPTED=1
-  warn "Retrying the host camera launch with the low-bandwidth profile because ${retry_reason}."
-  log_host_camera_failure_diagnostics "${HOST_CAMERA_LOG}" "${HOST_CAMERA_READINESS_OUTPUT}" "Host Gemini2 startup failure before low-bandwidth retry"
-
-  if [[ "$(gemini2_device_state)" == "usb_present_no_video" ]]; then
-    recover_gemini2_after_host_camera_failure "host camera low-bandwidth retry preparation" "${HOST_CAMERA_DEVICE_STATE_BEFORE_LAUNCH}" || true
-  fi
-
-  stop_host_camera_driver
-  set_host_camera_profile_mode low_bandwidth
-  launch_host_camera
-  if wait_for_camera_streams_ready; then
-    info "Host $(host_camera_stream_summary) streams are ready with the low-bandwidth Gemini2 profile."
-    return 0
-  fi
-
-  return 1
 }
 
 validate_container_launch_artifact() {
@@ -835,7 +886,6 @@ configure_display
 
 enable_managed_fastdds_udp_runtime "${MANAGED_ROOT}"
 export_effective_ros_discovery_env
-maybe_select_initial_host_camera_profile_mode
 log_ros_discovery_env "Host ROS discovery env"
 info "Container ROS discovery env: $(ros_discovery_env_summary)"
 
@@ -843,15 +893,19 @@ validate_prepared_image_state
 validate_prepared_host_workspace
 validate_prepared_container_workspace_state
 
+if ! probe_host_stereo_capability; then
+  handle_stereo_capability_failure
+fi
+info "Host stereo capability probe passed."
+stop_host_camera_driver
+
 if ! validate_container_launch_artifact; then
   die "${CONTAINER_PREPARE_HINT}"
 fi
 
 launch_host_camera
 if ! wait_for_camera_streams_ready; then
-  if ! retry_host_camera_with_low_bandwidth_profile; then
-    handle_host_camera_failure
-  fi
+  handle_host_camera_failure
 fi
 info "Host $(host_camera_stream_summary) streams are ready for mobile mapping."
 
