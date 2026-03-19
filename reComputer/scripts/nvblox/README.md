@@ -82,6 +82,7 @@ It keeps:
 
 - If the host Gemini2 camera stage fails, `reComputer run nvblox` now prints the tail of the host camera log, the Gemini2 device state, the current `/dev/video*` snapshot, and the readiness-probe failure details.
 - If the host driver exits and the Gemini2 device falls back to `usb_present_no_video`, the run path automatically attempts one full recovery before exiting, so you can usually retry without unplugging the camera first.
+- If the camera is enumerated over a low-bandwidth USB link, the run path can automatically switch to the bundled low-bandwidth host profile (`config/orbbec_vslam_mobile_low_bandwidth.yaml`) and retry once without requiring a rebuild.
 - If the run still fails, use the built-in connectivity debugger to isolate the host camera stage before investigating container-side ROS discovery:
 
 ```sh
