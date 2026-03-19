@@ -60,6 +60,7 @@ PREPARED_CONTAINER_REQUIRED_PATHS=(
   "launch/orbbec_nvblox_standalone.launch.py"
   "config/nvblox/specializations/nvblox_orbbec_static.yaml"
 )
+CONTAINER_STATIC_TF_TIMEOUT_SEC=20
 
 validate_prepared_image_state() {
   local current_context_hash=""
@@ -243,6 +244,129 @@ def main() -> int:
 
 sys.exit(main())
 PY
+EOF
+)" 2>&1
+  )" || {
+    printf '%s\n' "${probe_output}" >&2
+    return 1
+  }
+
+  while IFS= read -r probe_line; do
+    [[ -n "${probe_line}" ]] || continue
+    info "${probe_line}"
+  done <<< "${probe_output}"
+
+  return 0
+}
+
+probe_container_static_tf() {
+  local probe_output=""
+  local probe_args=(
+    run
+    --rm
+    -e "ROS_DISTRO=${ROS_DISTRO_DEFAULT}"
+    -e "PROBE_TIMEOUT_SECONDS=${CONTAINER_STATIC_TF_TIMEOUT_SEC}"
+    -v "${CONTAINER_WS}:/workspaces/isaac_ros-dev"
+  )
+
+  append_jetson_container_args probe_args
+  append_ros_discovery_container_args probe_args
+
+  probe_output="$(
+    docker_cmd "${probe_args[@]}" "${DERIVED_IMAGE_TAG}" bash -lc "$(cat <<'EOF'
+set -euo pipefail
+restore_nounset=0
+if [[ $- == *u* ]]; then
+  restore_nounset=1
+  set +u
+fi
+source "/opt/ros/${ROS_DISTRO}/setup.bash"
+source "/workspaces/isaac_ros-dev/install/setup.bash"
+if (( restore_nounset )); then
+  set -u
+fi
+
+LOG_FILE="/tmp/orbbec-tf-probe.log"
+LAUNCH_PID=""
+
+cleanup() {
+  if [[ -n "${LAUNCH_PID}" ]] && kill -0 "${LAUNCH_PID}" 2>/dev/null; then
+    kill -INT "${LAUNCH_PID}" 2>/dev/null || true
+    wait "${LAUNCH_PID}" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT INT TERM
+
+ros2 launch nvblox_examples_bringup orbbec_transforms.launch.py >"${LOG_FILE}" 2>&1 &
+LAUNCH_PID=$!
+
+status=0
+python3 - "${PROBE_TIMEOUT_SECONDS}" <<'PY' || status=$?
+import sys
+import time
+
+import rclpy
+from rclpy.duration import Duration
+from rclpy.time import Time
+from tf2_ros import Buffer, TransformListener
+
+timeout_seconds = float(sys.argv[1])
+required_transforms = [
+    ('odom', 'base_link'),
+    ('odom', 'camera_link'),
+    ('odom', 'camera_color_optical_frame'),
+]
+
+
+def main() -> int:
+    print('[container-tf-probe] Waiting for managed static TF chain inside the container', flush=True)
+    rclpy.init(args=None)
+    node = rclpy.create_node('orbbec_container_tf_probe')
+    tf_buffer = Buffer(cache_time=Duration(seconds=timeout_seconds))
+    tf_listener = TransformListener(tf_buffer, node, spin_thread=False)
+    deadline = time.monotonic() + timeout_seconds
+    last_missing = []
+
+    try:
+        while time.monotonic() < deadline:
+            rclpy.spin_once(node, timeout_sec=0.2)
+            last_missing = []
+            for target_frame, source_frame in required_transforms:
+                if not tf_buffer.can_transform(
+                        target_frame,
+                        source_frame,
+                        Time(),
+                        timeout=Duration(seconds=0.1)):
+                    last_missing.append(f'{target_frame} <- {source_frame}')
+
+            if not last_missing:
+                print(
+                    '[container-tf-probe] TF probe passed for odom <- base_link, '
+                    'odom <- camera_link, odom <- camera_color_optical_frame',
+                    flush=True)
+                return 0
+
+        print(
+            '[container-tf-probe] TF probe failed. Missing transforms: '
+            + ', '.join(last_missing or ['unknown']),
+            file=sys.stderr,
+            flush=True)
+        return 1
+    finally:
+        del tf_listener
+        node.destroy_node()
+        rclpy.shutdown()
+
+
+sys.exit(main())
+PY
+
+if (( status != 0 )); then
+  printf '[container-tf-probe] Relevant launch log tail:\n'
+  tail -n 40 "${LOG_FILE}" 2>/dev/null || true
+fi
+
+exit "${status}"
 EOF
 )" 2>&1
   )" || {
@@ -574,6 +698,10 @@ info "Camera streams and frame IDs are ready."
 
 if ! probe_container_camera_visibility; then
   die "Host camera streams are ready, but the container cannot discover host camera topics. Check the ROS discovery environment shown above, or run bash reComputer/scripts/nvblox/scripts/debug_runtime_connectivity.sh for a discovery snapshot."
+fi
+
+if ! probe_container_static_tf; then
+  die "Host camera streams and container camera visibility are ready, but the managed static TF chain is not queryable inside the container."
 fi
 
 docker_cmd rm -f "${CONTAINER_NAME}" >/dev/null 2>&1 || true

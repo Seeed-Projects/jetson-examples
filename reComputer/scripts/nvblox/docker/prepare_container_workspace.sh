@@ -531,65 +531,8 @@ write_orbbec_example_launch() {
   cat > "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/launch/orbbec_example.launch.py" <<'EOF'
 from isaac_ros_launch_utils.all_types import *
 import isaac_ros_launch_utils as lu
-import time
-
-from launch.actions import OpaqueFunction
-from launch.logging import get_logger
-import rclpy
-from rclpy.duration import Duration
-from rclpy.time import Time
-from tf2_ros import Buffer, TransformListener
 
 from nvblox_ros_python_utils.nvblox_constants import NVBLOX_CONTAINER_NAME
-
-READINESS_TIMEOUT_SEC = 20.0
-
-
-def wait_for_orbbec_readiness(context, *args, **kwargs):
-    logger = get_logger('orbbec_readiness_probe')
-    logger.info(
-        'Managed static TF chain: odom -> base_link -> camera_link -> camera_color_optical_frame')
-    did_init = not rclpy.ok()
-    if did_init:
-        rclpy.init(args=None)
-    node = rclpy.create_node('orbbec_readiness_probe')
-    tf_buffer = Buffer(cache_time=Duration(seconds=READINESS_TIMEOUT_SEC))
-    tf_listener = TransformListener(tf_buffer, node, spin_thread=False)
-
-    last_missing_transforms = []
-
-    try:
-        tf_deadline = time.monotonic() + READINESS_TIMEOUT_SEC
-        required_transforms = [
-            ('odom', 'base_link'),
-            ('odom', 'camera_link'),
-            ('odom', 'camera_color_optical_frame'),
-        ]
-        while time.monotonic() < tf_deadline:
-            rclpy.spin_once(node, timeout_sec=0.2)
-            last_missing_transforms = []
-            for target_frame, source_frame in required_transforms:
-                if not tf_buffer.can_transform(
-                        target_frame,
-                        source_frame,
-                        Time(),
-                        timeout=Duration(seconds=0.1)):
-                    last_missing_transforms.append(f'{target_frame} <- {source_frame}')
-
-            if not last_missing_transforms:
-                logger.info(
-                    'TF readiness probe passed for odom <- base_link, odom <- camera_link, '
-                    'odom <- camera_color_optical_frame')
-                return []
-
-        raise RuntimeError(
-            'TF readiness probe failed. Missing transforms: '
-            + ', '.join(last_missing_transforms or ['unknown']))
-    finally:
-        del tf_listener
-        node.destroy_node()
-        if did_init:
-            rclpy.shutdown()
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -603,7 +546,6 @@ def generate_launch_description() -> LaunchDescription:
             'launch/orbbec_transforms.launch.py'))
 
     actions.append(lu.component_container(NVBLOX_CONTAINER_NAME, log_level=args.log_level))
-    actions.append(OpaqueFunction(function=wait_for_orbbec_readiness))
 
     base_config = lu.get_path('nvblox_examples_bringup', 'config/nvblox/nvblox_base.yaml')
     realsense_config = lu.get_path(
@@ -652,65 +594,8 @@ write_orbbec_debug_launch() {
   cat > "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/launch/orbbec_debug.launch.py" <<'EOF'
 from isaac_ros_launch_utils.all_types import *
 import isaac_ros_launch_utils as lu
-import time
-
-from launch.actions import OpaqueFunction
-from launch.logging import get_logger
-import rclpy
-from rclpy.duration import Duration
-from rclpy.time import Time
-from tf2_ros import Buffer, TransformListener
 
 from nvblox_ros_python_utils.nvblox_constants import NVBLOX_CONTAINER_NAME
-
-READINESS_TIMEOUT_SEC = 20.0
-
-
-def wait_for_orbbec_readiness(context, *args, **kwargs):
-    logger = get_logger('orbbec_readiness_probe')
-    logger.info(
-        'Managed static TF chain: odom -> base_link -> camera_link -> camera_color_optical_frame')
-    did_init = not rclpy.ok()
-    if did_init:
-        rclpy.init(args=None)
-    node = rclpy.create_node('orbbec_readiness_probe')
-    tf_buffer = Buffer(cache_time=Duration(seconds=READINESS_TIMEOUT_SEC))
-    tf_listener = TransformListener(tf_buffer, node, spin_thread=False)
-
-    last_missing_transforms = []
-
-    try:
-        tf_deadline = time.monotonic() + READINESS_TIMEOUT_SEC
-        required_transforms = [
-            ('odom', 'base_link'),
-            ('odom', 'camera_link'),
-            ('odom', 'camera_color_optical_frame'),
-        ]
-        while time.monotonic() < tf_deadline:
-            rclpy.spin_once(node, timeout_sec=0.2)
-            last_missing_transforms = []
-            for target_frame, source_frame in required_transforms:
-                if not tf_buffer.can_transform(
-                        target_frame,
-                        source_frame,
-                        Time(),
-                        timeout=Duration(seconds=0.1)):
-                    last_missing_transforms.append(f'{target_frame} <- {source_frame}')
-
-            if not last_missing_transforms:
-                logger.info(
-                    'TF readiness probe passed for odom <- base_link, odom <- camera_link, '
-                    'odom <- camera_color_optical_frame')
-                return []
-
-        raise RuntimeError(
-            'TF readiness probe failed. Missing transforms: '
-            + ', '.join(last_missing_transforms or ['unknown']))
-    finally:
-        del tf_listener
-        node.destroy_node()
-        if did_init:
-            rclpy.shutdown()
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -724,7 +609,6 @@ def generate_launch_description() -> LaunchDescription:
             'launch/orbbec_transforms.launch.py'))
 
     actions.append(lu.component_container(NVBLOX_CONTAINER_NAME, log_level=args.log_level))
-    actions.append(OpaqueFunction(function=wait_for_orbbec_readiness))
 
     base_config = lu.get_path('nvblox_examples_bringup', 'config/nvblox/nvblox_base.yaml')
     realsense_config = lu.get_path(
@@ -762,65 +646,8 @@ write_orbbec_standalone_launch() {
   cat > "${SRC_DIR}/nvblox_examples/nvblox_examples_bringup/launch/orbbec_nvblox_standalone.launch.py" <<'EOF'
 from isaac_ros_launch_utils.all_types import *
 import isaac_ros_launch_utils as lu
-import time
-
-from launch.actions import OpaqueFunction
-from launch.logging import get_logger
-import rclpy
-from rclpy.duration import Duration
-from rclpy.time import Time
-from tf2_ros import Buffer, TransformListener
 
 from nvblox_ros_python_utils.nvblox_constants import NVBLOX_CONTAINER_NAME
-
-READINESS_TIMEOUT_SEC = 20.0
-
-
-def wait_for_orbbec_readiness(context, *args, **kwargs):
-    logger = get_logger('orbbec_readiness_probe')
-    logger.info(
-        'Managed static TF chain: odom -> base_link -> camera_link -> camera_color_optical_frame')
-    did_init = not rclpy.ok()
-    if did_init:
-        rclpy.init(args=None)
-    node = rclpy.create_node('orbbec_readiness_probe')
-    tf_buffer = Buffer(cache_time=Duration(seconds=READINESS_TIMEOUT_SEC))
-    tf_listener = TransformListener(tf_buffer, node, spin_thread=False)
-
-    last_missing_transforms = []
-
-    try:
-        tf_deadline = time.monotonic() + READINESS_TIMEOUT_SEC
-        required_transforms = [
-            ('odom', 'base_link'),
-            ('odom', 'camera_link'),
-            ('odom', 'camera_color_optical_frame'),
-        ]
-        while time.monotonic() < tf_deadline:
-            rclpy.spin_once(node, timeout_sec=0.2)
-            last_missing_transforms = []
-            for target_frame, source_frame in required_transforms:
-                if not tf_buffer.can_transform(
-                        target_frame,
-                        source_frame,
-                        Time(),
-                        timeout=Duration(seconds=0.1)):
-                    last_missing_transforms.append(f'{target_frame} <- {source_frame}')
-
-            if not last_missing_transforms:
-                logger.info(
-                    'TF readiness probe passed for odom <- base_link, odom <- camera_link, '
-                    'odom <- camera_color_optical_frame')
-                return []
-
-        raise RuntimeError(
-            'TF readiness probe failed. Missing transforms: '
-            + ', '.join(last_missing_transforms or ['unknown']))
-    finally:
-        del tf_listener
-        node.destroy_node()
-        if did_init:
-            rclpy.shutdown()
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -834,7 +661,6 @@ def generate_launch_description() -> LaunchDescription:
             'launch/orbbec_transforms.launch.py'))
 
     actions.append(lu.component_container(NVBLOX_CONTAINER_NAME, log_level=args.log_level))
-    actions.append(OpaqueFunction(function=wait_for_orbbec_readiness))
 
     base_config = lu.get_path('nvblox_examples_bringup', 'config/nvblox/nvblox_base.yaml')
     realsense_config = lu.get_path(
