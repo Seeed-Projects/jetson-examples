@@ -310,7 +310,7 @@ terminate_launch() {
       fi
       sleep 1
     done
-  fi
+  done
 
   wait "${LAUNCH_PID}" 2>/dev/null || true
   LAUNCH_PID=""
