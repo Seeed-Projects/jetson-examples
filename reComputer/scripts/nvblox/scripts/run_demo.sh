@@ -288,12 +288,36 @@ fi
 
 LOG_FILE="/tmp/orbbec-tf-probe.log"
 LAUNCH_PID=""
+LAUNCH_STOP_TIMEOUT=8
+
+terminate_launch() {
+  local signal=""
+  local deadline=0
+
+  if [[ -z "${LAUNCH_PID}" ]] || ! kill -0 "${LAUNCH_PID}" 2>/dev/null; then
+    LAUNCH_PID=""
+    return 0
+  fi
+
+  for signal in INT TERM KILL; do
+    kill "-${signal}" "${LAUNCH_PID}" 2>/dev/null || true
+    deadline=$((SECONDS + LAUNCH_STOP_TIMEOUT))
+    while ((SECONDS < deadline)); do
+      if ! kill -0 "${LAUNCH_PID}" 2>/dev/null; then
+        wait "${LAUNCH_PID}" 2>/dev/null || true
+        LAUNCH_PID=""
+        return 0
+      fi
+      sleep 1
+    done
+  fi
+
+  wait "${LAUNCH_PID}" 2>/dev/null || true
+  LAUNCH_PID=""
+}
 
 cleanup() {
-  if [[ -n "${LAUNCH_PID}" ]] && kill -0 "${LAUNCH_PID}" 2>/dev/null; then
-    kill -INT "${LAUNCH_PID}" 2>/dev/null || true
-    wait "${LAUNCH_PID}" 2>/dev/null || true
-  fi
+  terminate_launch
 }
 trap cleanup EXIT INT TERM
 
@@ -366,6 +390,7 @@ if (( status != 0 )); then
   tail -n 40 "${LOG_FILE}" 2>/dev/null || true
 fi
 
+terminate_launch
 exit "${status}"
 EOF
 )" 2>&1
