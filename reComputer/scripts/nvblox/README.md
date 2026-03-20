@@ -1,15 +1,14 @@
-# Jetson Example: Run Static NVBlox Mapping on NVIDIA Jetson from a OneDrive Docker Archive
+# Jetson Example: Run  NVBlox Mapping on NVIDIA Jetson 
 
-This example vendors the NVBlox setup flow into `reComputer`, uses a shared OneDrive `.tar` archive instead of `docker pull`, and now defaults to the Gemini2-friendly static mapping path from `setup_nvbox`.
+![img](images/isaac_sim_nvblox_humans.gif)
 
-The default runtime is no longer the old `isaac_ros_visual_slam + dynamic nvblox` mobile-mapping path. `reComputer run nvblox` now launches:
+[Isaac ROS NVBlox](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_nvblox) is a high-performance GPU-accelerated 3D mapping framework developed by NVIDIA for real-time robotic perception. Unlike monocular depth estimation models, NVBlox consumes true depth input from RGB-D cameras or stereo cameras to construct accurate 3D scene representations.This case enables you to **quickly deploy the necessary environment for nvblox to run on your reComputer with just one click.**
 
-- Host-side Orbbec Gemini2 color + depth streaming
-- Container-side `nvblox_examples_bringup/orbbec_example.launch.py` or `orbbec_debug.launch.py`
-- Managed static TF chain: `odom -> base_link -> camera_link -> camera_color_optical_frame -> camera_depth_optical_frame`
-- Static NVBlox output probing through `/nvblox_node/static_esdf_pointcloud` or `/nvblox_node/static_map_slice`
+Detailed instructions for environment configuration can be found at:[Deploy NVBlox with Orbbec Camera](https://wiki.seeedstudio.com/deploy_nvblox_jetson_agx_orin/)
 
-On the first prepare run it will:
+
+
+Main process run it will:
 
 1. Download `nvblox_images.tar` from the built-in OneDrive share link into `~/.cache/jetson-examples/nvblox`
 2. Run `docker load -i` on that archive
@@ -18,7 +17,7 @@ On the first prepare run it will:
 
 ## Requirements
 
-- NVIDIA Jetson Orin
+- NVIDIA Jetson Orin 
 - Ubuntu 22.04
 - JetPack 6.x
 - Docker with NVIDIA Container Runtime
@@ -30,12 +29,14 @@ On the first prepare run it will:
 Run the full prepare + demo flow:
 
 ```sh
+cd jetson-example/
+pip install .
 reComputer run nvblox
 ```
 
-Prepare only:
+**Prepare only:**
 
-```sh
+```bash
 NVBLOX_MODE=prepare reComputer run nvblox
 ```
 
