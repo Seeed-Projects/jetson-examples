@@ -43,26 +43,19 @@ reComputer run llava
 
 Here are some examples that can be run:
 
-| Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 |
-| ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- |
-| 🆕 [Ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) | Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  |
-| 🆕 [Deep-Live-Cam](/reComputer/scripts/deep-live-cam/README.md) | Face-swapping | 0.5GB | 20GB  | `reComputer run  deep-live-cam`  |
-| 🆕 llama-factory | Finetune LLM |  | 13.5GB  | `reComputer run  llama-factory`  |
-| 🆕 [ComfyUI](/reComputer/scripts/comfyui/README.md) |Computer Vision |  | 20GB  | `reComputer run comfyui`  |
-| [Depth-Anything-V2](/reComputer/scripts/depth-anything-v2/README.md) |Computer Vision |  | 15GB  | `reComputer run depth-anything-v2`  |
-| [Depth-Anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision |  | 12.9GB  | `reComputer run  depth-anything`  |
-| [Yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 |
-| Llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 |
-| [Ollama](https://github.com/ollama/ollama)     | Inference Server         | *               | 10.5GB     | `reComputer run ollama`                 |
-| LLaVA                                            | Text + Vision (VLM)      | 13GB            | 14.4GB     | `reComputer run llava`                  |
-| Live LLaVA                                       | Text + Vision (VLM)      | 13GB            | 20.3GB     | `reComputer run live-llava`             |
-| Stable-diffusion-webui                           | Image Generation         | 3.97G           | 7.3GB      | `reComputer run stable-diffusion-webui` |
-| Nanoowl                                          | Vision Transformers(ViT) | 613MB           | 15.1GB     | `reComputer run nanoowl`                |
-| [Nanodb](../reComputer/scripts/nanodb/readme.md) | Vector Database          | 76GB            | 7.0GB      | `reComputer run nanodb`                 |
-| Whisper                                          | Audio                    | 1.5GB           | 6.0GB      | `reComputer run whisper`                |
-| [Yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) | Computer Vision | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |
-| [TensorFlow MoveNet Thunder](/reComputer/scripts/MoveNet-Thunder/readme.md) |Computer Vision |  | 7.7GB  | `reComputer run  MoveNet-Thunder`  |
-| [Parler-TTS mini: expresso](/reComputer/scripts/parler-tts/readme.md) | Audio |  | 6.9GB  | `reComputer run  parler-tts`  |
+| Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 | Supported JetPack |
+| ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- | ------------------------------------------------ |
+| 🆕 [Ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) | Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  | 4.6, 5.1.1, 5.1.2, 5.1.3, 6.0, 6.1, 6.2 |
+| 🆕 [Deep-Live-Cam](/reComputer/scripts/deep-live-cam/README.md) | Face-swapping | 0.5GB | 20GB  | `reComputer run  deep-live-cam`  | 6.0 |
+| 🆕 llama-factory | Finetune LLM |  | 13.5GB  | `reComputer run  llama-factory`  | 5.1.1, 5.1.2, 5.1.3 |
+| 🆕 [ComfyUI](/reComputer/scripts/comfyui/README.md) |Computer Vision |  | 20GB  | `reComputer run comfyui`  | 5.1.1, 5.1.2, 5.1.3 |
+| [Depth-Anything-V2](/reComputer/scripts/depth-anything-v2/README.md) |Computer Vision |  | 15GB  | `reComputer run depth-anything-v2`  | 5.1.1, 5.1.2, 5.1.3 |
+| [Depth-Anything-V3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision |  | 7.6GB  | `reComputer run depth-anything-v3`  | 6.1, 6.2, 6.2.1 |
+| [Depth-Anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision |  | 12.9GB  | `reComputer run  depth-anything`  | 5.1.1, 5.1.2, 5.1.3 |
+| [Yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 | 5.1.1, 5.1.2, 5.1.3, 6.0 |
+| Llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 | 5.1.1, 5.1.2, 5.1.3, 6.0 |
+| [gpt-oss](/reComputer/scripts/gpt-oss/README.md)     | Text (LLM)               | 39GB | 31.28GB    | `reComputer run gpt-oss`               | 6.1, 6.2, 6.2.1 |
+| [nvblox](/reComputer/scripts/nvblox/README.md)       | Robotics / Mapping       | *    | 20.5GB+    | `reComputer run nvblox`                | 6.x |
 
 
 > Note: You should have enough space to run example, like `LLaVA`, at least `27.4GB` totally

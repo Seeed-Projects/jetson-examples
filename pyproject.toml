@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=57.0.0", "wheel"]
+requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -35,8 +35,11 @@ Issues = "https://github.com/Seeed-Projects/jetson-examples/issues"
 # Tools settings -------------------------------------------------------------------------------------------------------
 
 [tool.setuptools.packages.find]
-namespaces = true
 where = ["."]
+include = ["reComputer"]
+
+[tool.setuptools]
+include-package-data = true
 
 [tool.setuptools.package-data]
-"reComputer.scripts" = ["**/*"]
+"reComputer" = ["scripts/**/*"]
