@@ -13,6 +13,7 @@ All examples that can be run:
 | text-generation-webui                            | Text (LLM)               | 3.9GB      | 14.8GB     | `reComputer run text-generation-webui`       |          |
 | llama3                                           | Text (LLM)               | 4.9GB      | 10.5GB     | `reComputer run llama3`                      |          |
 | [gpt-oss](/reComputer/scripts/gpt-oss/README.md) | Text (LLM)               | *          | 31.28GB    | `reComputer run gpt-oss`                     |          |
+| [ros1-jp6](/reComputer/scripts/ros1-jp6/README.md) | Robotics / ROS 1         | *          | 1.27GB     | `reComputer run ros1-jp6`                    |          |
 | [nvblox](/reComputer/scripts/nvblox/README.md)   | Robotics / Mapping       | *          | 20.5GB+    | `reComputer run nvblox`                      | Gemini2  |
 LLaMA                                            | Text (LLM)               | 1.5GB      | 10.5GB     | `reComputer run Sheared-LLaMA-2.7B-ShareGPT` |          |
 | llava-v1.5                                       | Text + Vision (VLM)      | 13GB       | 14.4GB     | `reComputer run llava-v1.5-7b`               |          |
@@ -27,4 +28,3 @@ LLaMA                                            | Text (LLM)               | 1.
 | [TensorFlow MoveNet Lightning](/reComputer/scripts/MoveNet-Lightning/readme.md) |Computer Vision |  | 7.48GB  | `reComputer run  MoveNet-Lightning`  | USB-CAM*
 | [TensorFlow MoveNet JS](/reComputer/scripts/MoveNetJS/readme.md) |Computer Vision |  | 56.21MB  | `reComputer run  MoveNetJS`  | USB-CAM*
 | [Parler-TTS mini: expresso](/reComputer/scripts/parler-tts/readme.md) |Audio |  | 6.9GB  | `reComputer run  parler-tts`  |
-
