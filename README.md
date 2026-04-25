@@ -51,6 +51,7 @@ Here are some examples that can be run:
 | 🆕 [ComfyUI](/reComputer/scripts/comfyui/README.md) |Computer Vision |  | 20GB  | `reComputer run comfyui`  | 5.1.1, 5.1.2, 5.1.3 |
 | [Depth-Anything-V2](/reComputer/scripts/depth-anything-v2/README.md) |Computer Vision |  | 15GB  | `reComputer run depth-anything-v2`  | 5.1.1, 5.1.2, 5.1.3 |
 | [Depth-Anything-V3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision |  | 7.6GB  | `reComputer run depth-anything-v3`  | 6.1, 6.2, 6.2.1 |
+| 🆕 [Qwen3.5-4B](/reComputer/scripts/qwen3.5-4b/README.md) | Text (LLM) | 2.5GB | * | `reComputer run qwen3.5-4b` | 6.1, 6.2, 6.2.1 |
 | [Depth-Anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision |  | 12.9GB  | `reComputer run  depth-anything`  | 5.1.1, 5.1.2, 5.1.3 |
 | [Yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 | 5.1.1, 5.1.2, 5.1.3, 6.0 |
 | Llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 | 5.1.1, 5.1.2, 5.1.3, 6.0 |

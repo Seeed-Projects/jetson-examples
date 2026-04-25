@@ -1,0 +1,35 @@
+# Jetson Orin (sm_87) llama.cpp inference image
+# Build flow is maintained outside this repo; this file is kept here as the
+# reference runtime image definition used by the demo script.
+
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libgomp1 curl && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY dist/bin/llama-server /usr/local/bin/
+COPY dist/bin/llama-cli /usr/local/bin/
+
+RUN mkdir -p /usr/local/lib/llama
+COPY dist/lib/ /usr/local/lib/llama/
+RUN echo "/usr/local/lib/llama" > /etc/ld.so.conf.d/llama.conf && ldconfig
+
+ENV PATH=/usr/local/cuda/bin:$PATH
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/lib/llama
+
+VOLUME ["/models"]
+WORKDIR /models
+
+ENV LLAMA_ARG_HOST=0.0.0.0
+ENV LLAMA_ARG_PORT=8080
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=5s \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+ENTRYPOINT ["llama-server"]

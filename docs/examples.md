@@ -9,6 +9,7 @@ All examples that can be run:
 | [ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) |Computer Vision(CV) | * | 15.4GB  | `reComputer run  ultralytics-yolo`  | |
 | [depth-anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision(CV) | * | 12.9GB  | `reComputer run  depth-anything`  |  | 
 | [depth-anything-v3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision(CV) | * | 7.6GB  | `reComputer run depth-anything-v3`  |  | 
+| [qwen3.5-4b](/reComputer/scripts/qwen3.5-4b/README.md) | Text (LLM) | 2.5GB | * | `reComputer run qwen3.5-4b` | |
 | [yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision(CV)         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 | | 
 | text-generation-webui                            | Text (LLM)               | 3.9GB      | 14.8GB     | `reComputer run text-generation-webui`       |          |
 | llama3                                           | Text (LLM)               | 4.9GB      | 10.5GB     | `reComputer run llama3`                      |          |
