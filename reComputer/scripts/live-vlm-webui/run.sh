@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Live VLM WebUI one-click deployment for NVIDIA Jetson
-# Uses official GHCR pre-built images (no custom Dockerfile needed)
-
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
@@ -17,26 +14,27 @@ OLLAMA_PORT=11434
 WEBUI_PORT=8090
 STARTUP_TIMEOUT=120
 OLLAMA_START_PERIOD=60
+GPU_FLAGS=()
 
 declare -A MODEL_MAP
 MODEL_MAP=(
     [1]="gemma3:4b"
     [2]="gemma3:12b"
-    [3]="qwen2.5-vl:3b"
-    [4]="qwen2.5-vl:7b"
-    [5]="llama3.2-vision:11b"
-    [6]="phi3.5-vision:3.8b"
-    [7]="nomic-embed-text"
+    [3]="llava:7b"
+    [4]="llama3.2-vision:11b"
+    [5]="moondream:latest"
+    [6]="gemma3:4b"
+    [7]="nomic-embed-text:latest"
 )
 
 detect_platform_and_image() {
     if [ -f "$L4T_VERSION_FILE" ]; then
-        L4T_RELEASE=$(head -n 1 "$L4T_VERSION_FILE" | grep -oP '(?<=R)\d+' | head -1)
-        L4T_REVISION=$(head -n 1 "$L4T_VERSION_FILE" | grep -oP '(?<=REVISION: )\d+' | head -1)
+        L4T_RELEASE=$(head -n 1 "$L4T_VERSION_FILE" | grep -o 'R[0-9]*' | head -1 | cut -dR -f2)
+        L4T_REVISION=$(head -n 1 "$L4T_VERSION_FILE" | grep -o 'REVISION: [0-9]*' | awk '{print $2}')
         L4T_VERSION="$L4T_RELEASE.$L4T_REVISION"
     else
         L4T_VERSION=$(dpkg-query --showformat='${Version}' --show nvidia-l4t-core 2>/dev/null \
-            | grep -oP '\d+\.\d+' | head -1)
+            | grep -o '[0-9]*\.[0-9]*' | head -1)
     fi
 
     echo "Detected L4T version: $L4T_VERSION"
@@ -63,8 +61,7 @@ ensure_docker_access() {
 
     if id -nG "$USER" | grep -qw docker; then
         echo "Current user is already in docker group, but docker is still unavailable."
-        echo "Please make sure Docker daemon is running, for example:"
-        echo "sudo systemctl enable --now docker"
+        echo "Please make sure Docker daemon is running."
         exit 1
     fi
 
@@ -81,17 +78,45 @@ ensure_docker_access() {
             fi
             sudo usermod -aG docker "$USER"
             echo "Added $USER to docker group."
-            echo "Please log out and log back in (or reboot), then rerun:"
-            echo "reComputer run live-vlm-webui"
+            echo "Please log out and log back in, then rerun: reComputer run live-vlm-webui"
             exit 1
             ;;
         *)
             echo "Skipped docker group setup."
-            echo "You can run this manually:"
-            echo "sudo usermod -aG docker $USER"
+            echo "You can run this manually: sudo usermod -aG docker $USER"
             exit 1
             ;;
     esac
+}
+
+probe_gpu_mode() {
+    local test_image="nvidia/cuda:12.6.0-base-ubuntu22.04"
+    if docker run --rm --runtime nvidia --network host "$test_image" /bin/sh -lc "exit 0" >/dev/null 2>&1; then
+        GPU_FLAGS=(--runtime nvidia)
+        echo "GPU mode: --runtime nvidia"
+        return 0
+    fi
+    if docker run --rm --gpus all --network host "$test_image" /bin/sh -lc "exit 0" >/dev/null 2>&1; then
+        GPU_FLAGS=(--gpus all)
+        echo "GPU mode: --gpus all"
+        return 0
+    fi
+    echo "${RED}Failed to detect a working Docker GPU mode.${RESET}"
+    echo "Please check Docker + NVIDIA Container Runtime on this device."
+    exit 1
+}
+
+pull_image() {
+    local image="$1"
+    echo "Pulling image: $image"
+    if ! docker pull "$image"; then
+        if docker image inspect "$image" >/dev/null 2>&1; then
+            echo "Using local image cache: $image"
+            return 0
+        fi
+        echo "${RED}Failed to pull image $image.${RESET}"
+        return 1
+    fi
 }
 
 smart_ollama_check() {
@@ -109,7 +134,7 @@ smart_ollama_check() {
                  ;;
         esac
     else
-        echo "Ollama container not found. Creating new one via docker compose..."
+        echo "Ollama container not found. Creating new one..."
         OLLAMA_STATE="new"
     fi
 }
@@ -131,6 +156,58 @@ smart_webui_check() {
         esac
     else
         WEBUI_STATE="new"
+    fi
+}
+
+start_ollama() {
+    local ollama_image="ollama/ollama:latest"
+    if [ "$OLLAMA_STATE" = "new" ]; then
+        pull_image "$ollama_image"
+        docker run -d \
+            --name "$OLLAMA_CONTAINER" \
+            "${GPU_FLAGS[@]}" \
+            --network host \
+            --runtime nvidia \
+            -v ollama-data:/root/.ollama \
+            "$ollama_image"
+    fi
+    if [ "$OLLAMA_STATE" = "restarted" ]; then
+        docker start "$OLLAMA_CONTAINER"
+    fi
+
+    echo "Waiting for Ollama to be ready (max ${OLLAMA_START_PERIOD}s)..."
+    local elapsed=0
+    local interval=5
+    while [ "$elapsed" -lt "$OLLAMA_START_PERIOD" ]; do
+        if docker exec "$OLLAMA_CONTAINER" curl -s http://localhost:11434/ >/dev/null 2>&1; then
+            echo "${GREEN}Ollama is ready.${RESET}"
+            return 0
+        fi
+        if [ $((elapsed % 15)) -eq 0 ]; then
+            echo "Waiting for Ollama startup... (${elapsed}s/${OLLAMA_START_PERIOD}s)"
+        fi
+        sleep "$interval"
+        elapsed=$((elapsed + interval))
+    done
+    echo "${RED}Ollama failed to start within ${OLLAMA_START_PERIOD}s.${RESET}"
+    echo "Check logs with: docker logs ollama"
+    return 1
+}
+
+start_webui() {
+    local webui_image="ghcr.io/nvidia-ai-iot/live-vlm-webui:${IMAGE_TAG}"
+    if [ "$WEBUI_STATE" = "new" ] || [ "$WEBUI_STATE" = "recreate" ]; then
+        pull_image "$webui_image"
+        docker run -d \
+            --name "$WEBUI_CONTAINER" \
+            "${GPU_FLAGS[@]}" \
+            --network host \
+            --privileged \
+            -v /run/jtop.sock:/run/jtop.sock:ro \
+            -e PYTHONUNBUFFERED=1 \
+            -e OLLAMA_BASE_URL=http://localhost:11434 \
+            "$webui_image"
+        echo "${GREEN}live-vlm-webui container started.${RESET}"
     fi
 }
 
@@ -166,12 +243,12 @@ interactive_model_selection() {
     printf "  %-3s %-28s %-12s %s\n" "---" "--------------------------" "------------" "----"
     printf "  %-3s %-28s %-12s %s\n" "1" "gemma3:4b" "4B" "6GB (entry)"
     printf "  %-3s %-28s %-12s %s\n" "2" "gemma3:12b" "12B" "10GB (balanced)"
-    printf "  %-3s %-28s %-12s %s\n" "3" "qwen2.5-vl:3b" "3B" "6GB (ultra-light)"
-    printf "  %-3s %-28s %-12s %s\n" "4" "qwen2.5-vl:7b" "7B" "10GB (recommended)"
-    printf "  %-3s %-28s %-12s %s\n" "5" "llama3.2-vision:11b" "11B" "14GB (medium)"
-    printf "  %-3s %-28s %-12s %s\n" "6" "phi3.5-vision:3.8b" "3.8B" "6GB (ultra-light)"
-    printf "  %-3s %-28s %-12s %s\n" "7" "nomic-embed-text" "(embedding)" "(optional)"
-    printf "  %-3s %-28s %-12s %s\n" "0" "Skip (no model)" "—" "—"
+    printf "  %-3s %-28s %-12s %s\n" "3" "llava:7b" "7B" "6GB (vision)"
+    printf "  %-3s %-28s %-12s %s\n" "4" "llama3.2-vision:11b" "11B" "14GB (vision)"
+    printf "  %-3s %-28s %-12s %s\n" "5" "moondream:latest" "~1B" "1GB (ultra-light vision)"
+    printf "  %-3s %-28s %-12s %s\n" "6" "gemma3:4b" "4B" "6GB (entry)"
+    printf "  %-3s %-28s %-12s %s\n" "7" "nomic-embed-text:latest" "(embedding)" "(optional)"
+    printf "  %-3s %-28s %-12s %s\n" "0" "Skip (no model)" "-" "-"
     echo ""
 
     while true; do
@@ -231,41 +308,6 @@ handle_model_selection() {
     fi
 
     interactive_model_selection
-}
-
-start_services() {
-    if [ "$OLLAMA_STATE" = "new" ] || [ "$OLLAMA_STATE" = "restarted" ]; then
-        echo "Starting Ollama via docker compose..."
-        docker compose up -d ollama
-        echo "Waiting for Ollama to be ready (max ${OLLAMA_START_PERIOD}s)..."
-        local elapsed=0
-        local interval=5
-        while [ "$elapsed" -lt "$OLLAMA_START_PERIOD" ]; do
-            if docker exec "$OLLAMA_CONTAINER" curl -s http://localhost:11434/ >/dev/null 2>&1; then
-                echo "${GREEN}Ollama is ready.${RESET}"
-                break
-            fi
-            if [ $((elapsed % 15)) -eq 0 ]; then
-                echo "Waiting for Ollama startup... (${elapsed}s/${OLLAMA_START_PERIOD}s)"
-            fi
-            sleep "$interval"
-            elapsed=$((elapsed + interval))
-        done
-        if [ "$elapsed" -ge "$OLLAMA_START_PERIOD" ]; then
-            echo "${RED}Ollama failed to start within ${OLLAMA_START_PERIOD}s. Check logs with: docker logs ollama${RESET}"
-            exit 1
-        fi
-    fi
-
-    if [ "$WEBUI_STATE" = "new" ] || [ "$WEBUI_STATE" = "recreate" ]; then
-        echo "Starting live-vlm-webui container..."
-        sed -i "s|latest-jetson-orin|${IMAGE_TAG}|" "$SCRIPT_DIR/docker-compose.yml"
-        if ! docker compose up -d live-vlm-webui; then
-            echo "${RED}Failed to start live-vlm-webui container.${RESET}"
-            exit 1
-        fi
-        echo "${GREEN}live-vlm-webui container started.${RESET}"
-    fi
 }
 
 wait_for_webui_ready() {
@@ -343,9 +385,18 @@ main() {
 
     ensure_docker_access
     detect_platform_and_image
+    probe_gpu_mode
     smart_ollama_check
     smart_webui_check
-    start_services
+
+    if [ "$OLLAMA_STATE" != "skipped" ] && [ "$OLLAMA_STATE" != "running" ]; then
+        start_ollama
+    fi
+
+    if [ "$WEBUI_STATE" != "skipped" ]; then
+        start_webui
+    fi
+
     handle_model_selection
     wait_for_webui_ready
     print_access_info

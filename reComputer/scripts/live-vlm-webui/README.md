@@ -67,16 +67,16 @@ The script will:
 
 The script presents 7 pre-configured models:
 
-| # | Model                  | Parameters | VRAM    | Use Case            |
-|---|------------------------|------------|---------|---------------------|
-| 1 | `gemma3:4b`            | 4B         | 6GB     | Entry-level         |
-| 2 | `gemma3:12b`           | 12B        | 10GB    | Balanced            |
-| 3 | `qwen2.5-vl:3b`        | 3B         | 6GB     | Ultra-light         |
-| 4 | `qwen2.5-vl:7b`        | 7B         | 10GB    | Recommended         |
-| 5 | `llama3.2-vision:11b` | 11B        | 14GB    | Medium              |
-| 6 | `phi3.5-vision:3.8b`  | 3.8B       | 6GB     | Ultra-light         |
-| 7 | `nomic-embed-text`     | —          | —       | Embedding (opt.)    |
-| 0 | Skip (no model)        | —          | —       | Manual pull later   |
+| # | Model                    | Parameters | VRAM            | Use Case           |
+|---|--------------------------|------------|-----------------|--------------------|
+| 1 | `gemma3:4b`              | 4B         | 6GB             | Entry-level        |
+| 2 | `gemma3:12b`             | 12B        | 10GB            | Balanced           |
+| 3 | `llava:7b`               | 7B         | 6GB             | Vision             |
+| 4 | `llama3.2-vision:11b`    | 11B        | 14GB            | Vision             |
+| 5 | `moondream:latest`       | ~1B        | 1GB             | Ultra-light vision |
+| 6 | `gemma3:4b`              | 4B         | 6GB             | Entry-level        |
+| 7 | `nomic-embed-text:latest` | —         | —               | Embedding (opt.)   |
+| 0 | Skip (no model)          | —          | —               | Manual pull later  |
 
 ### Skip model selection (automated)
 
@@ -132,8 +132,7 @@ docker volume rm live-vlm-webui_ollama-data
 ```
 reComputer run live-vlm-webui
   |
-  +-- init.sh          (check JetPack, disk, memory, docker)
-  +-- run.sh          (smart checks, docker compose, model selection)
+  +-- run.sh          (docker access, GPU mode detection, container management)
          |
          +-- Ollama container        :11434 (VLM inference backend)
          +-- live-vlm-webui container :8090 HTTPS (WebRTC streaming UI)
