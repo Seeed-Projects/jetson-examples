@@ -455,20 +455,16 @@ main() {
         fi
     fi
 
-    # Handle model selection BEFORE starting WebUI, so SELECTED_MODEL is available
-    handle_model_selection
-
+    # Start WebUI first so it's available even if model pull takes time or fails
     if [ "$WEBUI_STATE" != "skipped" ]; then
-        # Only start WebUI after model selection is complete
-        if [ -n "$SELECTED_MODEL" ]; then
-            if ! is_model_pulled "$SELECTED_MODEL"; then
-                echo "${YELLOW}Model $SELECTED_MODEL not found. Pulling now...${RESET}"
-                pull_model "$SELECTED_MODEL"
-            fi
-        fi
         start_webui
     fi
 
+    # Handle model selection - only pull if model doesn't exist
+    handle_model_selection
+
+    # If model pull failed, warn but continue - WebUI is still usable
+    # User can pull model later via: docker exec ollama ollama pull <model>
     wait_for_webui_ready
     print_access_info
 }
