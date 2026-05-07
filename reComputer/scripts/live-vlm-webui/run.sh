@@ -277,6 +277,34 @@ interactive_model_selection() {
     pull_model "$SELECTED_MODEL"
 }
 
+is_ollama_ready() {
+    docker exec "$OLLAMA_CONTAINER" curl -s http://localhost:11434/ >/dev/null 2>&1
+}
+
+wait_for_ollama_ready() {
+    local max_wait=60
+    local elapsed=0
+    local interval=5
+
+    echo "Waiting for Ollama service to be ready..."
+
+    while [ "$elapsed" -lt "$max_wait" ]; do
+        if is_ollama_ready; then
+            echo "${GREEN}Ollama service is ready.${RESET}"
+            return 0
+        fi
+        if [ $((elapsed % 15)) -eq 0 ]; then
+            echo "Waiting for Ollama... (${elapsed}s/${max_wait}s)"
+        fi
+        sleep "$interval"
+        elapsed=$((elapsed + interval))
+    done
+
+    echo "${RED}Ollama service is not responding after ${max_wait}s.${RESET}"
+    echo "Check logs with: docker logs ollama"
+    return 1
+}
+
 handle_model_selection() {
     if [ -n "$OLLAMA_MODEL" ]; then
         SELECTED_MODEL="$OLLAMA_MODEL"
@@ -289,8 +317,8 @@ handle_model_selection() {
         return 0
     fi
 
-    if ! docker ps --format '{{.Names}}' | grep -q "^${OLLAMA_CONTAINER}$"; then
-        echo "${YELLOW}Ollama container is not running. Skipping model selection.${RESET}"
+    if ! is_ollama_ready; then
+        echo "${YELLOW}Ollama service is not ready. Skipping model selection.${RESET}"
         return 0
     fi
 
@@ -391,6 +419,12 @@ main() {
 
     if [ "$OLLAMA_STATE" != "skipped" ] && [ "$OLLAMA_STATE" != "running" ]; then
         start_ollama
+    fi
+
+    if [ "$OLLAMA_STATE" != "skipped" ]; then
+        if ! wait_for_ollama_ready; then
+            echo "${YELLOW}Warning: Ollama may not be ready. WebUI might not function properly.${RESET}"
+        fi
     fi
 
     if [ "$WEBUI_STATE" != "skipped" ]; then
