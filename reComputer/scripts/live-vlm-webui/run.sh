@@ -205,7 +205,8 @@ start_webui() {
             --privileged \
             -v /run/jtop.sock:/run/jtop.sock:ro \
             -e PYTHONUNBUFFERED=1 \
-            -e OLLAMA_BASE_URL=http://localhost:11434 \
+            -e LIVE_VLM_API_BASE=http://localhost:11434/v1 \
+            -e LIVE_VLM_DEFAULT_MODEL="${SELECTED_MODEL:-}" \
             "$webui_image"
         echo "${GREEN}live-vlm-webui container started.${RESET}"
     fi
@@ -331,7 +332,15 @@ handle_model_selection() {
         read -r -p "Use an existing model without pulling a new one? (y/n, default y): " confirm
         confirm="${confirm:-y}"
         case "$confirm" in
-            y|Y) echo "Using existing model."; return 0 ;;
+            y|Y)
+                echo "Using existing model."
+                # Set first available model as default
+                SELECTED_MODEL=$(model_ollama_list 2>/dev/null | grep -v "^NAME" | grep -v "^$" | head -1 | awk '{print $1}')
+                if [ -n "$SELECTED_MODEL" ]; then
+                    echo "${CYAN}Auto-selected model: $SELECTED_MODEL${RESET}"
+                fi
+                return 0
+                ;;
         esac
     fi
 
@@ -395,6 +404,9 @@ print_access_info() {
     echo "  - Network: https://$(hostname -I | awk '{print $1}'):${WEBUI_PORT}"
     echo ""
     echo "  Ollama API: http://localhost:${OLLAMA_PORT}"
+    if [ -n "$SELECTED_MODEL" ]; then
+        echo "  Model: ${GREEN}${SELECTED_MODEL}${RESET}"
+    fi
     echo ""
     echo "  View logs:"
     echo "  docker logs -f ${WEBUI_CONTAINER}"
@@ -427,11 +439,20 @@ main() {
         fi
     fi
 
+    # Handle model selection BEFORE starting WebUI, so SELECTED_MODEL is available
+    handle_model_selection
+
     if [ "$WEBUI_STATE" != "skipped" ]; then
+        # Only start WebUI after model selection is complete
+        if [ -n "$SELECTED_MODEL" ]; then
+            if ! is_model_pulled "$SELECTED_MODEL"; then
+                echo "${YELLOW}Model $SELECTED_MODEL not found. Pulling now...${RESET}"
+                pull_model "$SELECTED_MODEL"
+            fi
+        fi
         start_webui
     fi
 
-    handle_model_selection
     wait_for_webui_ready
     print_access_info
 }
