@@ -1,0 +1,14 @@
+# The tested JetPack versions.
+ALLOWED_L4T_VERSIONS:
+  - 36.3.0  # JetPack 6.0 / L4T 36.3
+  - 36.4.0  # JetPack 6.1 / L4T 36.4
+  - 36.4.3  # JetPack 6.2 / L4T 36.4
+  - 36.4.4  # JetPack 6.2.1 / L4T 36.4
+  - 38.1.0  # JetPack 7.0 / L4T 38.1 (Thor)
+  - 38.2.0  # JetPack 7.1 / L4T 38.2 (Thor)
+REQUIRED_DISK_SPACE: 15  # GB (images pulled on demand, model sizes vary)
+REQUIRED_MEM_SPACE: 8    # GB
+PACKAGES:
+  - nvidia-jetpack
+DOCKER:
+  ENABLE: false

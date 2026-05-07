@@ -1,0 +1,39 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    network_mode: host
+    volumes:
+      - ollama-data:/root/.ollama
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  live-vlm-webui:
+    image: ghcr.io/nvidia-ai-iot/live-vlm-webui:latest-jetson-orin
+    container_name: live-vlm-webui
+    network_mode: host
+    privileged: true
+    volumes:
+      - /run/jtop.sock:/run/jtop.sock:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OLLAMA_BASE_URL=http://localhost:11434
+    runtime: nvidia
+    depends_on:
+      ollama:
+        condition: service_healthy
+
+volumes:
+  ollama-data:
