@@ -208,7 +208,7 @@ start_webui() {
         pull_image "$webui_image"
 
         # Build command arguments for Ollama configuration
-        local cmd_args="--host 0.0.0.0 --port 8090"
+        local cmd_args="-m live_vlm_webui.server --host 0.0.0.0 --port 8090"
         if [ -n "$SELECTED_MODEL" ]; then
             cmd_args="$cmd_args --model $SELECTED_MODEL"
         fi
@@ -222,6 +222,7 @@ start_webui() {
             --privileged \
             -v /run/jtop.sock:/run/jtop.sock:ro \
             -e PYTHONUNBUFFERED=1 \
+            --entrypoint python \
             "$webui_image" \
             $cmd_args
         echo "${GREEN}live-vlm-webui container started with Ollama config.${RESET}"
