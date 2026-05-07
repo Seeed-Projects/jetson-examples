@@ -196,8 +196,25 @@ start_ollama() {
 
 start_webui() {
     local webui_image="ghcr.io/nvidia-ai-iot/live-vlm-webui:${IMAGE_TAG}"
+
+    # If model is selected but container creation was skipped, force recreate
+    if [ "$WEBUI_STATE" = "skipped" ] && [ -n "$SELECTED_MODEL" ]; then
+        echo "${YELLOW}Model selected but container creation was skipped. Forcing recreation...${RESET}"
+        docker rm -f "$WEBUI_CONTAINER" >/dev/null 2>&1
+        WEBUI_STATE="recreate"
+    fi
+
     if [ "$WEBUI_STATE" = "new" ] || [ "$WEBUI_STATE" = "recreate" ]; then
         pull_image "$webui_image"
+
+        # Build command arguments for Ollama configuration
+        local cmd_args="--host 0.0.0.0 --port 8090"
+        if [ -n "$SELECTED_MODEL" ]; then
+            cmd_args="$cmd_args --model $SELECTED_MODEL"
+        fi
+        # Use Ollama's local API (--api-key EMPTY for no auth)
+        cmd_args="$cmd_args --api-base http://localhost:11434/v1 --api-key EMPTY"
+
         docker run -d \
             --name "$WEBUI_CONTAINER" \
             "${GPU_FLAGS[@]}" \
@@ -205,10 +222,9 @@ start_webui() {
             --privileged \
             -v /run/jtop.sock:/run/jtop.sock:ro \
             -e PYTHONUNBUFFERED=1 \
-            -e LIVE_VLM_API_BASE=http://localhost:11434/v1 \
-            -e LIVE_VLM_DEFAULT_MODEL="${SELECTED_MODEL:-}" \
-            "$webui_image"
-        echo "${GREEN}live-vlm-webui container started.${RESET}"
+            "$webui_image" \
+            $cmd_args
+        echo "${GREEN}live-vlm-webui container started with Ollama config.${RESET}"
     fi
 }
 
