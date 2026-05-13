@@ -8,7 +8,9 @@ All examples that can be run:
 | [yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) |Computer Vision(CV) | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |  | 
 | [ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) |Computer Vision(CV) | * | 15.4GB  | `reComputer run  ultralytics-yolo`  | |
 | [depth-anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision(CV) | * | 12.9GB  | `reComputer run  depth-anything`  |  | 
-| [depth-anything-v3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision(CV) | * | 7.6GB  | `reComputer run depth-anything-v3`  |  | 
+| [depth-anything-v3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision(CV) | * | 7.6GB  | `reComputer run depth-anything-v3`  |  |
+| [live-vlm-webui](/reComputer/scripts/live-vlm-webui/README.md) | Computer Vision (VLM) | * | * | `reComputer run live-vlm-webui` |  |
+| [nemotron-3-nano](/reComputer/scripts/nemotron-3-nano/README.md) | Text (LLM) | 24.5GB | * | `reComputer run nemotron-3-nano` |  |
 | [qwen3.5-4b](/reComputer/scripts/qwen3.5-4b/README.md) | Text (LLM) | 2.5GB | * | `reComputer run qwen3.5-4b` | |
 | [yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision(CV)         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 | | 
 | text-generation-webui                            | Text (LLM)               | 3.9GB      | 14.8GB     | `reComputer run text-generation-webui`       |          |
