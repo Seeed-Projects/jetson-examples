@@ -1,18 +1,18 @@
 #!/bin/bash
 set -euo pipefail
 
-CONTAINER_NAME="${QWEN35_CONTAINER_NAME:-qwen3.5-4b}"
-IMAGE_NAME="${QWEN35_IMAGE_NAME:-llama-jetson}"
-IMAGE_SHARE_URL="${QWEN35_IMAGE_SHARE_URL:-https://seeedstudio88-my.sharepoint.com/personal/youjiang_yu_seeedstudio88_onmicrosoft_com/_layouts/15/download.aspx?share=IQBA2papRoneTrRhf5DQ_dOnAV3EvVgvJ3LKb1q8qltMlSM}"
-IMAGE_ARCHIVE_NAME="${QWEN35_IMAGE_ARCHIVE_NAME:-qwen3.5-4b-image.tar.gz}"
-MODEL_URL="${QWEN35_MODEL_URL:-https://huggingface.co/unsloth/Qwen3.5-4B-GGUF/resolve/main/Qwen3.5-4B-Q4_K_M.gguf}"
-MODELS_DIR="${QWEN35_MODELS_DIR:-$HOME/models}"
-MODEL_FILE="${QWEN35_MODEL_FILE:-$MODELS_DIR/Qwen3.5-4B-Q4_K_M.gguf}"
-CACHE_DIR="${QWEN35_CACHE_DIR:-$HOME/.cache/jetson-examples/qwen3.5-4b}"
-HOST_PORT="${QWEN35_PORT:-8080}"
-CONTAINER_PORT="${QWEN35_CONTAINER_PORT:-8080}"
-STARTUP_TIMEOUT="${QWEN35_STARTUP_TIMEOUT:-600}"
-CTX_SIZE="${QWEN35_CTX_SIZE:-8192}"
+CONTAINER_NAME="${GEMMA4_CONTAINER_NAME:-gemma4-jetson}"
+IMAGE_NAME="${GEMMA4_IMAGE_NAME:-llama-jetson}"
+IMAGE_SHARE_URL="${GEMMA4_IMAGE_SHARE_URL:-https://seeedstudio88-my.sharepoint.com/:u:/g/personal/youjiang_yu_seeedstudio88_onmicrosoft_com/IQBGgzrQX-wrSogvNhhCauP7AZF7ALXGs25MyW8vswV7PE4?e=3jI1o6}"
+IMAGE_ARCHIVE_NAME="${GEMMA4_IMAGE_ARCHIVE_NAME:-gemma4-jetson.tar}"
+MODEL_URL="${GEMMA4_MODEL_URL:-https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF/resolve/main/gemma-4-E4B-it-Q4_K_M.gguf}"
+MODELS_DIR="${GEMMA4_MODELS_DIR:-$HOME/models}"
+MODEL_FILE="${GEMMA4_MODEL_FILE:-$MODELS_DIR/gemma-4-E4B-it-Q4_K_M.gguf}"
+CACHE_DIR="${GEMMA4_CACHE_DIR:-$HOME/.cache/jetson-examples/gemma4}"
+HOST_PORT="${GEMMA4_PORT:-8080}"
+CONTAINER_PORT="${GEMMA4_CONTAINER_PORT:-8080}"
+STARTUP_TIMEOUT="${GEMMA4_STARTUP_TIMEOUT:-600}"
+CTX_SIZE="${GEMMA4_CTX_SIZE:-8192}"
 DOCKER_CMD=()
 GPU_FLAGS=()
 LIB_MOUNTS=()
@@ -169,7 +169,7 @@ download_with_aria2() {
 
 ensure_image() {
     local archive_path="${CACHE_DIR%/}/${IMAGE_ARCHIVE_NAME}"
-    local image_url="${QWEN35_IMAGE_ARCHIVE_URL:-$(sharepoint_download_url "${IMAGE_SHARE_URL}")}"
+    local image_url="${GEMMA4_IMAGE_ARCHIVE_URL:-$(sharepoint_download_url "${IMAGE_SHARE_URL}")}"
     local load_output
     local loaded_image
 
@@ -179,7 +179,7 @@ ensure_image() {
     fi
 
     if [[ ! -s "${archive_path}" ]]; then
-        log "Downloading Docker image archive..."
+        log "Downloading Docker image archive from OneDrive/SharePoint..."
         log "Resolved download URL: ${image_url}"
         download_with_aria2 "${image_url}" "${CACHE_DIR}" "${IMAGE_ARCHIVE_NAME}"
     else
@@ -201,7 +201,7 @@ ensure_image() {
         return 0
     fi
 
-    die "Expected image was not found after docker load: ${IMAGE_NAME}. Set QWEN35_IMAGE_NAME if the archive uses a different image tag."
+    die "Expected image was not found after docker load: ${IMAGE_NAME}. Set GEMMA4_IMAGE_NAME if the archive uses a different image tag."
 }
 
 ensure_model() {
@@ -211,7 +211,7 @@ ensure_model() {
         return 0
     fi
 
-    log "Downloading Qwen3.5 model..."
+    log "Downloading Gemma4 model..."
     download_with_aria2 "${MODEL_URL}" "${MODELS_DIR}" "$(basename "${MODEL_FILE}")"
 }
 
@@ -303,7 +303,7 @@ wait_for_server_ready() {
     local http_code
     local response_body
 
-    log "Waiting for Qwen server at ${endpoint} (timeout: ${STARTUP_TIMEOUT}s)..."
+    log "Waiting for Gemma4 server at ${endpoint} (timeout: ${STARTUP_TIMEOUT}s)..."
     while [[ "${elapsed}" -lt "${STARTUP_TIMEOUT}" ]]; do
         if [[ -z "$("${DOCKER_CMD[@]}" ps -q -f name="^/${CONTAINER_NAME}$")" ]]; then
             echo "Container exited before the model became ready."
@@ -335,7 +335,7 @@ wait_for_server_ready() {
 }
 
 run_container() {
-    local gpu_layers="${QWEN35_GPU_LAYERS:-$(select_gpu_layers)}"
+    local gpu_layers="${GEMMA4_GPU_LAYERS:-$(select_gpu_layers)}"
     local model_basename
     model_basename="$(basename "${MODEL_FILE}")"
 
@@ -377,7 +377,7 @@ main() {
     run_container
     wait_for_server_ready
 
-    log "Qwen3.5-4B server is ready: http://127.0.0.1:${HOST_PORT}"
+    log "Gemma4 server is ready: http://127.0.0.1:${HOST_PORT}"
     log "Follow logs with: ${DOCKER_CMD[*]} logs -f ${CONTAINER_NAME}"
 }
 

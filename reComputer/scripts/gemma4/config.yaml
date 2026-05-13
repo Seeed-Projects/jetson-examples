@@ -1,0 +1,32 @@
+# Tested and compatible JetPack/L4T versions.
+ALLOWED_L4T_VERSIONS:
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+REQUIRED_DISK_SPACE: 15
+REQUIRED_MEM_SPACE: 7
+PACKAGES:
+  - nvidia-jetpack
+  - aria2
+DOCKER:
+  ENABLE: false
+  DAEMON: |
+    {
+      "default-runtime": "nvidia",
+      "runtimes": {
+        "nvidia": {
+          "path": "nvidia-container-runtime",
+          "runtimeArgs": []
+        }
+      },
+      "storage-driver": "overlay2",
+      "data-root": "/var/lib/docker",
+      "log-driver": "json-file",
+      "log-opts": {
+        "max-size": "100m",
+        "max-file": "3"
+      },
+      "no-new-privileges": true,
+      "experimental": false
+    }

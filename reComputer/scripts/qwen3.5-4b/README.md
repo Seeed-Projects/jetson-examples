@@ -5,6 +5,7 @@ This example runs **Qwen3.5-4B** on Jetson Orin with **llama.cpp** and exposes a
 It uses:
 - a prebuilt Docker image archive imported locally on first run
 - the `unsloth/Qwen3.5-4B-GGUF` model in `Q4_K_M` format
+- `aria2c` downloads with resume support for the Docker archive and model
 
 Supported JetPack/L4T targets:
 - JetPack 6.1 -> L4T 36.3.0
@@ -19,8 +20,8 @@ Test status:
 
 ### Prerequisites
 - NVIDIA Jetson Orin device
-- Docker installed and available
-- `aria2` installed
+- JetPack 6.x
+- Docker and `aria2` are installed automatically if missing
 
 ### Installation
 
@@ -44,7 +45,7 @@ Start the demo:
 reComputer run qwen3.5-4b
 ```
 
-The first run downloads the image archive and model, then starts the server on:
+The first run installs missing runtime dependencies, downloads the image archive and model, then starts the server on:
 
 ```text
 http://127.0.0.1:8080
@@ -87,6 +88,10 @@ print(response.choices[0].message.content)
 - `QWEN35_CTX_SIZE`: context length, default `8192`
 - `QWEN35_GPU_LAYERS`: override automatic GPU layer selection
 - `QWEN35_MODELS_DIR`: model cache directory, default `$HOME/models`
+- `QWEN35_CACHE_DIR`: Docker archive cache directory, default `$HOME/.cache/jetson-examples/qwen3.5-4b`
+- `QWEN35_IMAGE_SHARE_URL`: OneDrive/SharePoint public share link override
+- `QWEN35_IMAGE_ARCHIVE_URL`: direct image archive URL override
+- `QWEN35_IMAGE_NAME`: expected Docker image tag, default `llama-jetson`
 
 ## Cleanup
 

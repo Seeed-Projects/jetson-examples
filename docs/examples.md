@@ -11,6 +11,8 @@ All examples that can be run:
 | [depth-anything-v3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision(CV) | * | 7.6GB  | `reComputer run depth-anything-v3`  |  |
 | [live-vlm-webui](/reComputer/scripts/live-vlm-webui/README.md) | Computer Vision (VLM) | * | * | `reComputer run live-vlm-webui` |  |
 | [nemotron-3-nano](/reComputer/scripts/nemotron-3-nano/README.md) | Text (LLM) | 24.5GB | * | `reComputer run nemotron-3-nano` |  |
+| [depth-anything-v3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision(CV) | * | 7.6GB  | `reComputer run depth-anything-v3`  |  | 
+| [gemma4](/reComputer/scripts/gemma4/README.md) | Text (LLM) | 2.5GB | 0.49GB | `reComputer run gemma4` | |
 | [qwen3.5-4b](/reComputer/scripts/qwen3.5-4b/README.md) | Text (LLM) | 2.5GB | * | `reComputer run qwen3.5-4b` | |
 | [yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision(CV)         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 | | 
 | text-generation-webui                            | Text (LLM)               | 3.9GB      | 14.8GB     | `reComputer run text-generation-webui`       |          |
