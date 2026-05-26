@@ -46,6 +46,8 @@ Here are some examples that can be run:
 | Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 | Supported JetPack |
 | ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- | ------------------------------------------------ |
 | 🆕 [Ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) | Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  | 4.6, 5.1.1, 5.1.2, 5.1.3, 6.0, 6.1, 6.2 |
+| 🆕 [YOLO11](/reComputer/scripts/yolo11/README.md) | Computer Vision | * | * | `reComputer run yolo11` | 5.1.1, 5.1.2, 5.1.3, 6.0, 6.1, 6.2, 6.2.1 |
+| 🆕 [YOLO26](/reComputer/scripts/yolo26/README.md) | Computer Vision | * | * | `reComputer run yolo26` | 5.1.1, 5.1.2, 5.1.3, 6.0, 6.1, 6.2, 6.2.1, 7.0, 7.1 |
 | 🆕 [Deep-Live-Cam](/reComputer/scripts/deep-live-cam/README.md) | Face-swapping | 0.5GB | 20GB  | `reComputer run  deep-live-cam`  | 6.0 |
 | 🆕 [Live-VLM-WebUI](/reComputer/scripts/live-vlm-webui/README.md) | Computer Vision (VLM) | * | * | `reComputer run live-vlm-webui` | 6.0, 6.1, 6.2, 6.2.1, 7.0, 7.1 |
 | 🆕 llama-factory | Finetune LLM |  | 13.5GB  | `reComputer run  llama-factory`  | 5.1.1, 5.1.2, 5.1.3 |

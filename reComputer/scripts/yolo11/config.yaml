@@ -1,0 +1,34 @@
+# The tested JetPack versions.
+ALLOWED_L4T_VERSIONS:
+  - 35.3.1  # JetPack 5.1.1
+  - 35.4.1  # JetPack 5.1.2
+  - 35.5.0  # JetPack 5.1.3
+  - 36.3.0  # JetPack 6.0
+  - 36.4.0  # JetPack 6.1
+  - 36.4.3  # JetPack 6.2
+  - 36.4.4  # JetPack 6.2.1
+REQUIRED_DISK_SPACE: 16  # in GB
+REQUIRED_MEM_SPACE: 4
+PACKAGES:
+  - nvidia-jetpack
+DOCKER:
+  ENABLE: true
+  DAEMON: |
+    {
+      "default-runtime": "nvidia",
+      "runtimes": {
+        "nvidia": {
+          "path": "nvidia-container-runtime",
+          "runtimeArgs": []
+        }
+      },
+      "storage-driver": "overlay2",
+      "data-root": "/var/lib/docker",
+      "log-driver": "json-file",
+      "log-opts": {
+        "max-size": "100m",
+        "max-file": "3"
+      },
+      "no-new-privileges": true,
+      "experimental": false
+    }

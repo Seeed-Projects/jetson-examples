@@ -7,6 +7,8 @@ All examples that can be run:
 | whisper                                          | Audio                    | 1.5GB      | 6.0GB      | `reComputer run whisper`                     | USB-CAM* |
 | [yolov8-rail-inspection](/reComputer/scripts/yolov8-rail-inspection/readme.md) |Computer Vision(CV) | 6M | 13.8GB  | `reComputer run yolov8-rail-inspection`  |  | 
 | [ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) |Computer Vision(CV) | * | 15.4GB  | `reComputer run  ultralytics-yolo`  | |
+| [yolo11](/reComputer/scripts/yolo11/README.md) | Computer Vision(CV) | * | * | `reComputer run yolo11` | |
+| [yolo26](/reComputer/scripts/yolo26/README.md) | Computer Vision(CV) | * | * | `reComputer run yolo26` | |
 | [depth-anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision(CV) | * | 12.9GB  | `reComputer run  depth-anything`  |  | 
 | [depth-anything-v3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision(CV) | * | 7.6GB  | `reComputer run depth-anything-v3`  |  |
 | [live-vlm-webui](/reComputer/scripts/live-vlm-webui/README.md) | Computer Vision (VLM) | * | * | `reComputer run live-vlm-webui` |  |
