@@ -4,6 +4,7 @@ ALLOWED_L4T_VERSIONS:
   - 36.4.0
   - 36.4.3
   - 36.4.4
+  - 36.4.5
 # 24.5GB model + image ≈ 70GB+ recommended free space
 REQUIRED_DISK_SPACE: 80
 # AGX Orin 64G (60GB+) required — 32G modules cannot run this model

@@ -7,6 +7,7 @@ ALLOWED_L4T_VERSIONS:
   - 36.4.0  # JetPack 6.1
   - 36.4.3  # JetPack 6.2
   - 36.4.4  # JetPack 6.2.1
+  - 36.4.5  # JetPack 6.2.2
   - 38.1.0  # JetPack 7.0
   - 38.2.0  # JetPack 7.1
 REQUIRED_DISK_SPACE: 16  # in GB
