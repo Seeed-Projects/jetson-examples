@@ -7,6 +7,8 @@ ALLOWED_L4T_VERSIONS:
   - 36.4.0  # JetPack 6.1
   - 36.4.3  # JetPack 6.2
   - 36.4.4  # JetPack 6.2.1
+  - 36.4.5  # JetPack 6.2.2
+  - 36.5.0  # JetPack 6.3
 REQUIRED_DISK_SPACE: 16  # in GB
 REQUIRED_MEM_SPACE: 4
 PACKAGES:
