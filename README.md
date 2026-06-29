@@ -62,6 +62,7 @@ Here are some examples that can be run:
 | [Yolov10](/reComputer/scripts/yolov10/README.md)     | Computer Vision         | 7.2M               | 5.74 GB     | `reComputer run yolov10`                 | 5.1.1, 5.1.2, 5.1.3, 6.0 |
 | Llama3                                         | Text (LLM)               | 4.9GB           | 10.5GB     | `reComputer run llama3`                 | 5.1.1, 5.1.2, 5.1.3, 6.0 |
 | [gpt-oss](/reComputer/scripts/gpt-oss/README.md)     | Text (LLM)               | 39GB | 31.28GB    | `reComputer run gpt-oss`               | 6.1, 6.2, 6.2.1 |
+| 🆕 [GraspNet-Gemini](/reComputer/scripts/graspnet-gemini/README.md) | Robotics / Grasping | * | 2.0GB | `reComputer run graspnet-gemini` | 6.0, 6.1, 6.2, 6.2.1 |
 | [ros1-jp6](/reComputer/scripts/ros1-jp6/README.md)   | Robotics / ROS 1         | *    | 1.27GB     | `reComputer run ros1-jp6`             | 6.1, 6.2, 6.2.1 |
 | [nvblox](/reComputer/scripts/nvblox/README.md)       | Robotics / Mapping       | *    | 20.5GB+    | `reComputer run nvblox`                | 6.x |
 
