@@ -45,6 +45,7 @@ Here are some examples that can be run:
 
 | Example                                          | Type                     | Model/Data Size | Docker Image Size | Command                                 | Supported JetPack |
 | ------------------------------------------------ | ------------------------ | --------------- | ---------- | --------------------------------------- | ------------------------------------------------ |
+| 🆕 [reBot Arm Teleoperation](/reComputer/scripts/rebot-arm-teleop/README.md) | Robotics / Teleoperation | * | JP6: 2.28GB archive; JP7.2: 7.71GB archive | `reComputer run rebot-arm-teleop` | 6.1, 6.2, 7.2 |
 | 🆕 [Ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) | Computer Vision |  | 15.4GB  | `reComputer run  ultralytics-yolo`  | 4.6, 5.1.1, 5.1.2, 5.1.3, 6.0, 6.1, 6.2 |
 | 🆕 [YOLO11](/reComputer/scripts/yolo11/README.md) | Computer Vision | * | * | `reComputer run yolo11` | 5.1.1, 5.1.2, 5.1.3, 6.0, 6.1, 6.2, 6.2.1 |
 | 🆕 [YOLO26](/reComputer/scripts/yolo26/README.md) | Computer Vision | * | * | `reComputer run yolo26` | 5.1.1, 5.1.2, 5.1.3, 6.0, 6.1, 6.2, 6.2.1, 7.0, 7.1 |

@@ -20,6 +20,7 @@ All examples that can be run:
 | text-generation-webui                            | Text (LLM)               | 3.9GB      | 14.8GB     | `reComputer run text-generation-webui`       |          |
 | llama3                                           | Text (LLM)               | 4.9GB      | 10.5GB     | `reComputer run llama3`                      |          |
 | [gpt-oss](/reComputer/scripts/gpt-oss/README.md) | Text (LLM)               | *          | 31.28GB    | `reComputer run gpt-oss`                     |          |
+| [rebot-arm-teleop](/reComputer/scripts/rebot-arm-teleop/README.md) | Robotics / Teleoperation | * | JP6: 2.28GB archive; JP7.2: 7.71GB archive | `reComputer run rebot-arm-teleop` | JetPack 6.1, 6.2, 7.2 |
 | [graspnet-gemini](/reComputer/scripts/graspnet-gemini/README.md) | Robotics / Grasping | *          | 2.0GB      | `reComputer run graspnet-gemini`             | Gemini   |
 | [ros1-jp6](/reComputer/scripts/ros1-jp6/README.md) | Robotics / ROS 1         | *          | 1.27GB     | `reComputer run ros1-jp6`                    |          |
 | [nvblox](/reComputer/scripts/nvblox/README.md)   | Robotics / Mapping       | *          | 20.5GB+    | `reComputer run nvblox`                      | Gemini2  |
