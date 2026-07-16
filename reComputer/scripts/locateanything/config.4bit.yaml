@@ -1,0 +1,40 @@
+# LocateAnything 4-bit (low-memory) base-env requirements.
+# Same as config.yaml but REQUIRED_MEM_SPACE lowered to 7 (4-bit NF4 fits in 8GB;
+# verified 2.91GB VRAM on Orin NX 8GB). Used by the shared utils.sh:check_base_env
+# for the low-mem (<16GB) branch so it passes on 7-8GB devices, while config.yaml
+# (16GB) stays authoritative for the bf16 Docker path (≥16GB devices).
+ALLOWED_L4T_VERSIONS:
+  - 38.1.0  # JetPack 7.0
+  - 38.2.0  # JetPack 7.1
+  - 38.4.0  # JetPack 7.0.1 (Thor)
+  - 39.2.0  # JetPack 7.2
+
+# Memory: 4-bit NF4 model ~2.91GB + torch + activations → 7GB minimum (8GB device).
+# Disk: torch wheel 0.77GB + nvidia-cu12 libs ~1GB + model 7.3GB → 20GB.
+REQUIRED_DISK_SPACE: 20
+REQUIRED_MEM_SPACE: 7
+
+PACKAGES:
+  - nvidia-jetpack
+
+DOCKER:
+  ENABLE: true   # 4-bit path uses a Docker image (locateanything-4bit:latest)
+  DAEMON: |
+    {
+      "default-runtime": "nvidia",
+      "runtimes": {
+        "nvidia": {
+          "path": "nvidia-container-runtime",
+          "runtimeArgs": []
+        }
+      },
+      "storage-driver": "overlay2",
+      "data-root": "/var/lib/docker",
+      "log-driver": "json-file",
+      "log-opts": {
+        "max-size": "100m",
+        "max-file": "3"
+      },
+      "no-new-privileges": true,
+      "experimental": false
+    }

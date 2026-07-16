@@ -1,0 +1,6 @@
+# Exclude non-build files from Docker context
+*.sh
+config.yaml
+images/
+.git
+.gitignore

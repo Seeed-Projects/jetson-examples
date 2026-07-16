@@ -1,0 +1,38 @@
+# The tested JetPack versions.
+# LocateAnything-3B uses CUDA 13.0 + sm_120 (Thor GPU arch), so only JetPack 7
+# (L4T 38.x / 39.x) devices are supported.
+ALLOWED_L4T_VERSIONS:
+  - 38.1.0  # JetPack 7.0
+  - 38.2.0  # JetPack 7.1
+  - 38.4.0  # JetPack 7.0.1 (Thor)
+  - 39.2.0  # JetPack 7.2
+
+# Memory: model weights ~7.3GB (bf16) + torch + activations → 16GB minimum.
+# Disk:  Docker image ~6GB + model volume 7.3GB + build cache ~3GB → 20GB.
+REQUIRED_DISK_SPACE: 20
+REQUIRED_MEM_SPACE: 16
+
+PACKAGES:
+  - nvidia-jetpack
+
+DOCKER:
+  ENABLE: true
+  DAEMON: |
+    {
+      "default-runtime": "nvidia",
+      "runtimes": {
+        "nvidia": {
+          "path": "nvidia-container-runtime",
+          "runtimeArgs": []
+        }
+      },
+      "storage-driver": "overlay2",
+      "data-root": "/var/lib/docker",
+      "log-driver": "json-file",
+      "log-opts": {
+        "max-size": "100m",
+        "max-file": "3"
+      },
+      "no-new-privileges": true,
+      "experimental": false
+    }

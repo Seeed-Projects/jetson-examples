@@ -51,6 +51,7 @@ Here are some examples that can be run:
 | 🆕 [YOLO26](/reComputer/scripts/yolo26/README.md) | Computer Vision | * | * | `reComputer run yolo26` | 5.1.1, 5.1.2, 5.1.3, 6.0, 6.1, 6.2, 6.2.1, 7.0, 7.1 |
 | 🆕 [Deep-Live-Cam](/reComputer/scripts/deep-live-cam/README.md) | Face-swapping | 0.5GB | 20GB  | `reComputer run  deep-live-cam`  | 6.0 |
 | 🆕 [Live-VLM-WebUI](/reComputer/scripts/live-vlm-webui/README.md) | Computer Vision (VLM) | * | * | `reComputer run live-vlm-webui` | 6.0, 6.1, 6.2, 6.2.1, 7.0, 7.1 |
+| 🆕 [LocateAnything](/reComputer/scripts/locateanything/README.md) | Visual Grounding (VLM) | 7.3GB | 20.4GB | `reComputer run locateanything` | 6.2 |
 | 🆕 llama-factory | Finetune LLM |  | 13.5GB  | `reComputer run  llama-factory`  | 5.1.1, 5.1.2, 5.1.3 |
 | 🆕 [ComfyUI](/reComputer/scripts/comfyui/README.md) |Computer Vision |  | 20GB  | `reComputer run comfyui`  | 5.1.1, 5.1.2, 5.1.3 |
 | [Depth-Anything-V2](/reComputer/scripts/depth-anything-v2/README.md) |Computer Vision |  | 15GB  | `reComputer run depth-anything-v2`  | 5.1.1, 5.1.2, 5.1.3 |

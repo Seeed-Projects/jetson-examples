@@ -22,8 +22,18 @@ check_base_env()
     # Install yq for parsing YAML file
     if ! command -v yq &> /dev/null
     then
-        echo "yq is not installed. Installing yq with pip3..."
-        pip3 install yq
+        echo "yq is not installed. Installing yq..."
+        # PEP 668 (Ubuntu 24.04 / Python 3.12) blocks bare `pip3 install` with
+        # "externally-managed-environment". The reComputer venv (created by uv)
+        # ships no pip, so `pip3` falls through to system Python and hits the block.
+        # Prefer uv (installs into the reComputer venv), else --break-system-packages.
+        if command -v uv &> /dev/null; then
+            uv pip install yq
+        elif [ -x "$HOME/.local/bin/uv" ]; then
+            "$HOME/.local/bin/uv" pip install yq
+        else
+            pip3 install --break-system-packages yq
+        fi
         if command -v yq &> /dev/null
         then
             echo "yq has been successfully installed."
