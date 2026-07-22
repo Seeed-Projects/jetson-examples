@@ -1,0 +1,22 @@
+# Native TensorRT deployment for JetPack 6 and JetPack 7.
+ALLOWED_L4T_VERSIONS:
+  - 36.3.0
+  - 36.4.0
+  - 36.4.3
+  - 36.4.4
+  - 36.4.5
+  - 36.5.0
+  - 38.1.0
+  - 38.2.0
+  - 38.4.0
+  - 39.2.0
+REQUIRED_DISK_SPACE: 2
+REQUIRED_MEM_SPACE: 4
+PACKAGES:
+  - build-essential
+  - cmake
+  - libopencv-dev
+  - libnvinfer-dev
+  - libnvinfer-bin
+DOCKER:
+  ENABLE: false
