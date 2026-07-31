@@ -116,13 +116,20 @@ check_base_env()
         echo "Required ${GREEN}${REQUIRED_DISK_SPACE}GB${RESET}/${GREEN}${CURRENT_DISK_SPACE}GB${RESET} disk space: ${GREEN}OK!${RESET}"
     fi
 
-    # 5. Check memory space
-    CURRENT_MEM_SPACE=$(free -g | awk '/^Mem:/{print $2}')
+    # 5. Check memory space (machine total capacity)
+    # free -g floors GB (e.g. 7.4 -> 7), under-reporting Jetson SKU total capacity.
+    # Read MemTotal and round up to the next power-of-2 GB (4/8/16/32/64).
+    CURRENT_MEM_SPACE=$(awk '/^MemTotal:/ {
+        gb = $2 / 1024 / 1024
+        p = 1
+        while (p < gb) p *= 2
+        printf "%d", p
+    }' /proc/meminfo)
     if [ "$CURRENT_MEM_SPACE" -lt "$REQUIRED_MEM_SPACE" ]; then
-        echo "${RED}Insufficient memory: $CURRENT_MEM_SPACE GB (minimum required: $REQUIRED_MEM_SPACE GB).${RESET}"
+        echo "${RED}Insufficient memory: $CURRENT_MEM_SPACE GB total (required: $REQUIRED_MEM_SPACE GB).${RESET}"
         exit 1
     else
-        echo "Required ${GREEN}${REQUIRED_MEM_SPACE}GB${RESET}/${GREEN}${CURRENT_MEM_SPACE}GB${RESET} memory space: ${GREEN}OK!${RESET}"
+        echo "Required ${GREEN}${REQUIRED_MEM_SPACE}GB${RESET}/${GREEN}${CURRENT_MEM_SPACE}GB${RESET} total memory: ${GREEN}OK!${RESET}"
     fi
 
     # 6. Prepare Docker env
