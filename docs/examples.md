@@ -9,6 +9,7 @@ All examples that can be run:
 | [ultralytics-yolo](/reComputer/scripts/ultralytics-yolo/README.md) |Computer Vision(CV) | * | 15.4GB  | `reComputer run  ultralytics-yolo`  | |
 | [yolo11](/reComputer/scripts/yolo11/README.md) | Computer Vision(CV) | * | * | `reComputer run yolo11` | |
 | [yolo26](/reComputer/scripts/yolo26/README.md) | Computer Vision(CV) | * | * | `reComputer run yolo26` | |
+| [yolo26-tensorrt](/reComputer/scripts/yolo26-tensorrt/README.md) | Computer Vision(CV) | ~30MB ONNX | No Docker (native C++) | `reComputer run yolo26-tensorrt` | USB-CAM* |
 | [depth-anything](/reComputer/scripts/depth-anything/README.md) |Computer Vision(CV) | * | 12.9GB  | `reComputer run  depth-anything`  |  | 
 | [depth-anything-v3](/reComputer/scripts/depth-anything-v3/README.md) |Computer Vision(CV) | * | 7.6GB  | `reComputer run depth-anything-v3`  |  |
 | [live-vlm-webui](/reComputer/scripts/live-vlm-webui/README.md) | Computer Vision (VLM) | * | * | `reComputer run live-vlm-webui` |  |
