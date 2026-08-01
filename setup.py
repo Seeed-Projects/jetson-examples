@@ -23,7 +23,7 @@ def package_files(root: Path):
 
 setup(
     name="jetson-examples",
-    version="0.2.9",
+    version="0.2.11",
     author="luozhixin",
     author_email="zhixin.luo@seeed.cc",
     description="Running Gen AI models and applications on NVIDIA Jetson devices with one-line command",
