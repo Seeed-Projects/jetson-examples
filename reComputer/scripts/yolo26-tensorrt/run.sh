@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORK_DIR="${SCRIPT_DIR}"
 ONNX_URL="${YOLO26_TENSORRT_ONNX_URL:-https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n.onnx}"
 ONNX_SHA256="${YOLO26_TENSORRT_ONNX_SHA256:-2e947b787d9e787b93a16772a5f55b1d4d8c4d86f53146149c5d6a642442d6f7}"
-CAMERA_ID="${YOLO26_TENSORRT_CAMERA:-0}"
+CAMERA_ID="${YOLO26_TENSORRT_CAMERA:-auto}"
 PORT="${YOLO26_TENSORRT_PORT:-8080}"
 BUILD_ONLY=0
 
@@ -104,7 +104,7 @@ fi
 # ------------------------------------------------------------------
 # 4. Run inference + HTTP server
 # ------------------------------------------------------------------
-log "Starting YOLO26 TensorRT inference server on port ${PORT}..."
+log "Starting YOLO26 TensorRT inference server on port ${PORT} (cameras: ${CAMERA_ID})..."
 pkill -f "build/yolo26_tensorrt" || true
 sleep 1
 

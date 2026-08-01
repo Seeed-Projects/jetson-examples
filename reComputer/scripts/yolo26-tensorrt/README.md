@@ -18,7 +18,7 @@ This example is intentionally separate from the existing `yolo26` example:
 1. Downloads or receives the official `yolo26n.onnx` model and verifies its SHA256.
 2. Uses the target Jetson's `trtexec` to build an FP16 TensorRT engine.
 3. Compiles a C++ application against CUDA, TensorRT, and OpenCV.
-4. Opens the camera and serves annotated frames at `http://<jetson-ip>:8080/`.
+4. Probes all available cameras (`/dev/video*`) by default — or uses an explicit `--camera 0,1,...` list — and serves annotated frames at `http://<jetson-ip>:8080/` (grid view when multiple cameras are active).
 
 The C++ runtime supports both TensorRT 8 binding APIs and TensorRT 10 tensor APIs. It accepts the official end-to-end `[1,300,6]` output and retains the three-feature-map fallback decoder.
 
@@ -36,9 +36,21 @@ Then open `http://<jetson-ip>:8080/`.
 |---|---|---|
 | `YOLO26_TENSORRT_ONNX_URL` | Ultralytics v8.4.0 release asset | ONNX download URL |
 | `YOLO26_TENSORRT_ONNX_SHA256` | Built-in official model hash | Expected ONNX SHA256 |
-| `YOLO26_TENSORRT_CAMERA` | `0` | OpenCV camera index |
+| `YOLO26_TENSORRT_CAMERA` | `auto` | Camera index list (`0,1,…`) or `auto` to probe available `/dev/video*` cameras |
 | `YOLO26_TENSORRT_PORT` | `8080` | HTTP server port |
 | `YOLO26_TENSORRT_SKIP_DOWNLOAD` | `0` | Require a pre-uploaded ONNX file when set to `1` |
+
+## Multiple Cameras
+
+With the default `auto` setting the application probes `/dev/video0`–`/dev/video15`, opens every camera that delivers frames, and runs one inference loop per camera. The browser page shows all streams in a grid. Each stream is also available directly at `/frame?slot=N`, and the active camera list is exposed as JSON at `/cameras`.
+
+To pin specific cameras:
+
+```bash
+YOLO26_TENSORRT_CAMERA=0,2 reComputer run yolo26-tensorrt
+```
+
+All cameras share one TensorRT engine and execution context; inference calls are serialized internally, so per-camera FPS is roughly the total throughput divided by the camera count.
 
 ## Files
 

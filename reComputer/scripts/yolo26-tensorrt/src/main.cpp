@@ -15,6 +15,10 @@
 #include <thread>
 #include <vector>
 
+#ifdef __linux__
+#include <unistd.h>
+#endif
+
 #include <cuda_runtime_api.h>
 #include <NvInfer.h>
 #include <NvInferVersion.h>
@@ -211,6 +215,9 @@ public:
     }
 
     std::vector<Detection> detect(const cv::Mat& image, float conf_thresh, float iou_thresh) {
+        // IExecutionContext is not thread-safe; serialize access from
+        // concurrent camera inference threads.
+        std::lock_guard<std::mutex> lock(detect_mutex_);
         int inh = input_dims_.d[2];
         int inw = input_dims_.d[3];
 
@@ -427,12 +434,18 @@ private:
 #endif
 
     bool detect_e2e_ = false;
+    std::mutex detect_mutex_;
 };
 
 static std::atomic<bool> g_running{true};
-static std::vector<uchar> g_jpeg_buffer;
-static std::mutex g_jpeg_mutex;
 static std::vector<std::string> g_labels;
+
+struct FrameSlot {
+    int camera_id = -1;
+    std::mutex mutex;
+    std::vector<uchar> jpeg;
+};
+static std::vector<std::unique_ptr<FrameSlot>> g_slots;
 
 static void draw_detections(cv::Mat& img, const std::vector<Detection>& dets) {
     for (const auto& d : dets) {
@@ -455,16 +468,18 @@ static void draw_detections(cv::Mat& img, const std::vector<Detection>& dets) {
     }
 }
 
-static void inference_loop(TrtYolo26* engine, int camera_id,
+static void inference_loop(TrtYolo26* engine, FrameSlot* slot,
                            float conf_thresh, float iou_thresh) {
-    cv::VideoCapture cap(camera_id);
+    int camera_id = slot->camera_id;
+    cv::VideoCapture cap(camera_id, cv::CAP_V4L2);
     if (!cap.isOpened()) {
-        cap.open(camera_id, cv::CAP_V4L2);
+        cap.open(camera_id);
     }
     if (!cap.isOpened()) {
         std::cerr << "Failed to open camera " << camera_id << std::endl;
         return;
     }
+    std::cout << "Camera " << camera_id << " opened" << std::endl;
 
     cv::Mat frame;
     int frame_count = 0;
@@ -473,7 +488,10 @@ static void inference_loop(TrtYolo26* engine, int camera_id,
 
     while (g_running) {
         cap >> frame;
-        if (frame.empty()) continue;
+        if (frame.empty()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            continue;
+        }
 
         auto t0 = std::chrono::steady_clock::now();
         auto dets = engine->detect(frame, conf_thresh, iou_thresh);
@@ -492,20 +510,21 @@ static void inference_loop(TrtYolo26* engine, int camera_id,
         }
 
         std::ostringstream oss;
-        oss << "FPS:" << static_cast<int>(fps) << "  infer:" << static_cast<int>(infer_ms) << "ms";
+        oss << "cam" << camera_id << "  FPS:" << static_cast<int>(fps)
+            << "  infer:" << static_cast<int>(infer_ms) << "ms";
         cv::putText(frame, oss.str(), cv::Point(10, 30), cv::FONT_HERSHEY_SIMPLEX,
                     0.7, cv::Scalar(0, 255, 0), 2);
 
         std::vector<uchar> buf;
         cv::imencode(".jpg", frame, buf, {cv::IMWRITE_JPEG_QUALITY, 80});
         {
-            std::lock_guard<std::mutex> lock(g_jpeg_mutex);
-            g_jpeg_buffer.swap(buf);
+            std::lock_guard<std::mutex> lock(slot->mutex);
+            slot->jpeg.swap(buf);
         }
     }
 }
 
-static std::string html_page(int port) {
+static std::string html_page() {
     return R"(<!DOCTYPE html>
 <html>
 <head>
@@ -514,21 +533,41 @@ static std::string html_page(int port) {
 <style>
   body { background:#111; color:#eee; font-family: sans-serif; text-align:center; margin:0; }
   h1 { margin: 16px 0; font-size: 20px; }
-  img { max-width:95vw; max-height:85vh; border:1px solid #444; }
-  #status { color:#8f8; margin-top:8px; }
+  #grid { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; padding:0 12px; }
+  .cell { flex:0 1 640px; }
+  .cap { color:#9cf; font-size:14px; margin-bottom:4px; }
+  img { width:100%; border:1px solid #444; background:#000; }
+  #status { color:#8f8; margin:8px 0 16px; }
 </style>
 </head>
 <body>
 <h1>YOLO26 TensorRT C++ Real-time Detection</h1>
-<img id="stream" src="/frame" alt="waiting for stream...">
+<div id="grid"></div>
 <div id="status">Loading...</div>
 <script>
-  const img = document.getElementById('stream');
-  const status = document.getElementById('status');
+  let cams = [];
+  fetch('/cameras').then(r => r.json()).then(list => {
+    cams = list;
+    const grid = document.getElementById('grid');
+    list.forEach(c => {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.innerHTML = '<div class="cap">Camera ' + c.device + '</div>' +
+                       '<img id="cam' + c.slot + '" src="/frame?slot=' + c.slot + '" alt="waiting...">';
+      grid.appendChild(cell);
+    });
+  }).catch(() => {
+    document.getElementById('status').textContent = 'Failed to load camera list';
+  });
   setInterval(() => {
-    img.src = '/frame?t=' + Date.now();
-    status.textContent = 'Live @ ' + new Date().toLocaleTimeString();
-  }, 50);
+    const t = Date.now();
+    cams.forEach(c => {
+      const img = document.getElementById('cam' + c.slot);
+      if (img) img.src = '/frame?slot=' + c.slot + '&t=' + t;
+    });
+    document.getElementById('status').textContent =
+      cams.length + ' camera(s) live @ ' + new Date().toLocaleTimeString();
+  }, 100);
 </script>
 </body>
 </html>)";
@@ -563,10 +602,42 @@ static void load_labels(const std::string& path) {
     if (g_labels.empty()) g_labels = default_labels();
 }
 
+static std::vector<int> parse_camera_ids(const std::string& spec) {
+    std::vector<int> ids;
+    std::stringstream ss(spec);
+    std::string token;
+    while (std::getline(ss, token, ',')) {
+        if (token.empty()) continue;
+        try {
+            ids.push_back(std::stoi(token));
+        } catch (...) {
+            std::cerr << "Ignoring invalid camera id: " << token << std::endl;
+        }
+    }
+    return ids;
+}
+
+static std::vector<int> enumerate_cameras(int max_index = 16) {
+    std::vector<int> found;
+    for (int i = 0; i < max_index; ++i) {
+#ifdef __linux__
+        std::string dev = "/dev/video" + std::to_string(i);
+        if (access(dev.c_str(), F_OK) != 0) continue;
+#endif
+        cv::VideoCapture cap(i, cv::CAP_V4L2);
+        if (!cap.isOpened()) continue;
+        // Some cameras need a few warm-up reads before delivering frames.
+        cv::Mat test;
+        for (int k = 0; k < 5 && test.empty(); ++k) cap >> test;
+        if (!test.empty()) found.push_back(i);
+    }
+    return found;
+}
+
 static void print_usage(const char* prog) {
     std::cout << "Usage: " << prog << " [options]\n"
               << "  --engine PATH    TensorRT engine file (required)\n"
-              << "  --camera ID      Camera index (default 0)\n"
+              << "  --camera SPEC    Camera index list (e.g. '0,1') or 'auto' (default auto)\n"
               << "  --port PORT      HTTP server port (default 8080)\n"
               << "  --conf THRESH    Confidence threshold (default 0.5)\n"
               << "  --iou THRESH     NMS IoU threshold (default 0.45)\n"
@@ -575,7 +646,7 @@ static void print_usage(const char* prog) {
 
 int main(int argc, char** argv) {
     std::string engine_path;
-    int camera_id = 0;
+    std::string camera_spec = "auto";
     int port = 8080;
     float conf_thresh = 0.5f;
     float iou_thresh = 0.45f;
@@ -584,7 +655,7 @@ int main(int argc, char** argv) {
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "--engine" && i + 1 < argc) engine_path = argv[++i];
-        else if (arg == "--camera" && i + 1 < argc) camera_id = std::stoi(argv[++i]);
+        else if (arg == "--camera" && i + 1 < argc) camera_spec = argv[++i];
         else if (arg == "--port" && i + 1 < argc) port = std::stoi(argv[++i]);
         else if (arg == "--conf" && i + 1 < argc) conf_thresh = std::stof(argv[++i]);
         else if (arg == "--iou" && i + 1 < argc) iou_thresh = std::stof(argv[++i]);
@@ -605,22 +676,77 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    std::thread infer_thread(inference_loop, &engine, camera_id, conf_thresh, iou_thresh);
+    std::vector<int> camera_ids;
+    if (camera_spec == "auto") {
+        std::cout << "Probing available cameras..." << std::endl;
+        camera_ids = enumerate_cameras();
+        if (camera_ids.empty()) {
+            std::cerr << "No cameras found. Use --camera 0,1,... to specify indices." << std::endl;
+            return 1;
+        }
+    } else {
+        camera_ids = parse_camera_ids(camera_spec);
+        if (camera_ids.empty()) {
+            std::cerr << "No valid camera indices in: " << camera_spec << std::endl;
+            return 1;
+        }
+    }
+
+    std::cout << "Active cameras:";
+    for (int id : camera_ids) std::cout << " " << id;
+    std::cout << std::endl;
+
+    g_slots.reserve(camera_ids.size());
+    for (int id : camera_ids) {
+        auto slot = std::make_unique<FrameSlot>();
+        slot->camera_id = id;
+        g_slots.push_back(std::move(slot));
+    }
+    std::vector<std::thread> infer_threads;
+    infer_threads.reserve(g_slots.size());
+    for (size_t i = 0; i < g_slots.size(); ++i) {
+        infer_threads.emplace_back(inference_loop, &engine, g_slots[i].get(),
+                                   conf_thresh, iou_thresh);
+    }
 
     httplib::Server svr;
-    svr.Get("/", [port](const httplib::Request&, httplib::Response& res) {
-        res.set_content(html_page(port), "text/html");
+    svr.Get("/", [](const httplib::Request&, httplib::Response& res) {
+        res.set_content(html_page(), "text/html");
     });
-    svr.Get("/frame", [](const httplib::Request&, httplib::Response& res) {
-        std::lock_guard<std::mutex> lock(g_jpeg_mutex);
-        if (g_jpeg_buffer.empty()) {
+    svr.Get("/cameras", [](const httplib::Request&, httplib::Response& res) {
+        std::ostringstream oss;
+        oss << "[";
+        for (size_t i = 0; i < g_slots.size(); ++i) {
+            if (i) oss << ",";
+            oss << "{\"slot\":" << i << ",\"device\":" << g_slots[i]->camera_id << "}";
+        }
+        oss << "]";
+        res.set_header("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.set_content(oss.str(), "application/json");
+    });
+    svr.Get("/frame", [](const httplib::Request& req, httplib::Response& res) {
+        size_t slot = 0;
+        if (req.has_param("slot")) {
+            try {
+                slot = static_cast<size_t>(std::stoul(req.get_param_value("slot")));
+            } catch (...) {
+                slot = g_slots.size();  // force invalid
+            }
+        }
+        if (slot >= g_slots.size()) {
+            res.status = 404;
+            res.set_content("Unknown camera slot", "text/plain");
+            return;
+        }
+        std::lock_guard<std::mutex> lock(g_slots[slot]->mutex);
+        if (g_slots[slot]->jpeg.empty()) {
             res.status = 503;
             res.set_content("No frame available", "text/plain");
             return;
         }
         res.set_header("Cache-Control", "no-cache, no-store, must-revalidate");
-        res.set_content(reinterpret_cast<const char*>(g_jpeg_buffer.data()),
-                        g_jpeg_buffer.size(), "image/jpeg");
+        res.set_content(reinterpret_cast<const char*>(g_slots[slot]->jpeg.data()),
+                        g_slots[slot]->jpeg.size(), "image/jpeg");
     });
 
     std::cout << "HTTP server listening on 0.0.0.0:" << port << std::endl;
@@ -629,6 +755,8 @@ int main(int argc, char** argv) {
     svr.listen("0.0.0.0", port);
 
     g_running = false;
-    infer_thread.join();
+    for (auto& t : infer_threads) {
+        if (t.joinable()) t.join();
+    }
     return 0;
 }
