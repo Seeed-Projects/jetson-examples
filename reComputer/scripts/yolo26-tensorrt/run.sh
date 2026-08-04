@@ -23,6 +23,38 @@ done
 cd "${WORK_DIR}"
 
 # ------------------------------------------------------------------
+# 0. Ensure build dependencies (auto-install missing ones)
+# ------------------------------------------------------------------
+SUDO=""
+if [[ "$(id -u)" != "0" ]] && command -v sudo >/dev/null 2>&1; then
+    SUDO="sudo"
+fi
+
+missing_pkgs=()
+command -v cmake >/dev/null 2>&1 || missing_pkgs+=("cmake")
+command -v g++ >/dev/null 2>&1 || missing_pkgs+=("build-essential")
+command -v make >/dev/null 2>&1 || missing_pkgs+=("build-essential")
+if ! pkg-config --exists opencv4 2>/dev/null && ! dpkg-query -W libopencv-dev >/dev/null 2>&1; then
+    missing_pkgs+=("libopencv-dev")
+fi
+if [[ ! -x "/usr/src/tensorrt/bin/trtexec" ]] && ! command -v trtexec >/dev/null 2>&1; then
+    missing_pkgs+=("libnvinfer-dev" "libnvinfer-bin")
+fi
+
+if [[ ${#missing_pkgs[@]} -gt 0 ]]; then
+    mapfile -t missing_pkgs < <(printf '%s\n' "${missing_pkgs[@]}" | sort -u)
+    if [[ "${YOLO26_TENSORRT_AUTO_DEPS:-1}" == "1" ]]; then
+        log "Installing missing packages: ${missing_pkgs[*]}"
+        ${SUDO} apt-get update
+        ${SUDO} apt-get install -y --no-upgrade "${missing_pkgs[@]}"
+    else
+        log "ERROR: missing packages: ${missing_pkgs[*]}"
+        log "Install them manually or unset YOLO26_TENSORRT_AUTO_DEPS=0"
+        exit 1
+    fi
+fi
+
+# ------------------------------------------------------------------
 # 1. Ensure ONNX model is present
 # ------------------------------------------------------------------
 if [[ ! -s "yolo26n.onnx" ]]; then
